@@ -1,0 +1,57 @@
+# function to change http urls to ssh and clone, works for bash and zsh
+clone() {
+    [[ -z "$1" ]] && echo "git clone needs an argument" && return 1
+    local args
+    args=(git clone)
+    for i in "$@"; do
+        case "$i" in
+            *github.com*) args+=("${i/*github.com\//git@github.com:}") ;;
+            *gitlab.com*) args+=("${i/*gitlab.com\//git@gitlab.com:}") ;;
+            *) args+=("${i}") ;;
+        esac
+    done
+    "${args[@]}"
+}
+export clone
+
+# funtion to upload to pixeldrain
+upload() {
+	if [[ -n ${1} && -f ${1} ]]; then
+		DOWNLOAD='https://pixeldrain.com/api/file/'$(curl -# -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 6)'?download' || return 1
+		echo "${DOWNLOAD}"
+	else
+		echo "upload: Needs argument ( filename )"
+	fi
+}
+export upload
+
+# format shell scripts
+fmt() {
+	command -v shfmt >/dev/null || { printf "Install shfmt" && return 0 ;}
+	env shfmt -ci -sr -i 4
+}
+export fmt
+
+# lint shell scripts
+shl() {
+	command -v shellcheck >/dev/null ||  { printf "Install shellcheck" && return 0 ;}
+	env find * -type f -name "*.*sh" -exec sh -c '{ printf "{}" && shellcheck "{}" && printf ": SUCCESS\n" ;} || printf ": ERROR\n"'  \;
+}
+export shl
+
+zsh_update() {
+	local plugins=(fast-syntax-highlighting fzf-tab zsh-autosuggestions)
+	cd ~/.zsh || return 1
+	for plugin in "${plugins[@]}"; do
+			git -C "${folder}" pull || { echo "${folder} failed to update" ;}
+	done
+
+	local files=(git_aliases keybinndings.zsh ls_colors functions)
+	local repo="Akianonymus/dotfiles" branch="master"
+	local base_raw_url="https://raw.githubusercontent.com/${repo}/${branch}"
+	for file in "${files[@]}"; do
+			mv -f "${file}" "${file}.bak"
+			curl -Ls  "${base_raw_url}/${file}" -o "${file}" || { echo "${file} failed to update" ;}
+	done
+}
+export zsh_update

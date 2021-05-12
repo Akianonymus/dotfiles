@@ -1,0 +1,17 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - zshrc
+scope: .zshrc
+contexts:
+  main:
+    # Comments begin with a '//' and finish at the end of the line
+    - match: '#'
+      scope: punctuation.definition.comment.example-c
+      push: line_comment
+
+  line_comment:
+    - meta_scope: comment.line.example-c
+    - match: $
+      pop: true

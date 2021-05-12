@@ -1,0 +1,25 @@
+# Some git aliases
+alias ga='git add'
+alias gs='git status';
+alias gpul='git pull';
+alias gf='git fetch';
+alias grem='git remote';
+alias gremv='git remote -v';
+alias gp='git push';
+alias grev='git revert';
+alias gcp='git cherry-pick';
+alias gcpc='gcp --continue';
+alias gcpa='gcp --abort';
+alias gr='git reset';
+alias grh='gr --hard';
+alias grs='gr --soft';
+alias grb='git rebase';
+alias grbi='grb --interactive';
+alias grbc='grb --continue';
+alias grbs='grb --skip';
+alias grba='grb --abort';
+alias gd='git diff';
+alias gc='git commit';
+alias gcf='git clean -f -d'
+alias grcp='git reset && gcpc'
+alias glog='git log --oneline'
