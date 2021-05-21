@@ -49,8 +49,8 @@ main() {
     done
 
     # now symlink
-    dir_to_create=("${HOME}/.config" "${HOME}/.config/sublime-text-3/Packages" "${HOME}/.local/share" "${HOME}/.cache/zsh")
-    symlink_list=(.config/gh .config/gotop .config/kitty .config/lsd .config/sublime-text-3/Packages/User
+    dir_to_create=("${HOME}/.config" "${HOME}/.config/gh" "${HOME}/.config/sublime-text-3/Packages" "${HOME}/.local/share" "${HOME}/.cache/zsh")
+    symlink_list=(.config/gh/config.yml .config/gotop .config/kitty .config/lsd .config/sublime-text-3/Packages/User
         .local/share/fonts
         .dotfiles/misc
         .p10k.zsh .zshrc .zshenv .gitconfig)
