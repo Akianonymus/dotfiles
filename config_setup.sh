@@ -21,7 +21,11 @@ main() {
     printf '%s' "${main_repo}: "
     if [[ -d ${dotfiles_path} ]]; then
         if git -C "${dotfiles_path}" remote -v | grep -q "Akianonymus/dotfiles"; then
-            git -C "${dotfiles_path}" pull || { echo "failed to update ${main_repo}" && return 1; }
+            if git -C "${dotfiles_path}" ls-files -o -m -d | grep -q ""; then
+                echo "Error: There are some unmerged files." && return 1
+            else
+                git -C "${dotfiles_path}" pull || { echo "failed to update ${main_repo}" && return 1; }
+            fi
         else
             mv -f "${dotfiles_path}" "${dotfiles_path}.bak"
             git clone "${main_repo}" "${dotfiles_path}" --depth 2 || { echo "failed to clone ${main_repo}" && return 1; }
