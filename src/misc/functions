@@ -43,7 +43,7 @@ config_update() {
 	local repo="Akianonymus/dotfiles" branch="master"
 	local base_raw_url="https://raw.githubusercontent.com/${repo}/${branch}/config_setup.sh"
 	local script
-	if script="${curl --fail-with-body -Ls "${base_raw_url}"}"; then
+	if script="$(curl --fail-with-body -Ls "${base_raw_url}")"; then
 		printf "%s\n" "${script}" | bash -s
 	else
 		echo "Cannot fetch update script." && return 1
