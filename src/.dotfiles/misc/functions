@@ -39,19 +39,14 @@ shl() {
 }
 export shl
 
-zsh_update() {
-	local plugins=(fast-syntax-highlighting fzf-tab zsh-autosuggestions)
-	cd ~/.zsh || return 1
-	for plugin in "${plugins[@]}"; do
-			git -C "${folder}" pull || { echo "${folder} failed to update" ;}
-	done
-
-	local files=(git_aliases keybinndings.zsh ls_colors functions)
+config_update() {
 	local repo="Akianonymus/dotfiles" branch="master"
-	local base_raw_url="https://raw.githubusercontent.com/${repo}/${branch}"
-	for file in "${files[@]}"; do
-			mv -f "${file}" "${file}.bak"
-			curl -Ls  "${base_raw_url}/${file}" -o "${file}" || { echo "${file} failed to update" ;}
-	done
+	local base_raw_url="https://raw.githubusercontent.com/${repo}/${branch}/config_setup.sh"
+	local script
+	if script="${curl --fail-with-body -Ls "${base_raw_url}"}"; then
+		printf "%s\n" "${script}" | bash -s
+	else
+		echo "Cannot fetch update script." && return 1
+	fi
 }
-export zsh_update
+export config_update
