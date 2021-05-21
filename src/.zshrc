@@ -5,10 +5,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-zsh_config_folder="${HOME:?}/.dotfiles"
+zsh_plugin_folder="${HOME:?}/.zsh"
 
 # End of lines configured by zsh-newuser-install
-[[ -f ${zsh_config_folder}/powerlevel10k/powerlevel10k.zsh-theme ]] && source "${zsh_config_folder}/powerlevel10k/powerlevel10k.zsh-theme"
+[[ -f ${zsh_plugin_folder}/powerlevel10k/powerlevel10k.zsh-theme ]] && source "${zsh_plugin_folder}/powerlevel10k/powerlevel10k.zsh-theme"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
@@ -29,32 +29,28 @@ setopt inc_append_history        # add commands to HISTFILE in order of executio
 # enable autocomplete and set related options
 autoload -Uz compinit && compinit
 # fzf tab complition
-[[ -f ${zsh_config_folder}/fzf-tab/fzf-tab.plugin.zsh ]] && source "${zsh_config_folder}/fzf-tab/fzf-tab.plugin.zsh"
-
-# configure keybindings
-[[ -f ${zsh_config_folder}/keybindings.zsh ]] && source "${zsh_config_folder}/keybindings.zsh"
+[[ -f ${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh ]] && source "${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh"
 
 # fish like auto suggestions for zsh
-[[ -f ${zsh_config_folder}/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source "${zsh_config_folder}/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f ${zsh_plugin_folder}/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source "${zsh_plugin_folder}/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 # a powerful alternative for cd
 command -v zoxide > /dev/null && eval "$(zoxide init zsh)" && alias cd="z"
 
-# ls colors for ls / lsd / exa
-[[ -f ${zsh_config_folder}/misc/ls_colors ]] && source "${zsh_config_folder}/misc/ls_colors"
+misc_stuff_folder="${HOME:?}/.dotfiles/src/misc"
+files_to_source=(ls_colors keybindings.zsh git_aliases functions)
+for f in "${files_to_source[@]}"; do
+	source "${misc_stuff_folder}/${f}"
+done
+
+# use lsd if available
 command -v lsd >/dev/null && alias ls='lsd'
 alias l='ls -l' \
 	la='ls -a' \
 	lla='ls -la' \
 	lt='ls --tree'
 
-# source the git aliases
-[[ -f ${zsh_config_folder}/misc/git_aliases ]] && source "${zsh_config_folder}/misc/git_aliases"
-
-# some functions for stuff
-[[ -f ${zsh_config_folder}/misc/functions ]] && source "${zsh_config_folder}/misc/functions"
-
 { command -v nvim >/dev/null && export EDITOR=nvim ;} || export EDITOR="nano"
 
 # should be sourced at last to avoid startup delays
-[[ -f ${zsh_config_folder}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]] && source "${zsh_config_folder}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+[[ -f ${zsh_plugin_folder}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]] && source "${zsh_plugin_folder}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"

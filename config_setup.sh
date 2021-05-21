@@ -5,9 +5,9 @@ main() {
         command -v "${cmd}" >| /dev/null || { echo "${cmd} not available." && exit 1; }
     done
     local current_dir="${PWD}"
-    local path="${HOME}/.dotfiles"
+    local dotfiles_path="${HOME}/.dotfiles"
+    local zsh_stuff="${HOME}/.zsh"
     local main_repo="https://github.com/Akianonymus/dotfiles"
-    local dotfiles_path="${path}/dotfiles"
     local repos=(
         https://github.com/romkatv/powerlevel10k
         https://github.com/zdharma/fast-syntax-highlighting
@@ -15,8 +15,9 @@ main() {
         https://github.com/zsh-users/zsh-autosuggestions
     )
 
-    mkdir -p "${path}" || return 1
-    cd "${path}" || return 1
+    mkdir -p "${dotfiles_path}"
+    mkdir -p "${zsh_stuff}"
+    cd "${dotfiles_path}" || return 1
 
     printf '%s' "${main_repo}: "
     if [[ -d ${dotfiles_path} ]]; then
@@ -35,6 +36,7 @@ main() {
         git clone "${main_repo}" "${dotfiles_path}" --depth 2 || { echo "failed to clone ${main_repo}" && return 1; }
     fi
 
+    cd "${zsh_stuff}" || return 1
     for repo in "${repos[@]}"; do
         repo_path="${repo##*/}"
         printf '%s' "${repo_path}: "
@@ -53,10 +55,9 @@ main() {
     done
 
     # now symlink
-    dir_to_create=("${HOME}/.config" "${HOME}/.config/gh" "${HOME}/.config/sublime-text-3/Packages" "${HOME}/.local/share" "${HOME}/.cache/zsh")
+    dir_to_create=("${HOME}/.bin" "${HOME}/.config" "${HOME}/.config/gh" "${HOME}/.config/sublime-text-3/Packages" "${HOME}/.local/share" "${HOME}/.cache/zsh")
     symlink_list=(.config/gh/config.yml .config/gotop .config/kitty .config/lsd .config/sublime-text-3/Packages/User
         .local/share/fonts
-        .dotfiles/misc
         .p10k.zsh .zshrc .zshenv .gitconfig)
     mkdir -p "${dir_to_create[@]}"
     cd "${dotfiles_path}/src" || return 1
