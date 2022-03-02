@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # properly bind keys
 ## create a zkbd compatible hash;
 ## to add other keys to this hash, see: man 5 terminfo

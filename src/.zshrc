@@ -5,7 +5,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-zsh_plugin_folder="${HOME:?}/.zsh"
+local zsh_plugin_folder="${HOME:?}/.zsh"
 
 # End of lines configured by zsh-newuser-install
 [[ -f ${zsh_plugin_folder}/powerlevel10k/powerlevel10k.zsh-theme ]] && source "${zsh_plugin_folder}/powerlevel10k/powerlevel10k.zsh-theme"
@@ -38,9 +38,10 @@ autoload -Uz compinit && compinit
 command -v zoxide > /dev/null && eval "$(zoxide init zsh)" && alias cd="z"
 
 misc_stuff_folder="${HOME:?}/.dotfiles/src/misc"
-files_to_source=(ls_colors keybindings.zsh git_aliases functions)
+files_to_source=(ls_colors.sh keybindings.zsh git_aliases.sh functions.sh)
 for f in "${files_to_source[@]}"; do
-	source "${misc_stuff_folder}/${f}"
+	pp="${misc_stuff_folder}/${f}"
+	[[ -f ${pp} ]] && source "${pp}"
 done
 
 # use lsd if available
