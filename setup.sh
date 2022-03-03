@@ -5,9 +5,13 @@ main() {
 
 	[[ $EUID -eq 0 ]] && exit 1
 
-	_=$(grep -E 'Arch Linux|EndeavourOS' /etc/os-release)
-	case "${?}" in
-	0)
+	decalre os=""
+
+	{ grep -qE 'Arch Linux|EndeavourOS' /etc/os-release 2>/dev/null && os=arch; } ||
+		{ [[ -n ${TERMUX_VERSION} ]] && os=termux; } || :
+
+	case "${os}" in
+	arch)
 		packages=(aria2
 			auto-cpufreq
 			baka-mplayer base-devel bat
@@ -34,20 +38,12 @@ main() {
 		yay --noconfirm --norebuild -S "${packages[@]}"
 		chsh -s "$(chsh -l zsh | grep -m 1 zsh)"
 
-		# setup zsh and other configs
-		bash config_setup.sh || return 1
-		;;
-	*)
-		echo "Not arch linux" && exit 1
-		;;
-	esac
+		# get rid of system beep
+		sudo rmmod pcspkr snd_pcsp &>/dev/null
+		printf "blacklist pcspkr\nblacklist snd_pcsp" | sudo tee /etc/modprobe.d/nobeep.conf 1>/dev/null
 
-	# get rid of system beep
-	sudo rmmod pcspkr snd_pcsp &>/dev/null
-	printf "blacklist pcspkr\nblacklist snd_pcsp" | sudo tee /etc/modprobe.d/nobeep.conf 1>/dev/null
-
-	# https://man.archlinux.org/man/libinput.4
-	printf 'Section "InputClass"
+		# https://man.archlinux.org/man/libinput.4
+		printf 'Section "InputClass"
     Identifier "libinput touchpad catchall"
     MatchIsTouchpad "on"
     MatchDevicePath "/dev/input/event*"
@@ -67,7 +63,33 @@ main() {
     Option "ScrollMethod" "twofinger"
     Option "ScrollPixelDistance" "30"
 EndSection\n' | sudo tee /etc/X11/xorg.conf.d/40-libinput.conf 1>/dev/null
+		;;
+	termux)
+		packages=(
+			aria2
+			bat
+			fd fzf
+			git git-delta gh gotop
+			htop-legacy
+			jq
+			lsd
+			neovim
+			ripgrep
+			zoxide zsh
+		)
+		pkg upgrade
+		# install packages
+		pkg install "${packages[@]}"
 
+		chsh -s zsh
+		;;
+	*)
+		echo "Not supported linux." && exit 1
+		;;
+	esac
+
+	# setup zsh and other configs
+	bash config_setup.sh "${os}" || return 1
 }
 
 main "${@}" || exit 1

@@ -62,6 +62,26 @@ main() {
 	handle_repo "https://github.com/NvChad/NvChad" ~/.config/nvim 'NvChad/NvChad' || return 1
 	mkdir -p ~/.config/nvim/lua
 	ln -sfr .config/nvim/lua/custom ~/.config/nvim/lua/
+
+	# handle termux stuff
+	[[ ${1:-} = arch ]] || {
+		[[ -n ${TERMUX_VERSION} ]] || return 0
+
+		mkdir -p "${HOME}/.termux"
+		symlink_list=(
+			.termux/colors.properties
+			.termux/dark
+			.termux/font.ttf
+			.termux/light
+			.termux/termux.properties
+		)
+
+		for symlink in "${symlink_list[@]}"; do
+			full_path="${HOME}/${symlink}"
+			[[ -d ${full_path} || -f ${full_path} ]] && mv -f "${full_path}" "${full_path}.bak"
+			ln -sfr "${symlink}" "${full_path}"
+		done
+	}
 }
 
-main || exit 1
+main "${@}" || exit 1
