@@ -68,3 +68,13 @@ conservation_mode() {
 	echo "Conservation mode ${status}"
 }
 export conservation_mode
+
+addsshkey() {
+	local key="${1:?1. Give key path}"
+	[[ -r ${key} && -r ${key}.pub ]] || {
+		echo "Error: Cannot read given key file."
+	}
+	eval "$(ssh-agent -s)" &&
+		ssh-add "${key}"
+}
+export addsshkey
