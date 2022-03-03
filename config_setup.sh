@@ -40,6 +40,10 @@ main() {
 		handle_repo "${repo}" || return 1
 	done
 
+	handle_repo "https://github.com/NvChad/NvChad" ~/.config/nvim 'NvChad/NvChad' || return 1
+
+	[[ ${1} = skip ]] && return 0
+
 	# now symlink
 	# create dirs
 	mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,htop,kitty,lsd},.local/share/fonts,.cache/zsh}
@@ -59,7 +63,6 @@ main() {
 	done
 
 	# handle neovim stuff
-	handle_repo "https://github.com/NvChad/NvChad" ~/.config/nvim 'NvChad/NvChad' || return 1
 	mkdir -p ~/.config/nvim/lua
 	ln -sfr .config/nvim/lua/custom ~/.config/nvim/lua/
 

@@ -42,30 +42,30 @@ shl() {
 export shl
 
 config_update() {
-	local repo="Akianonymus/dotfiles" branch="master"
-	local base_raw_url="https://raw.githubusercontent.com/${repo}/${branch}/config_setup.sh"
-	local script
-	if script="$(curl --fail-with-body -Ls "${base_raw_url}")"; then
-		printf "%s\n" "${script}" | bash -s
-	else
-		echo "Cannot fetch update script." && return 1
-	fi
+	[[ -d ${HOME}/.dotfiles ]] || return 1
+	cd "${HOME}/.dotfiles" || return 1
+	bash config_setup.sh skip
+	cd - || return 1
 }
 export config_update
 
+# toggle conservation mode
 conservation_mode() {
-	local status="Disabled" mode="0" node='/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
+	local sstatus="" mode="" node='/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
+
 	[[ -f ${node} ]] || { echo "No node for conservation mode." && return 1; }
+	if grep -q 1 "${node}"; then
+		sstatus="Disabled" mode=0
+	else
+		sstatus="Enabled" mode=1
+	fi
+
 	[[ -w ${node} ]] || {
 		echo "Enter sudo passwd"
-		sudo chown -R "$(whoami):$(whoami)" "${node}" || {
-			echo "Conservation mode ${status}"
-			return 1
-		}
+		sudo chown -R "$(whoami):$(whoami)" "${node}" || return 1
 	}
-	grep -q 1 "${node}" && status="Enabled" && mode="1"
-	echo "${mode}" | sudo tee "${node}"
-	echo "Conservation mode ${status}"
+	echo "${mode}" | sudo tee "${node}" >/dev/null
+	echo "Conservation mode ${sstatus}"
 }
 export conservation_mode
 

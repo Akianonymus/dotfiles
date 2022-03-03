@@ -12,7 +12,7 @@ M.options = {
 }
 
 M.ui = {
-   theme = "tokyonight", -- default theme
+   theme = "tokyodark", -- default theme
 }
 
 M.plugins = {

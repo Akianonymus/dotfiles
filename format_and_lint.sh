@@ -36,6 +36,15 @@ else
 	printf 'Check https://www.shellcheck.net/ or https://github.com/koalaman/shellcheck\n\n'
 fi
 
+if command -v stylua >|/dev/null; then
+	printf "Formatting lua files with stylua.. \n"
+	find . -name "*.lua" -exec stylua {} \;
+	format_status="${?:-0}"
+	printf "\n"
+else
+	printf 'Install stylua to format lua files\n'
+fi
+
 case "${format_status}" in
 1) printf "Error: Some files not formatted succesfully.\n" ;;
 esac

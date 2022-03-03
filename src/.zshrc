@@ -55,3 +55,11 @@ alias l='ls -l' \
 
 # should be sourced at last to avoid startup delays
 [[ -f ${zsh_plugin_folder}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]] && source "${zsh_plugin_folder}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+
+# blur if kitty terminal opened
+if [[ $(ps --no-header -p $PPID -o comm) =~ '^yakuake|kitty$' ]]; then
+        for wid in $(xdotool search --pid $PPID); do
+            xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id $wid; done
+fi
+
+[[ -f "${HOME}/.gdrive-downloader/gdl" && -x "${HOME}/.gdrive-downloader/gdl" ]] && PATH="${HOME}/.gdrive-downloader:${PATH}"
