@@ -13,4 +13,6 @@ vim.defer_fn(function()
    vim.cmd [[autocmd BufWinEnter * lua require('custom.utils').enable_folding()]]
 
    vim.cmd "hi! Folded guifg=#fff"
+
+   vim.cmd "silent! command Sudowrite lua require('custom.utils').sudo_write()"
 end, 0)
