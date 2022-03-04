@@ -1,8 +1,95 @@
-yay -S bash-language-server \
-    luacheck lua-language-server \
-    prettierd pyright \
-    rust-analyzer \
-    stylua \
-    tree-sitter-git \
-    vscode-langservers-extracted
-sudo npm install -g emmet-ls
+#!/usr/bin/env bash
+declare os=""
+
+{ grep -qE 'Arch Linux|EndeavourOS' /etc/os-release 2> /dev/null && os=arch; } ||
+    { [[ -n ${TERMUX_VERSION} ]] && os=termux; } || :
+
+if [[ ${os} = 'arch' ]]; then
+    _c() { yay --noconfirm --norebuild -S clang; }
+
+    _bash() { yay --noconfirm --norebuild -S shellcheck-bin shfmt && sudo npm install -g bash-language-server; }
+
+    _lua() { yay --noconfirm --norebuild -S luacheck lua-language-server stylua-bin; }
+
+    _python() { sudo npm install -g pyright; }
+
+    _rust() { yay --noconfirm --norebuild -S rust rust-analyzer; }
+
+    _treesitter() { yay --noconfirm --norebuild -S tree-sitter-git; }
+
+    _web() { sudo npm install -g emmet-ls @fsouza/prettierd vscode-langservers-extracted; }
+
+elif [[ ${os} = 'termux' ]]; then
+    _c() { pkg install clang; }
+
+    _bash() {
+        pkg install shfmt
+        npm update -g bash-language-server
+
+        # install shellcheck
+        ldir="$(mktemp -d)"
+        {
+            (
+                cd "${ldir}"
+                wget -O shellcheck.tar.xz https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.aarch64.tar.xz
+                tar -xf shellcheck.tar.xz
+                cp shellcheck-v0.8.0/shellcheck "${HOME}/.bin/shellcheck_binary"
+            ) || return 1
+            rm -rf "${ldir}"
+            printf "%s\n%s\n" "#\!/usr/bin/env sh" \
+                "[ -x \"\${HOME}/.bin/shellcheck_binary\" ] && su -c \"\${HOME}/.bin/shellcheck_binary\" \"\${@}\"" >| "${HOME}/.bin/shellcheck"
+        } || { rm -rf "${ldir}" && return 1; }
+    }
+
+    _lua() { pkg install luarocks lua-language-server stylua && luarocks install luacheck; }
+
+    _python() { npm update -g pyright; }
+
+    _rust() { pkg install rust rust-analyzer; }
+
+    _treesitter() {
+        ldir="$(mktemp -d)"
+        {
+            (
+                cd "${ldir}"
+                wget -O ts.zip https://github.com/tree-sitter/tree-sitter/archive/refs/heads/master.zip
+                unzip ts.zip
+                (
+                    cd tree-sitter-master/cli
+                    cargo build --release -j 4
+                ) &&
+                    cp target/release/tree-sitter "${HOME}/.bin/tree-sitter"
+            ) || return 1
+            rm -rf "${ldir}"
+        } || { rm -rf "${ldir}" && return 1; }
+    }
+
+    _web() { npm update -g emmet-ls @fsouza/prettierd vscode-langservers-extracted; }
+else
+    exit 0
+fi
+
+_FUNCTIONS=(c bash lua python rust treesitter web)
+
+main() {
+    set -o noclobber -o pipefail
+
+    if [[ ${1} = "all" ]]; then
+        for i in "${_FUNCTIONS[@]}"; do
+            "_${i}"
+        done
+    else
+        for j in "${@}"; do
+            for i in "${_FUNCTIONS[@]}"; do
+                [[ ${j} = "${i}" ]] && {
+                    "_${i}"
+                    break
+                }
+            done
+        done
+    fi
+
+    return 0
+}
+
+main "${@}" || exit 1
