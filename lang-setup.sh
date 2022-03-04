@@ -58,7 +58,7 @@ elif [[ ${os} = 'termux' ]]; then
                     cd tree-sitter-master/cli
                     cargo build --release -j 4
                 ) &&
-                    cp target/release/tree-sitter "${HOME}/.bin/tree-sitter"
+                    cp tree-sitter-master/target/release/tree-sitter "${HOME}/.bin/tree-sitter"
             ) || return 1
             rm -rf "${ldir}"
         } || { rm -rf "${ldir}" && return 1; }
