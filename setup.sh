@@ -63,6 +63,10 @@ main() {
     Option "ScrollMethod" "twofinger"
     Option "ScrollPixelDistance" "30"
 EndSection\n' | sudo tee /etc/X11/xorg.conf.d/40-libinput.conf 1> /dev/null
+
+            # enable experimental bluetooth features - to enable battery info
+            sed -E -e "s/^#+?[[:space:]]+?Experimental[[:space:]]+?=[[:space:]]+?false/Experimental = true/" \
+                /etc/bluetooth/main.conf | sudo tee /etc/bluetooth/main.conf
             ;;
         termux)
             packages=(
