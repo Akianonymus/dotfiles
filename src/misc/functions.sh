@@ -44,7 +44,7 @@ export shl
 config_update() {
 	[[ -d ${HOME}/.dotfiles ]] || return 1
 	cd "${HOME}/.dotfiles" || return 1
-	bash config_setup.sh skip
+	bash config_setup.sh
 	cd - || return 1
 }
 export config_update

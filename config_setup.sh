@@ -42,8 +42,6 @@ main() {
 
 	handle_repo "https://github.com/NvChad/NvChad" ~/.config/nvim 'NvChad/NvChad' || return 1
 
-	[[ ${1} = skip ]] && return 0
-
 	# now symlink
 	# create dirs
 	mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd},.local/share/fonts,.cache/zsh}
