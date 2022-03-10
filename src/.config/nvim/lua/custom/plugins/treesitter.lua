@@ -23,7 +23,6 @@ local setup = function()
       highlight = {
          enable = true,
          use_languagetree = true,
-         additional_vim_regex_highlighting = true,
       },
       indent = { enable = true },
       matchup = { enable = true },
