@@ -90,7 +90,9 @@ M.mappings = { -- terminal related mappings
    },
 }
 M.mappings.plugins = {
-
+   better_escape = {
+      esc_insertmode = { "jk", "JK" }, -- multiple mappings allowed
+   },
    telescope = {
       find_files = nil,
       find_hiddenfiles = "<leader>ff",
