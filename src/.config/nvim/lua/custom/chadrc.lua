@@ -29,7 +29,7 @@ M.plugins = {
          style = "arrow",
       },
    },
-   install = require "custom.plugins",
+   install = "custom.plugins",
    default_plugin_remove = {},
 }
 
