@@ -2,14 +2,8 @@ local config = require("core.utils").load_config()
 local maps = config.mappings
 local plugin_maps = maps.plugins
 
-local map_wrapper = require("core.utils").map
-local map = function(...)
-   local keys = select(2, ...)
-   if not keys or keys == "" then
-      return
-   end
-   map_wrapper(...)
-end
+-- local map_wrapper = require("core.utils").map
+local map = vim.keymap.set
 
 local M = {}
 

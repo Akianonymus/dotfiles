@@ -60,7 +60,7 @@ local setup_lsp = function()
       local function buf_set_option(...)
          vim.api.nvim_buf_set_option(bufnr, ...)
       end
-      if client.name == "html" then
+      if client.name == "html" or client.name == "sumneko_lua" then
          client.resolved_capabilities.document_formatting = false
          client.resolved_capabilities.document_range_formatting = false
       end
