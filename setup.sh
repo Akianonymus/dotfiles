@@ -16,13 +16,13 @@ main() {
                 auto-cpufreq
                 baka-mplayer base-devel bat
                 fd fzf firefox
-                git git-delta-git github-cli gotop
+                git git-delta-git github-cli gotop-bin
                 htop
                 jq
                 kitty
                 lsd
                 mpv
-                neovim-nightly-bin
+                neovim
                 ripgrep
                 touche touchegg
                 zoxide zsh)

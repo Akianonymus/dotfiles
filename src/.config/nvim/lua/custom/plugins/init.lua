@@ -1,17 +1,13 @@
-local plugin_settings = require("core.utils").load_config().plugins
-
 return {
-   {
-      "stevearc/dressing.nvim",
-      disable = false,
+   ["stevearc/dressing.nvim"] = {
       opt = true,
       setup = function()
          require("core.utils").packer_lazy_load("dressing.nvim", 500)
       end,
    },
-   { "kevinhwang91/nvim-bqf", ft = "qf" },
-   {
-      "folke/trouble.nvim",
+   ["kevinhwang91/nvim-bqf"] = { ft = "qf" },
+
+   ["folke/trouble.nvim"] = {
       module = "trouble",
       requires = "kyazdani42/nvim-web-devicons",
       config = function()
@@ -21,24 +17,34 @@ return {
          }
       end,
    },
-   {
-      "jose-elias-alvarez/null-ls.nvim",
-      disable = plugin_settings.status.null_ls and true,
+   ["neovim/nvim-lspconfig"] = {
+      opt = true,
+      module = "lspconfig",
+      config = function()
+         require "custom.plugins.lspconfig"
+      end,
+      setup = function()
+         require("core.utils").packer_lazy_load "nvim-lspconfig"
+         -- reload the current file so lsp actually starts for it
+         vim.defer_fn(function()
+            vim.cmd 'if &ft == "packer" | echo "" | else | silent! e %'
+         end, 0)
+      end,
+   },
+   ["jose-elias-alvarez/null-ls.nvim"] = {
       after = "nvim-lspconfig",
       config = function()
          require("custom.plugins.null-ls").setup()
       end,
    },
-   { "folke/lua-dev.nvim", ft = "lua" },
-   {
-      "nacro90/numb.nvim",
+   ["folke/lua-dev.nvim"] = { ft = "lua" },
+   ["nacro90/numb.nvim"] = {
       event = "CmdlineEnter",
       config = function()
          require("numb").setup()
       end,
    },
-   {
-      "haringsrob/nvim_context_vt",
+   ["haringsrob/nvim_context_vt"] = {
       opt = true,
       config = function()
          require("nvim_context_vt").setup()
@@ -48,8 +54,17 @@ return {
       end,
    },
    -- telescope
-   {
-      "nvim-telescope/telescope-fzf-native.nvim",
+   ["nvim-telescope/telescope.nvim"] = {
+      setup = function()
+         -- load default mappings first
+         require("core.mappings").telescope()
+
+         -- then load your mappings
+         local map = require("core.utils").map
+         map("n", "<leader>ff", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>")
+      end,
+   },
+   ["nvim-telescope/telescope-fzf-native.nvim"] = {
       run = "make",
       after = "telescope.nvim",
       config = function()
@@ -59,8 +74,7 @@ return {
          require("core.utils").packer_lazy_load("telescope.nvim", 1000)
       end,
    },
-   {
-      "hrsh7th/cmp-cmdline",
+   ["hrsh7th/cmp-cmdline"] = {
       after = "nvim-cmp",
       config = function()
          local cmp = require "cmp"
@@ -81,8 +95,7 @@ return {
          require("core.utils").packer_lazy_load "nvim-cmp"
       end,
    },
-   {
-      "ggandor/lightspeed.nvim",
+   ["ggandor/lightspeed.nvim"] = {
       opt = true,
       config = function()
          require("lightspeed").setup {
@@ -94,8 +107,7 @@ return {
          require("core.utils").packer_lazy_load "lightspeed.nvim"
       end,
    },
-   {
-      "VonHeikemen/searchbox.nvim",
+   ["VonHeikemen/searchbox.nvim"] = {
       module = "searchbox",
       command = "SearchBox",
       requires = {
@@ -105,8 +117,7 @@ return {
          require("custom.mappings").searchbox()
       end,
    },
-   {
-      "windwp/nvim-spectre",
+   ["windwp/nvim-spectre"] = {
       module = "spectre",
       command = "FindReplace",
       config = function()
@@ -118,13 +129,6 @@ return {
       end,
       setup = function()
          vim.cmd 'silent! command FindReplace lua require("spectre").open({})'
-      end,
-   },
-   {
-      "anuvyklack/pretty-fold.nvim",
-      config = function()
-         require("pretty-fold").setup {}
-         require("pretty-fold.preview").setup()
       end,
    },
 }

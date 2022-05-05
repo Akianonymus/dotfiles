@@ -1,8 +1,13 @@
 local M = {}
 
 M.options = {
-   tabstop = 4,
-   undofile = false,
+   user = function()
+      local opt = vim.opt
+      -- local g = vim.g
+
+      opt.tabstop = 4
+      opt.undofile = false
+   end,
 
    nvChad = {
       -- update_url = "https://github.com/Akianonymus/NvChad",
@@ -16,12 +21,6 @@ M.ui = {
 }
 
 M.plugins = {
-   -- enable/disable plugins (false for disable)
-
-   status = {
-      colorizer = true, -- color RGB, HEX, CSS, NAME color codes
-      snippets = true,
-   },
    options = {
       statusline = {
          -- truncate statusline on small screens
@@ -29,22 +28,28 @@ M.plugins = {
          style = "arrow",
       },
    },
-   install = "custom.plugins",
-   default_plugin_remove = {},
+   remove = {
+      "neovim/nvim-lspconfig",
+      "williamboman/nvim-lsp-installer",
+   },
+   user = "custom.plugins",
 }
 
-M.plugins.default_plugin_config_replace = {
-   autopairs = { check_ts = true },
-   feline = {
+M.plugins.override = {
+   ["max397574/better-escape.nvim"] = {
+      mapping = { "jk", "JK", "Jk" }, -- a table with mappings to use
+   },
+   ["windwp/nvim-autopairs"] = { check_ts = true },
+   ["feline-nvim/feline.nvim"] = {
       lsp_icon = {
          provider = function()
             return next(vim.lsp.buf_get_clients()) and "  LSP" or ""
          end,
       },
    },
-   lspconfig = "custom.plugins.lspconfig",
-   nvim_treesitter = "custom.plugins.treesitter",
-   telescope = {
+   ["neovim/nvim-lspconfig"] = "custom.plugins.lspconfig",
+   ["nvim-treesitter/nvim-treesitter"] = "custom.plugins.treesitter",
+   ["nvim-telescope/telescope.nvim"] = {
       defaults = {
          file_ignore_patterns = { "node_modules/", ".git/" },
          history = {
@@ -61,7 +66,7 @@ M.plugins.default_plugin_config_replace = {
          },
       },
    },
-   nvim_colorizer = {
+   ["NvChad/nvim-colorizer.lua"] = {
       user_default_options = {
          names = false, -- "Name" codes like Blue
          RRGGBBAA = true, -- #RRGGBBAA hex codes
@@ -74,7 +79,7 @@ M.plugins.default_plugin_config_replace = {
          mode = "background", -- Set the display mode.
       },
    },
-   signature = {
+   ["ray-x/lsp_signature.nvim"] = {
       doc_lines = 2,
       floating_window_above_cur_line = true,
       -- floating_window_off_x = 10,
@@ -84,19 +89,13 @@ M.plugins.default_plugin_config_replace = {
 }
 
 M.mappings = { -- terminal related mappings
-   terminal = {
-      -- get out of terminal mode and hide it
-      esc_hide_termmode = { "jjj" },
-   },
+   misc = function()
+      -- local map = require("core.utils").map
+      -- vim.keymap.del("n" , "<leader>fa")
+   end,
 }
+
 M.mappings.plugins = {
-   better_escape = {
-      esc_insertmode = { "jk", "JK" }, -- multiple mappings allowed
-   },
-   telescope = {
-      find_files = nil,
-      find_hiddenfiles = "<leader>ff",
-   },
    lspconfig = {
       declaration = "gD",
       definition = "gd",

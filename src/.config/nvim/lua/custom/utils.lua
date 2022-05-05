@@ -60,6 +60,7 @@ function M.sudo_exec(cmd, print_output)
    end
    return true
 end
+
 -- write to a file using sudo
 function M.sudo_write(filepath, tmpfile)
    if not tmpfile then

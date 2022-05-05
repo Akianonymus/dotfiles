@@ -39,10 +39,26 @@ M.setup = function()
       sources = sources,
       on_attach = function(client, bufnr)
          if client.resolved_capabilities.document_formatting then
-            vim.cmd "autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()"
+            local map = require("core.utils").map
+            local buf_k = function(mo, k, c)
+               map(mo, k, c, { buffer = bufnr })
+            end
             local m = require("core.utils").load_config().mappings.plugins.lspconfig
-            vim.api.nvim_buf_set_keymap(bufnr, "n", m.formatting, "<cmd>lua vim.lsp.buf.formatting_sync()<CR>", {})
-            vim.api.nvim_buf_set_keymap(bufnr, "v", m.formatting, "<cmd>lua vim.lsp.buf.range_formatting()<CR>", {})
+            if client.resolved_capabilities.document_formatting then
+               buf_k("n", m.formatting, function()
+                  vim.lsp.buf.formatting_sync()
+               end)
+               buf_k("v", m.formatting, function()
+                  vim.lsp.buf.range_formatting()
+               end)
+            end
+
+            vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+               buffer = bufnr,
+               callback = function()
+                  vim.lsp.buf.formatting_sync()
+               end, -- Or myvimfun
+            })
          end
       end,
    }

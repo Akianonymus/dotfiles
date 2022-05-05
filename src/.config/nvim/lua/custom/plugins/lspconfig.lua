@@ -57,16 +57,10 @@ local setup_lsp = function()
    }
 
    local on_attach = function(client, bufnr)
-      local function buf_set_option(...)
-         vim.api.nvim_buf_set_option(bufnr, ...)
-      end
       if client.name == "html" or client.name == "sumneko_lua" then
          client.resolved_capabilities.document_formatting = false
          client.resolved_capabilities.document_range_formatting = false
       end
-      -- Enable completion triggered by <c-x><c-o>
-      buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
-
       require("custom.mappings").lspconfig(client, bufnr)
    end
    local lspconfig = require "lspconfig"
@@ -99,6 +93,9 @@ local setup_lsp = function()
       },
       settings = {
          Lua = {
+            diagnostics = {
+               globals = { "vim" },
+            },
             runtime = {
                version = "LuaJIT",
                -- path = runtime_path,
