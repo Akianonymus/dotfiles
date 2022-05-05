@@ -131,4 +131,10 @@ return {
          vim.cmd 'silent! command FindReplace lua require("spectre").open({})'
       end,
    },
+   ["kyazdani42/nvim-tree.lua"] = {
+      config = function()
+         require "plugins.configs.nvimtree"
+         vim.g.nvim_tree_show_icons = vim.tbl_deep_extend("force", vim.g.nvim_tree_show_icons, { folder_arrows = 0 })
+      end,
+   },
 }

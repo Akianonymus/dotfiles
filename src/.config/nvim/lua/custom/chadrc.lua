@@ -86,6 +86,16 @@ M.plugins.override = {
       -- floating_window_off_y = 10,
       fix_pos = false,
    },
+   ["kyazdani42/nvim-tree.lua"] = {
+      view = {
+         hide_root_folder = false,
+      },
+      renderer = {
+         indent_markers = {
+            enable = true,
+         },
+      },
+   },
 }
 
 M.mappings = { -- terminal related mappings
