@@ -5,17 +5,31 @@ declare os=""
     { [[ -n ${TERMUX_VERSION} ]] && os=termux; } || :
 
 if [[ ${os} = 'arch' ]]; then
-    _c() { yay --noconfirm --norebuild -S clang; }
+    declare yay_c=(yay --noconfirm --norebuild --noredownload -S)
+    yay_install() {
+        for p in "${@}"; do
+            declare ver=''
+            if ver="$(pacman -Qs "^${p}$")"; then
+                ver="$(head -n 1 <<< "${ver}" | sed "s|.*${p} ||g")"
+                if yay -Ss "${p}" | grep -q "${p} ${ver}"; then
+                    echo "${p}" latest version already installed.
+                    continue
+                fi
+            fi
+            "${yay_c[@]}" "${p}"
+        done
+    }
+    _c() { yay_install clang; }
 
-    _bash() { yay --noconfirm --norebuild -S shellcheck-bin shfmt && sudo npm install -g bash-language-server; }
+    _bash() { yay_install shellcheck-bin shfmt && sudo npm install -g bash-language-server; }
 
-    _lua() { yay --noconfirm --norebuild -S luacheck lua-language-server stylua-bin; }
+    _lua() { yay_install luacheck lua-language-server stylua; }
 
     _python() { sudo npm install -g pyright; }
 
-    _rust() { yay --noconfirm --norebuild -S rust rust-analyzer; }
+    _rust() { yay_install rust rust-analyzer; }
 
-    _treesitter() { yay --noconfirm --norebuild -S tree-sitter-git; }
+    _treesitter() { yay_install tree-sitter-git; }
 
     _web() { sudo npm install -g emmet-ls @fsouza/prettierd vscode-langservers-extracted; }
 
