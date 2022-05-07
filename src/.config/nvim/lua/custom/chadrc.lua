@@ -39,13 +39,6 @@ M.plugins.override = {
    },
    ["akinsho/bufferline.nvim"] = { options = { custom_areas = false } },
    ["windwp/nvim-autopairs"] = { check_ts = true },
-   ["feline-nvim/feline.nvim"] = {
-      lsp_icon = {
-         provider = function()
-            return next(vim.lsp.buf_get_clients()) and "  LSP" or ""
-         end,
-      },
-   },
    ["neovim/nvim-lspconfig"] = "custom.plugins.lspconfig",
    ["nvim-treesitter/nvim-treesitter"] = "custom.plugins.treesitter",
    ["nvim-telescope/telescope.nvim"] = {
