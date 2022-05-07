@@ -47,10 +47,18 @@ main() {
     mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd},.local/share/fonts,.cache/zsh}
     # files to be symlinked
     symlink_list=(.config/gh/config.yml .config/gotop/gotop.conf .config/kitty/kitty.conf .config/lsd/config.yaml
-        ".local/share/fonts/MesloLGS NF Italic.ttf"
-        ".local/share/fonts/MesloLGS NF Bold.ttf"
-        ".local/share/fonts/MesloLGS NF Regular.ttf"
-        ".local/share/fonts/MesloLGS NF Bold Italic.ttf"
+        '.local/share/fonts/JetBrains Mono Bold Italic Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono Bold Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono ExtBd Ita Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono ExtraBold ExBd I Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono ExtraBold ExtBd Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono Extra Bold Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono Italic Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono Medium Italic Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono Medium Med Ita Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono Medium Medium Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono Medium Nerd Font Complete.ttf'
+        '.local/share/fonts/JetBrains Mono Regular Nerd Font Complete.ttf'
         .p10k.zsh .zshrc .zshenv .gitconfig)
 
     cd "${current_dir}/src" || return 1
