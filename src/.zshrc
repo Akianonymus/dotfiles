@@ -54,7 +54,7 @@ alias l='ls -l' \
 { command -v nvim >/dev/null && export EDITOR=nvim ;} || export EDITOR="nano"
 
 # should be sourced at last to avoid startup delays
-[[ -f ${zsh_plugin_folder}/F-Sy-H/F-Sy-H.plugin.zsh ]] && source "${zsh_plugin_folder}/F-Sy-H/F-Sy-H.plugin.zsh"
+[[ -f ${zsh_plugin_folder}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]] && source "${zsh_plugin_folder}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 
 # blur if kitty terminal opened
 if [[ $(ps --no-header -p $PPID -o comm) =~ '^yakuake|kitty$' ]]; then
