@@ -28,7 +28,7 @@ main() {
     local zsh_stuff="${HOME}/.zsh"
     local repos=(
         https://github.com/romkatv/powerlevel10k
-        https://github.com/zdharma/fast-syntax-highlighting
+        https://github.com/z-shell/F-Sy-H
         https://github.com/Aloxaf/fzf-tab
         https://github.com/zsh-users/zsh-autosuggestions
     )
