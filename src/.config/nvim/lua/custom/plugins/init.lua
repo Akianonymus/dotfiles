@@ -82,6 +82,7 @@ return {
             sources = {
                { name = "buffer" },
             },
+            mapping = cmp.mapping.preset.cmdline {},
          })
          cmp.setup.cmdline(":", {
             sources = cmp.config.sources({
@@ -89,6 +90,7 @@ return {
             }, {
                { name = "cmdline" },
             }),
+            mapping = cmp.mapping.preset.cmdline {},
          })
       end,
       setup = function()

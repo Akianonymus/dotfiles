@@ -23,8 +23,6 @@ M.ui = {
 M.plugins = {
    options = {
       statusline = {
-         -- truncate statusline on small screens
-         shortline = false,
          style = "arrow",
       },
    },
@@ -39,6 +37,7 @@ M.plugins.override = {
    ["max397574/better-escape.nvim"] = {
       mapping = { "jk", "JK", "Jk" }, -- a table with mappings to use
    },
+   ["akinsho/bufferline.nvim"] = { options = { custom_areas = false } },
    ["windwp/nvim-autopairs"] = { check_ts = true },
    ["feline-nvim/feline.nvim"] = {
       lsp_icon = {
