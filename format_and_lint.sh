@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # shfmt - beautify scripts
 if command -v shfmt 1>| /dev/null; then
     printf "Beautifying scripts with shfmt... \n"
-    for i in {.,src/misc}/*.sh; do
+    for i in ./*.sh src/misc/*.sh; do
         if ! shfmt -w "${i}"; then
             printf "%s\n\n" "${i}: ERROR"
             format_status=1
@@ -21,7 +21,7 @@ fi
 # shell check - lint script
 if command -v shellcheck 1>| /dev/null; then
     printf "Linting scripts with shellcheck... \n"
-    for i in {.,src/misc}/*.sh; do
+    for i in ./*.sh src/misc/*.sh; do
         if ! shellcheck "${i}"; then
             printf "\n%s\n\n" "${i}: ERROR"
             lint_status=1
@@ -53,7 +53,7 @@ case "${lint_status}" in
     1) printf "Error: Some shellcheck warnings need to be fixed.\n" ;;
 esac
 
-if [[ "${lint_status}" = 1 || "${format_status}" = 1 ]]; then
+if [ "${lint_status}" = 1 ] || [ "${format_status}" = 1 ]; then
     exit 1
 else
     exit 0

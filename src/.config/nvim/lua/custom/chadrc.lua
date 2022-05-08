@@ -23,7 +23,7 @@ M.ui = {
 M.plugins = {
    options = {
       statusline = {
-         style = "arrow",
+         separator_style = "arrow",
       },
    },
    remove = {
@@ -79,14 +79,9 @@ M.plugins.override = {
       fix_pos = false,
    },
    ["kyazdani42/nvim-tree.lua"] = {
-      view = {
-         hide_root_folder = false,
-      },
-      renderer = {
-         indent_markers = {
-            enable = true,
-         },
-      },
+      filters = { exclude = {} },
+      view = { hide_root_folder = false },
+      renderer = { indent_markers = { enable = true } },
    },
 }
 
