@@ -3,7 +3,6 @@ vim.opt.pumheight = 30
 
 -- require "custom.profiler"
 -- require "custom.plugins"
-require("custom.mappings").misc()
 
 vim.defer_fn(function()
    -- Create directory if missing: https://github.com/jghauser/mkdir.nvim

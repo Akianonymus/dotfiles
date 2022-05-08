@@ -58,10 +58,7 @@ return {
       setup = function()
          -- load default mappings first
          require("core.mappings").telescope()
-
-         -- then load your mappings
-         local map = require("core.utils").map
-         map("n", "<leader>ff", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>")
+         require("custom.mappings").telescope()
       end,
    },
    ["nvim-telescope/telescope-fzf-native.nvim"] = {

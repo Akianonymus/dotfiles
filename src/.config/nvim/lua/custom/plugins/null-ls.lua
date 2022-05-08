@@ -43,12 +43,11 @@ M.setup = function()
             local buf_k = function(mo, k, c)
                map(mo, k, c, { buffer = bufnr })
             end
-            local m = require("core.utils").load_config().mappings.plugins.lspconfig
             if client.resolved_capabilities.document_formatting then
-               buf_k("n", m.formatting, function()
+               buf_k("n", "<leader>fm", function()
                   vim.lsp.buf.formatting_sync()
                end)
-               buf_k("v", m.formatting, function()
+               buf_k("v", "<leader>fm", function()
                   vim.lsp.buf.range_formatting()
                end)
             end

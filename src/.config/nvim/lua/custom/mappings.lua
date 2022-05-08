@@ -1,13 +1,28 @@
-local config = require("core.utils").load_config()
-local maps = config.mappings
-local plugin_maps = maps.plugins
-
 local map = require("core.utils").map
 
 local M = {}
 
 function M.lspconfig(client, bufnr)
-   local m = plugin_maps.lspconfig
+   local m = {
+      declaration = "gD",
+      definition = "gd",
+      hover = "K",
+      implementation = "gi",
+      signature_help = "gk",
+      add_workspace_folder = "<leader>wa",
+      remove_workspace_folder = "<leader>wr",
+      list_workspace_folders = "<leader>wl",
+      type_definition = "<leader>D",
+      rename = "<leader>re",
+      code_action = "<leader>ca",
+      references = "gr",
+      formatting = "<leader>fm",
+      -- diagnostics
+      workspace_diagnostics = "<leader>q",
+      buffer_diagnostics = "ge",
+      goto_prev = "[d",
+      goto_next = "]d",
+   }
    local buf_k = function(mo, k, c)
       map(mo, k, c, { buffer = bufnr })
    end
@@ -105,6 +120,10 @@ function M.searchbox()
    )
 end
 
+function M.telescope()
+   map("n", "<leader>ff", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>")
+end
+
 function M.misc()
    -- select all text in a buffer
    map("n", "<C-a>", "gg0vG$")
@@ -122,6 +141,8 @@ function M.misc()
    -- Keep matches center screen when cycling with n|N
    map("n", "n", "nzzzv")
    map("n", "N", "Nzzzv")
+   -- swap ; with :
+   map("n", ";", ":")
 end
 
 return M
