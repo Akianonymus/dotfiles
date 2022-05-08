@@ -1,19 +1,4 @@
 #!/usr/bin/env bash
-# function to change http urls to ssh and clone, works for bash and zsh
-clone() {
-    [[ -z "$1" ]] && echo "git clone needs an argument" && return 1
-    local args
-    args=(git clone)
-    for i in "$@"; do
-        case "$i" in
-            *github.com*) args+=("${i/*github.com\//git@github.com:}") ;;
-            *gitlab.com*) args+=("${i/*gitlab.com\//git@gitlab.com:}") ;;
-            *) args+=("${i}") ;;
-        esac
-    done
-    "${args[@]}"
-}
-export clone
 
 # funtion to upload to pixeldrain
 upload() {

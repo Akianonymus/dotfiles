@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Some git aliases
+alias gclone='git clone'
 alias ga='git add'
 alias gs='git status'
 alias gpul='git pull'
