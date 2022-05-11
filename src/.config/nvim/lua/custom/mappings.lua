@@ -1,4 +1,4 @@
-local map = require("core.utils").map
+local map = nvchad.map
 
 local M = {}
 

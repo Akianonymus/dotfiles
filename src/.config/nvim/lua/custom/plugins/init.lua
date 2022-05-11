@@ -2,7 +2,7 @@ return {
    ["stevearc/dressing.nvim"] = {
       opt = true,
       setup = function()
-         require("core.utils").packer_lazy_load("dressing.nvim", 500)
+         nvchad.packer_lazy_load("dressing.nvim", 500)
       end,
    },
    ["kevinhwang91/nvim-bqf"] = { ft = "qf" },
@@ -24,7 +24,7 @@ return {
          require "custom.plugins.lspconfig"
       end,
       setup = function()
-         require("core.utils").packer_lazy_load "nvim-lspconfig"
+         nvchad.packer_lazy_load "nvim-lspconfig"
          -- reload the current file so lsp actually starts for it
          vim.defer_fn(function()
             vim.cmd 'if &ft == "packer" | echo "" | else | silent! e %'
@@ -50,7 +50,7 @@ return {
          require("nvim_context_vt").setup()
       end,
       setup = function()
-         require("core.utils").packer_lazy_load("nvim_context_vt", 1000)
+         nvchad.packer_lazy_load("nvim_context_vt", 1000)
       end,
    },
    -- telescope
@@ -68,7 +68,7 @@ return {
          require("telescope").load_extension "fzf"
       end,
       setup = function()
-         require("core.utils").packer_lazy_load("telescope.nvim", 1000)
+         nvchad.packer_lazy_load("telescope.nvim", 1000)
       end,
    },
    ["hrsh7th/cmp-cmdline"] = {
@@ -91,7 +91,7 @@ return {
          })
       end,
       setup = function()
-         require("core.utils").packer_lazy_load "nvim-cmp"
+         nvchad.packer_lazy_load "nvim-cmp"
       end,
    },
    ["ggandor/lightspeed.nvim"] = {
@@ -103,7 +103,7 @@ return {
          }
       end,
       setup = function()
-         require("core.utils").packer_lazy_load "lightspeed.nvim"
+         nvchad.packer_lazy_load "lightspeed.nvim"
       end,
    },
    ["VonHeikemen/searchbox.nvim"] = {

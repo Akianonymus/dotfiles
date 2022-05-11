@@ -39,7 +39,7 @@ M.setup = function()
       sources = sources,
       on_attach = function(client, bufnr)
          if client.resolved_capabilities.document_formatting then
-            local map = require("core.utils").map
+            local map = nvchad.map
             local buf_k = function(mo, k, c)
                map(mo, k, c, { buffer = bufnr })
             end
