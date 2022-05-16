@@ -1,4 +1,4 @@
-local map = nvchad.map
+local map = vim.keymap.set
 
 local M = {}
 
@@ -120,9 +120,14 @@ function M.searchbox()
    )
 end
 
-function M.telescope()
-   map("n", "<leader>ff", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>")
-end
+M.telescope = {
+   n = {
+      ["<leader>ff"] = {
+         "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>",
+         "  find files",
+      },
+   },
+}
 
 function M.misc()
    -- select all text in a buffer

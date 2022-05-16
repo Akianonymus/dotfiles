@@ -1,8 +1,15 @@
 return {
+   ["max397574/better-escape.nvim"] = {
+      config = function()
+         require("better_escape").setup {
+            mapping = { "jk", "JK", "Jk" },
+         }
+      end,
+   },
    ["stevearc/dressing.nvim"] = {
       opt = true,
       setup = function()
-         nvchad.packer_lazy_load("dressing.nvim", 500)
+         require("custom.utils").packer_lazy_load("dressing.nvim", 500)
       end,
    },
    ["kevinhwang91/nvim-bqf"] = { ft = "qf" },
@@ -24,7 +31,7 @@ return {
          require "custom.plugins.lspconfig"
       end,
       setup = function()
-         nvchad.packer_lazy_load "nvim-lspconfig"
+         require("custom.utils").packer_lazy_load "nvim-lspconfig"
          -- reload the current file so lsp actually starts for it
          vim.defer_fn(function()
             vim.cmd 'if &ft == "packer" | echo "" | else | silent! e %'
@@ -50,15 +57,7 @@ return {
          require("nvim_context_vt").setup()
       end,
       setup = function()
-         nvchad.packer_lazy_load("nvim_context_vt", 1000)
-      end,
-   },
-   -- telescope
-   ["nvim-telescope/telescope.nvim"] = {
-      setup = function()
-         -- load default mappings first
-         require("core.mappings").telescope()
-         require("custom.mappings").telescope()
+         require("custom.utils").packer_lazy_load("nvim_context_vt", 1000)
       end,
    },
    ["nvim-telescope/telescope-fzf-native.nvim"] = {
@@ -68,7 +67,7 @@ return {
          require("telescope").load_extension "fzf"
       end,
       setup = function()
-         nvchad.packer_lazy_load("telescope.nvim", 1000)
+         require("custom.utils").packer_lazy_load("telescope.nvim", 1000)
       end,
    },
    ["hrsh7th/cmp-cmdline"] = {
@@ -91,7 +90,7 @@ return {
          })
       end,
       setup = function()
-         nvchad.packer_lazy_load "nvim-cmp"
+         require("custom.utils").packer_lazy_load "nvim-cmp"
       end,
    },
    ["ggandor/lightspeed.nvim"] = {
@@ -103,7 +102,7 @@ return {
          }
       end,
       setup = function()
-         nvchad.packer_lazy_load "lightspeed.nvim"
+         require("custom.utils").packer_lazy_load "lightspeed.nvim"
       end,
    },
    ["VonHeikemen/searchbox.nvim"] = {
@@ -128,12 +127,6 @@ return {
       end,
       setup = function()
          vim.cmd 'silent! command FindReplace lua require("spectre").open({})'
-      end,
-   },
-   ["kyazdani42/nvim-tree.lua"] = {
-      config = function()
-         require "plugins.configs.nvimtree"
-         vim.g.nvim_tree_show_icons = vim.tbl_deep_extend("force", vim.g.nvim_tree_show_icons, { folder_arrows = 0 })
       end,
    },
 }

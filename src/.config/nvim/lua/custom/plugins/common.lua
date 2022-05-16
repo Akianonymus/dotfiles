@@ -32,13 +32,31 @@ end
 function M.nvimtree()
    return {
       filters = { exclude = {} },
-      view = { hide_root_folder = false },
-      renderer = { indent_markers = { enable = true } },
+      view = { hide_root_folder = false, adaptive_size = false },
+      renderer = { indent_markers = { enable = true }, icons = { show = { folder_arrow = false } } },
    }
 end
 
 function M.treesitter()
-   return "custom.plugins.treesitter"
+   return {
+      ensure_installed = {
+         "bash",
+         "c",
+         "cpp",
+         "css",
+         "javascript",
+         "json",
+         "lua",
+         "markdown",
+         "python",
+         "vim",
+      },
+      -- autopairs = { enable = true },
+      -- context_commentstring = { enable = true },
+      highlight = { enable = true, use_languagetree = true },
+      indent = { enable = true },
+      matchup = { enable = true },
+   }
 end
 
 function M.telescope()
@@ -57,12 +75,7 @@ function M.telescope()
          file_ignore_patterns = { "node_modules/", ".git/" },
       },
       extensions = {
-         fzf = {
-            fuzzy = true, -- false will only do exact matching
-            override_generic_sorter = true, -- override the generic sorter
-            override_file_sorter = true, -- override the file sorter
-            case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-         },
+         fzf = { fuzzy = true, override_generic_sorter = true, override_file_sorter = true, case_mode = "smart_case" },
       },
    }
 end

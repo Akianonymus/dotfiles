@@ -1,6 +1,7 @@
 vim.opt.rtp:append(vim.fn.stdpath "config" .. "/lua/custom/runtime")
 vim.opt.pumheight = 30
 
+require("custom.mappings").misc()
 -- require "custom.profiler"
 -- require "custom.plugins"
 

@@ -21,21 +21,16 @@ M.ui = {
 }
 
 M.plugins = {
-   options = {
-      statusline = {
-         separator_style = "arrow",
-      },
-   },
    remove = {
       "neovim/nvim-lspconfig",
-      "williamboman/nvim-lsp-installer",
+      "folke/which-key.nvim",
+      -- "williamboman/nvim-lsp-installer",
    },
-   user = "custom.plugins",
+   user = require "custom.plugins",
 }
 
 M.plugins.override = {
    ["max397574/better-escape.nvim"] = { mapping = { "jk", "JK", "Jk" } },
-   ["akinsho/bufferline.nvim"] = { options = { custom_areas = false } },
    ["windwp/nvim-autopairs"] = { check_ts = true },
    ["NvChad/nvim-colorizer.lua"] = require("custom.plugins.common").colorizer(),
    ["neovim/nvim-lspconfig"] = require("custom.plugins.common").lspconfig(),
@@ -43,12 +38,11 @@ M.plugins.override = {
    ["kyazdani42/nvim-tree.lua"] = require("custom.plugins.common").nvimtree(),
    ["nvim-treesitter/nvim-treesitter"] = require("custom.plugins.common").treesitter(),
    ["nvim-telescope/telescope.nvim"] = require("custom.plugins.common").telescope(),
+   ["NvChad/ui"] = { tabufline = { lazyload = false }, statusline = { separator_style = "arrow" } },
 }
 
-M.mappings = { -- terminal related mappings
-   misc = function()
-      require("custom.mappings").misc()
-   end,
+M.mappings = {
+   telescope = require("custom.mappings").telescope,
 }
 
 return M
