@@ -150,6 +150,12 @@ function M.misc()
    -- use H for start of line and L for end of line
    map({ "n", "o", "x" }, "H", "0")
    map({ "n", "o", "x" }, "L", "$")
+
+   -- restore my laptop numpad home, end, page up and page down behaviour
+   map({ "", "!", "l", "t" }, "", "<Home>")
+   map({ "", "!", "l", "t" }, "", "<End>")
+   map({ "", "!", "l", "t" }, "", "<PageUP>")
+   map({ "", "!", "l", "t" }, "", "<PageDown>")
 end
 
 return M
