@@ -25,7 +25,10 @@ if [[ ${os} = 'arch' ]]; then
 
     _lua() { yay_install luacheck lua-language-server stylua; }
 
-    _python() { sudo npm install -g pyright; }
+    _python() {
+        sudo npm install -g pyright
+        sudo pip install black isort flake8
+    }
 
     _rust() { yay_install rust rust-analyzer; }
 
@@ -57,7 +60,10 @@ elif [[ ${os} = 'termux' ]]; then
 
     _lua() { pkg install luarocks lua-language-server stylua && luarocks install luacheck; }
 
-    _python() { npm update -g pyright; }
+    _python() {
+        npm update -g pyright
+        install black isort flake8
+    }
 
     _rust() { pkg install rust rust-analyzer; }
 

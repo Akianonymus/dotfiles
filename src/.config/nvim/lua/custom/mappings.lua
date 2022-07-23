@@ -81,7 +81,7 @@ function M.lspconfig(client, bufnr)
    end)
 
    buf_k("n", m.buffer_diagnostics, function()
-      if vim.diagnostic.get()[1] then
+      if vim.diagnostic.get(bufnr)[1] then
          require("trouble").open "document_diagnostics"
       else
          vim.notify "No diagnostics found."

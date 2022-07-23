@@ -11,7 +11,9 @@ local sources = {
    -- b.formatting.clang_format,
 
    -- python
-   -- b.formatting.black,
+   b.formatting.black,
+   b.formatting.isort,
+   b.diagnostics.flake8,
 
    -- rust
    b.formatting.rustfmt,
@@ -45,7 +47,7 @@ M.setup = function()
             end
             if client.resolved_capabilities.document_formatting then
                buf_k("n", "<leader>fm", function()
-                  vim.lsp.buf.formatting_sync()
+                  vim.lsp.buf.formatting()
                end)
                buf_k("v", "<leader>fm", function()
                   vim.lsp.buf.range_formatting()
@@ -55,7 +57,7 @@ M.setup = function()
             vim.api.nvim_create_autocmd({ "BufWritePre" }, {
                buffer = bufnr,
                callback = function()
-                  vim.lsp.buf.formatting_sync()
+                  vim.lsp.buf.formatting_seq_sync()
                end, -- Or myvimfun
             })
          end
