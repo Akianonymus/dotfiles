@@ -13,7 +13,9 @@ local sources = {
   -- python
   b.formatting.black,
   b.formatting.isort,
-  b.diagnostics.flake8,
+  -- E501 - line too long
+  -- W503 - line break before binary operator
+  b.diagnostics.flake8.with { extra_args = { "--ignore", "E501,W503" } },
 
   -- rust
   b.formatting.rustfmt,
