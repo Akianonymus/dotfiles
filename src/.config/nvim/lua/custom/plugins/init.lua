@@ -51,15 +51,6 @@ return {
          require("numb").setup()
       end,
    },
-   ["haringsrob/nvim_context_vt"] = {
-      opt = true,
-      config = function()
-         require("nvim_context_vt").setup()
-      end,
-      setup = function()
-         require("custom.utils").packer_lazy_load("nvim_context_vt", 1000)
-      end,
-   },
    ["nvim-telescope/telescope-fzf-native.nvim"] = {
       run = "make",
       after = "telescope.nvim",
