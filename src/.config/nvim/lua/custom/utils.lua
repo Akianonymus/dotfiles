@@ -10,16 +10,6 @@ function M.echo(opts)
   vim.api.nvim_echo(opts, false, {})
 end
 
-function M.enable_folding()
-  if require("nvim-treesitter.ts_utils").get_node_at_cursor() then
-    vim.opt.foldmethod = "expr"
-    vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-  else
-    vim.opt.foldmethod = "indent"
-  end
-  vim.opt.foldenable = false
-end
-
 function M.create_dirs()
   local dir = vim.fn.expand "%:p:h"
   if vim.fn.isdirectory(dir) == 0 then
@@ -27,24 +17,10 @@ function M.create_dirs()
   end
 end
 
-function M.packer_lazy_load(plugin)
+function M.packer_lazy_load(plugin, time)
   vim.defer_fn(function()
     require("packer").loader(plugin)
-  end, 0)
-end
-
-function M.search_and_replace()
-  -- grab content of " register"
-  local content, v_mode = vim.fn.getreg '"', false
-
-  -- restore " register
-  vim.fn.setreg('"', vim.fn.getreg "0")
-
-  if content:match "\n" then
-    content, v_mode = nil, true
-  end
-
-  require("searchbox").replace { confirm = "menu", default_value = content, visual_mode = v_mode }
+  end, time or 0)
 end
 
 -- https://www.reddit.com/r/neovim/comments/p3b20j/lua_solution_to_writing_a_file_using_sudo
