@@ -235,10 +235,16 @@ return {
     end,
   },
 
-  ["matze/vim-move"] = {
+  ["booperlv/nvim-gomove"] = {
     opt = true,
+    config = function()
+      require("gomove").setup { map_defaults = false }
+      require("custom.mappings").nvim_gomove()
+    end,
     setup = function()
-      require("custom.utils").packer_lazy_load("vim-move", 1000)
+      require("custom.utils").packer_lazy_load("nvim-gomove", 1000)
     end,
   },
+
+  ["mg979/vim-visual-multi"] = {},
 }

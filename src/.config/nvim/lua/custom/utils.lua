@@ -17,6 +17,18 @@ function M.create_dirs()
   end
 end
 
+-- function to modify default behaviour of nvim-gomove
+function M.move(visual, duplicate, block, direction)
+  local mapping = string.format(
+    [[\<Plug>Go%s%s%s%s]],
+    (visual and "V" or "N"),
+    (duplicate and "D" or "M"),
+    (block and "Block" or "Line"),
+    direction
+  )
+  vim.cmd('execute "normal' .. vim.v.count1 .. mapping .. '"')
+end
+
 function M.packer_lazy_load(plugin, time)
   vim.defer_fn(function()
     require("packer").loader(plugin)

@@ -176,6 +176,65 @@ function M.neogen()
   end)
 end
 
+function M.nvim_gomove()
+  -- Go(visual, duplicate, block, direction)
+  -- move
+  map("n", "<A-j>", function()
+    require("custom.utils").move(false, false, false, "Down")
+  end)
+  map("n", "<A-k>", function()
+    require("custom.utils").move(false, false, false, "Up")
+  end)
+  map("n", "<A-h>", function()
+    require("custom.utils").move(false, false, true, "Left")
+  end)
+  map("n", "<A-l>", function()
+    require("custom.utils").move(false, false, true, "Right")
+  end)
+
+  -- duplicate
+  map("n", "<A-S-h>", function()
+    require("custom.utils").move(false, true, true, "Left")
+  end)
+  map("n", "<A-S-j>", function()
+    require("custom.utils").move(false, true, false, "Down")
+  end)
+  map("n", "<A-S-k>", function()
+    require("custom.utils").move(false, true, false, "Up")
+  end)
+  map("n", "<A-S-l>", function()
+    require("custom.utils").move(false, true, true, "Right")
+  end)
+
+  -- visual move
+  map("x", "<A-h>", function()
+    require("custom.utils").move(true, false, vim.fn.visualmode() ~= "V", "Left")
+  end)
+  map("x", "<A-j>", function()
+    require("custom.utils").move(true, false, false, "Down")
+  end)
+  map("x", "<A-k>", function()
+    require("custom.utils").move(true, false, false, "Up")
+  end)
+  map("x", "<A-l>", function()
+    require("custom.utils").move(true, false, vim.fn.visualmode() ~= "V", "Right")
+  end)
+
+  -- visual duplicate
+  map("x", "<A-S-h>", function()
+    require("custom.utils").move(true, true, vim.fn.visualmode() ~= "V", "Left")
+  end)
+  map("x", "<A-S-j>", function()
+    require("custom.utils").move(true, true, false, "Down")
+  end)
+  map("x", "<A-S-k>", function()
+    require("custom.utils").move(true, true, false, "Up")
+  end)
+  map("x", "<A-S-l>", function()
+    require("custom.utils").move(true, true, vim.fn.visualmode() ~= "V", "Right")
+  end)
+end
+
 function M.searchbox()
   map("n", "<leader>s", function()
     require("searchbox").replace { confirm = "menu", default_value = vim.fn.expand "<cword>" }
@@ -183,11 +242,11 @@ function M.searchbox()
 
   map("x", "<leader>s", function()
     -- grab the old value of a register
-    local a_content = vim.fn.getreg "a"
+    local a_content = vim.fn.getreg("a", {}, {})
     -- copy the current visual selection to "a" register
     vim.cmd 'noau normal! "ay"'
     -- grab content
-    local content, v_mode = vim.fn.getreg "a", false
+    local content, v_mode = vim.fn.getreg("a", {}, {}), false
     -- restore the "a" register
     vim.fn.setreg("a", a_content)
 
