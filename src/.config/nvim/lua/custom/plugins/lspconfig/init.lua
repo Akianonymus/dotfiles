@@ -41,7 +41,7 @@ local setup_lsp = function()
       final_config = config()
     end
 
-    if not type(final_config) == "table" then
+    if type(final_config) ~= "table" then
       vim.notify("custom/lspconfig.lua: final_config was not a table for " .. name)
       final_config = {}
     end

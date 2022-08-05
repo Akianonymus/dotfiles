@@ -284,4 +284,20 @@ function M.toggleterm()
   end)
 end
 
+function M.vim_visual_multi()
+  vim.cmd [[
+     let g:VM_maps = {}
+     let g:VM_maps["Undo"] = 'u'
+     let g:VM_maps["Redo"] = '<C-r>'
+
+     let g:VM_maps['Find Under']         = '<A-n>'
+     let g:VM_maps['Find Subword Under'] = '<A-n>'
+
+     function! VM_Start()
+       nmap <buffer> n <Plug>(VM-Find-Next)zzzv
+       nmap <buffer> N <Plug>(VM-Find-Prev)zzzv
+     endfunction
+  ]]
+end
+
 return M

@@ -246,5 +246,9 @@ return {
     end,
   },
 
-  ["mg979/vim-visual-multi"] = {},
+  ["mg979/vim-visual-multi"] = {
+    config = function()
+      require("custom.mappings").vim_visual_multi()
+    end,
+  },
 }
