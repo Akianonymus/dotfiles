@@ -35,6 +35,31 @@ function M.packer_lazy_load(plugin, time)
   end, time or 0)
 end
 
+function M.setup_lsp_format(client, bufnr)
+  local format = false
+  if vim.g.vim_version > 7 then
+    -- nightly
+    format = client.server_capabilities.documentFormattingProvider
+  else
+    -- stable
+    format = client.resolved_capabilities.documentFormattingProvider
+  end
+  if format then
+    local buf_k = function(mo, k, c)
+      vim.keymap.set(mo, k, c, { buffer = bufnr })
+    end
+    buf_k("n", "<leader>fm", function()
+      if vim.g.vim_version > 7 then
+        vim.lsp.buf.format { async = true }
+      else
+        vim.lsp.buf.formatting {}
+      end
+    end)
+
+    require("custom.autocmds").lsp_autosave_format(bufnr)
+  end
+end
+
 -- https://www.reddit.com/r/neovim/comments/p3b20j/lua_solution_to_writing_a_file_using_sudo
 -- execute with sudo
 function M.sudo_exec(cmd, print_output)

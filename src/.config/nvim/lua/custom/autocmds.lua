@@ -45,11 +45,15 @@ function M.cmp()
   })
 end
 
-function M.null_ls(bufnr)
+function M.lsp_autosave_format(bufnr)
   autocmd({ "BufWritePre" }, {
     buffer = bufnr,
     callback = function()
-      vim.lsp.buf.formatting_seq_sync({}, 300)
+      if vim.g.vim_version > 7 then
+        vim.lsp.buf.format()
+      else
+        vim.lsp.buf.formatting {}
+      end
     end,
   })
 end
@@ -59,6 +63,24 @@ function M.nvim_go()
     pattern = "go",
     callback = function()
       vim.keymap.set("", "<leader>fm", "<cmd>GoFormat<cr>", { silent = true, buffer = 0 })
+    end,
+  })
+end
+
+function M.treesitter()
+  autocmd({ "FileType" }, {
+    callback = function()
+      local char = vim.fn.wordcount()["chars"]
+      -- manually disable/enable treesitter after a buffer is created
+      if char < 500000 then
+        vim.cmd [[silent! TSBufEnable highlight]]
+        vim.cmd [[silent! TSBufEnable indent]]
+        vim.cmd [[silent! TSBufEnable matchup]]
+      else
+        vim.cmd [[silent! TSBufDisable highlight]]
+        vim.cmd [[silent! TSBufDisable indent]]
+        vim.cmd [[silent! TSBufDisable matchup]]
+      end
     end,
   })
 end

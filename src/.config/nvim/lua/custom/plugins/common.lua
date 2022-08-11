@@ -74,7 +74,7 @@ end
 
 function M.persisted()
   require("persisted").setup {
-    autoload = true, -- automatically load the session for the cwd on Neovim startup
+    -- autoload = true, -- automatically load the session for the cwd on Neovim startup
     allowed_dirs = { "~" },
     -- https://github.com/rmagatti/auto-session/issues/64#issuecomment-1111409078
     before_save = function()
@@ -87,29 +87,6 @@ function M.persisted()
       vim.cmd ":silent! NvimTreeClose"
       vim.cmd ":silent! Neotree close"
     end,
-  }
-end
-
-function M.treesitter()
-  return {
-    ensure_installed = {
-      "bash",
-      "c",
-      "cpp",
-      "css",
-      "javascript",
-      "json",
-      "lua",
-      "markdown",
-      "python",
-      "vim",
-    },
-    -- autopairs = { enable = true },
-    -- context_commentstring = { enable = true },
-    highlight = { enable = true, use_languagetree = true },
-    indent = { enable = true },
-    matchup = { enable = true },
-    tree_docs = { enable = true },
   }
 end
 

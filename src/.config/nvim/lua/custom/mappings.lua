@@ -2,7 +2,10 @@ local map = vim.keymap.set
 
 local M = {}
 
--- all the plugins which are not dependent on any plugin
+M.disabled = {
+  n = { ["<C-c>"] = "" },
+}
+
 function M.aki()
   -- select all text in a buffer
   map({ "n", "x" }, "<C-a>", "gg0vG$")
@@ -25,19 +28,10 @@ function M.aki()
   map({ "n", "o", "x" }, "H", "0")
   map({ "n", "o", "x" }, "L", "$")
 
-  -- restore my laptop numpad home, end, page up and page down behaviour
-  map({ "", "!", "l", "t" }, "", "<Home>")
-  map({ "", "!", "l", "t" }, "", "<End>")
-  map({ "", "!", "l", "t" }, "", "<PageUP>")
-  map({ "", "!", "l", "t" }, "", "<PageDown>")
-  map({ "", "!", "l", "t" }, "", "k")
-  map({ "", "!", "l", "t" }, "", "j")
-  map({ "", "!", "l", "t" }, "", "h")
-  map({ "", "!", "l", "t" }, "", "l")
-
   -- escape from terminal mode
   map("t", "<esc>", [[<C-\><C-n>]])
   map("t", "jk", [[<C-\><C-n>]])
+
   -- move between windows
   map("t", "<C-h>", [[<Cmd>wincmd h<CR>]])
   map("t", "<c-j>", [[<cmd>wincmd j<cr>]])
@@ -83,9 +77,7 @@ function M.lspconfig(client, bufnr)
     vim.lsp.buf.declaration()
   end)
 
-  buf_k("n", m.definition, function()
-    require("lspsaga.finder").lsp_finder()
-  end)
+  buf_k("n", m.definition, "<cmd>Lspsaga lsp_finder<CR>")
 
   buf_k("n", m.hover, function()
     require("lspsaga.hover").render_hover_doc()
@@ -154,14 +146,11 @@ function M.lspconfig(client, bufnr)
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end)
 
-  if client.resolved_capabilities.document_formatting then
-    buf_k("n", m.formatting, function()
-      vim.lsp.buf.formatting()
-    end)
-    buf_k("v", m.formatting, function()
-      vim.lsp.buf.range_formatting()
-    end)
-  end
+  require("custom.utils").setup_lsp_format(client, bufnr)
+end
+
+function M.neotree()
+  map({ "n" }, "<C-n>", "<cmd>Neotree toggle<cr>")
 end
 
 function M.neogen()
@@ -238,7 +227,7 @@ end
 function M.searchbox()
   map("n", "<leader>s", function()
     require("searchbox").replace { confirm = "menu", default_value = vim.fn.expand "<cword>" }
-  end)
+  end, { desc = "Search and Replace" })
 
   map("x", "<leader>s", function()
     -- grab the old value of a register
@@ -267,7 +256,7 @@ M.telescope = {
   n = {
     ["<leader>ff"] = {
       "<cmd> :Telescope find_files follow=true hidden=true <CR>",
-      "  find files",
+      "find files",
     },
   },
 }

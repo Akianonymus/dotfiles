@@ -29,6 +29,3 @@ require("neo-tree").setup {
     window = { mappings = { ["b"] = "navigate_up", ["O"] = "set_root" } },
   },
 }
-
-vim.cmd [[nnoremap <c-n> <cmd>Neotree toggle<cr>]]
-vim.cmd [[nnoremap \ <cmd>Neotree toggle<cr>]]

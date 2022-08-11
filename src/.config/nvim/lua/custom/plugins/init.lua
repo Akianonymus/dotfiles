@@ -81,10 +81,14 @@ return {
   },
 
   ["akinsho/bufferline.nvim"] = {
+    -- opt = true,
+    -- setup = function()
+    --   require("custom.utils").packer_lazy_load("bufferline.nvim", 0)
+    -- end,
+    after = "base46",
     config = function()
       require("custom.plugins.common").bufferline()
     end,
-    after = "base46",
   },
 
   ["hrsh7th/cmp-cmdline"] = {
@@ -137,9 +141,14 @@ return {
   },
 
   ["nvim-neo-tree/neo-tree.nvim"] = {
+    module = "neo-tree",
+    cmd = "Neotree",
     requires = { "nvim-lua/plenary.nvim", "kyazdani42/nvim-web-devicons", "MunifTanjim/nui.nvim" },
     config = function()
       require "custom.plugins.neotree"
+    end,
+    setup = function()
+      require("custom.mappings").neotree()
     end,
   },
 
@@ -223,6 +232,12 @@ return {
     end,
   },
 
+  ["nvim-treesitter/nvim-treesitter"] = {
+    config = function()
+      require "custom.plugins.treesitter"
+    end,
+  },
+
   ["nvim-treesitter/nvim-treesitter-context"] = {
     after = "nvim-treesitter",
     config = function()
@@ -247,7 +262,8 @@ return {
   },
 
   ["mg979/vim-visual-multi"] = {
-    config = function()
+    keys = "<A-n>",
+    setup = function()
       require("custom.mappings").vim_visual_multi()
     end,
   },
