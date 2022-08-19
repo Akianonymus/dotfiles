@@ -118,6 +118,20 @@ return {
     end,
   },
 
+  ["ibhagwan/fzf-lua"] = {
+    cmd = { "FzfLua" },
+    module = "fzf-lua",
+    config = function()
+      require("custom.plugins.common").fzf_lua()
+    end,
+    setup = function()
+      require("custom.utils").packer_lazy_load("fzf-lua", 3000)
+      vim.keymap.set("n", "<leader>fw", function()
+        require("fzf-lua").live_grep { continue_last_search = true }
+      end)
+    end,
+  },
+
   ["ggandor/lightspeed.nvim"] = {
     opt = true,
     config = function()
@@ -172,7 +186,7 @@ return {
     module = "spectre",
     command = "FindReplace",
     config = function()
-      require("spectre").setup { color_devicons = true, open_cmd = "vertical new", is_insert_mode = true }
+      require("spectre").setup { open_cmd = "vertical new", is_insert_mode = true }
     end,
     setup = function()
       require("custom.mappings").spectre()
@@ -233,9 +247,10 @@ return {
   },
 
   ["nvim-treesitter/nvim-treesitter"] = {
-    config = function()
+    setup = function()
       require "custom.plugins.treesitter"
     end,
+    config = function() end,
   },
 
   ["nvim-treesitter/nvim-treesitter-context"] = {
@@ -257,7 +272,7 @@ return {
       require("custom.mappings").nvim_gomove()
     end,
     setup = function()
-      require("custom.utils").packer_lazy_load("nvim-gomove", 1000)
+      require("custom.utils").packer_lazy_load "nvim-gomove"
     end,
   },
 

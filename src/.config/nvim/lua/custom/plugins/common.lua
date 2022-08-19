@@ -23,6 +23,47 @@ function M.colorizer()
   }
 end
 
+function M.fzf_lua()
+  require("fzf-lua").setup {
+    fzf_opts = { ["--prompt"] = "   " },
+    fzf_args = "--pointer=' '",
+    -- https://github.com/ibhagwan/fzf-lua/issues/493
+    fzf_colors = { ["bg+"] = { "bg", "Visual" }, ["gutter"] = { "bg", "Normal" } },
+    global_resume = true, -- enable global `resume`?
+    global_resume_query = true, -- include typed query in `resume`?
+    winopts = {
+      width = 0.90,
+      height = 0.75,
+      row = 0.40, -- window row position (0=top, 1=bottom)
+      -- 'none', 'single', 'double', 'thicc' or 'rounded' (default)
+      border = "rounded",
+      preview = { delay = 50, vertical = "down:45%", horizontal = "right:55%", scrolloff = "-100" },
+      hl = { cursor = "MoreMsg", cursorline = "Visual", title = "TelescopePreviewTitle" },
+      on_create = function()
+        local function feedkeys(normal_key, insert_key)
+          vim.keymap.set("n", normal_key, function()
+            -- use noautocmd so it doesn't trigger any insert mode autocmds
+            vim.cmd [[noautocmd startinsert]]
+            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(insert_key, true, false, true) or "", "n", true)
+            vim.cmd [[noautocmd lua vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true) or "", "n", true)]]
+          end, { nowait = true, noremap = true, buffer = vim.api.nvim_get_current_buf() })
+        end
+        feedkeys("j", "<c-n>")
+        feedkeys("k", "<c-p>")
+        feedkeys("f", "<c-f>")
+        feedkeys("b", "<c-b>")
+        feedkeys("q", "<Esc>")
+        feedkeys("<CR>", "<CR>")
+      end,
+    },
+    grep = {
+      prompt = "   ",
+      rg_opts = " --hidden --line-number --no-heading --color=never --smart-case " .. "-g '!{.git,node_modules}/*'",
+    },
+  }
+  require("custom.autocmds").fzf_lua()
+end
+
 function M.lspconfig()
   require "custom.plugins.lspconfig"
 end

@@ -1,5 +1,4 @@
 local load_hl = require("base46").load_highlight
-load_hl "syntax"
 load_hl "treesitter"
 
 local setup = function()
@@ -33,16 +32,19 @@ local setup = function()
   ts_config.setup(default)
 end
 
--- do not load treesitter if file is bigger than 500 kb
-local chars = vim.fn.wordcount()["chars"]
-if chars < 500000 then
-  -- do not lazy load if less than 150kb
-  if chars < 150000 then
-    setup()
-  else
-    vim.schedule_wrap(function()
+-- do not load if filetype not set
+if vim.bo.filetype ~= "" then
+  local chars = vim.fn.wordcount()["chars"]
+  -- do not load treesitter if file is bigger than 500 kb
+  if chars < 500000 then
+    -- do not lazy load if less than 100kb
+    if chars < 100000 then
       setup()
-    end)
+    else
+      vim.defer_fn(function()
+        setup()
+      end)
+    end
   end
 end
 

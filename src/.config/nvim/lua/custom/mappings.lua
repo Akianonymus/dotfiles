@@ -3,7 +3,8 @@ local map = vim.keymap.set
 local M = {}
 
 M.disabled = {
-  n = { ["<C-c>"] = "" },
+  -- disable telescope live grep and use ours
+  n = { ["<C-c>"] = "", ["<leader>fw"] = "" },
 }
 
 function M.aki()
@@ -227,15 +228,15 @@ end
 function M.searchbox()
   map("n", "<leader>s", function()
     require("searchbox").replace { confirm = "menu", default_value = vim.fn.expand "<cword>" }
-  end, { desc = "Search and Replace" })
+  end, { desc = "Find and Replace [ Current Buffer ]" })
 
   map("x", "<leader>s", function()
     -- grab the old value of a register
-    local a_content = vim.fn.getreg("a", {}, {})
+    local a_content = vim.fn.getreg "a"
     -- copy the current visual selection to "a" register
     vim.cmd 'noau normal! "ay"'
     -- grab content
-    local content, v_mode = vim.fn.getreg("a", {}, {}), false
+    local content, v_mode = vim.fn.getreg "a", false
     -- restore the "a" register
     vim.fn.setreg("a", a_content)
 
@@ -249,7 +250,7 @@ end
 function M.spectre()
   map("n", "<leader>fr", function()
     require("spectre").open()
-  end)
+  end, { desc = "Find and Replace [ Folder wide ]" })
 end
 
 M.telescope = {
@@ -285,6 +286,11 @@ function M.vim_visual_multi()
      function! VM_Start()
        nmap <buffer> n <Plug>(VM-Find-Next)zzzv
        nmap <buffer> N <Plug>(VM-Find-Prev)zzzv
+     endfunction
+     " todo: improve this
+     function! VM_Exit()
+       nunmap <buffer> n nzzv
+       iunmap <buffer> N nzzv
      endfunction
   ]]
 end

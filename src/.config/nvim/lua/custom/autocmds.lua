@@ -17,6 +17,8 @@ function M.aki()
       require("custom.utils").create_dirs()
     end,
   })
+
+  autocmd("VimLeavePre", { command = [[silent! FidgetClose]] })
 end
 
 function M.cmp()
@@ -43,6 +45,10 @@ function M.cmp()
     end,
     once = true,
   })
+end
+
+function M.fzf_lua()
+  autocmd("VimResized", { pattern = "*", command = 'tabdo wincmd = | lua require("fzf-lua").redraw()' })
 end
 
 function M.lsp_autosave_format(bufnr)
