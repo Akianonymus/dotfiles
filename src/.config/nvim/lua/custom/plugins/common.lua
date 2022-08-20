@@ -37,7 +37,13 @@ function M.fzf_lua()
       row = 0.40, -- window row position (0=top, 1=bottom)
       -- 'none', 'single', 'double', 'thicc' or 'rounded' (default)
       border = "rounded",
-      preview = { delay = 50, vertical = "down:45%", horizontal = "right:55%", scrolloff = "-100" },
+      preview = {
+        delay = 50,
+        vertical = "down:45%",
+        horizontal = "right:55%",
+        scrolloff = "-100",
+        title_align = "center",
+      },
       hl = { cursor = "MoreMsg", cursorline = "Visual", title = "TelescopePreviewTitle" },
       on_create = function()
         local function feedkeys(normal_key, insert_key)

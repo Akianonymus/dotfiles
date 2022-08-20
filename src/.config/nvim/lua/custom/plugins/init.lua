@@ -118,7 +118,7 @@ return {
     end,
   },
 
-  ["ibhagwan/fzf-lua"] = {
+  ["Akianonymus/fzf-lua"] = {
     cmd = { "FzfLua" },
     module = "fzf-lua",
     config = function()
