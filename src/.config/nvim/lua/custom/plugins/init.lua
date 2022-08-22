@@ -276,6 +276,8 @@ return {
     end,
   },
 
+  ["kylechui/nvim-surround"] = { config = [[require("nvim-surround").setup {}]] },
+
   ["mg979/vim-visual-multi"] = {
     keys = "<A-n>",
     setup = function()

@@ -48,7 +48,7 @@ function M.cmp()
 end
 
 function M.fzf_lua()
-  autocmd("VimResized", { pattern = "*", command = 'tabdo wincmd = | lua require("fzf-lua").redraw()' })
+  autocmd("VimResized", { buffer = 0, command = 'lua require("fzf-lua").redraw()' })
 end
 
 function M.lsp_autosave_format(bufnr)

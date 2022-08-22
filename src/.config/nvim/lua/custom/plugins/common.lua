@@ -25,8 +25,7 @@ end
 
 function M.fzf_lua()
   require("fzf-lua").setup {
-    fzf_opts = { ["--prompt"] = "   " },
-    fzf_args = "--pointer=' '",
+    fzf_args = "--pointer=' ' --no-hscroll --cycle",
     -- https://github.com/ibhagwan/fzf-lua/issues/493
     fzf_colors = { ["bg+"] = { "bg", "Visual" }, ["gutter"] = { "bg", "Normal" } },
     global_resume = true, -- enable global `resume`?
@@ -40,34 +39,42 @@ function M.fzf_lua()
       preview = {
         delay = 50,
         vertical = "down:45%",
-        horizontal = "right:55%",
-        scrolloff = "-100",
+        horizontal = "right:50%",
         title_align = "center",
       },
       hl = { cursor = "MoreMsg", cursorline = "Visual", title = "TelescopePreviewTitle" },
       on_create = function()
-        local function feedkeys(normal_key, insert_key)
-          vim.keymap.set("n", normal_key, function()
-            -- use noautocmd so it doesn't trigger any insert mode autocmds
-            vim.cmd [[noautocmd startinsert]]
-            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(insert_key, true, false, true) or "", "n", true)
-            vim.cmd [[noautocmd lua vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true) or "", "n", true)]]
-          end, { nowait = true, noremap = true, buffer = vim.api.nvim_get_current_buf() })
+        require("custom.autocmds").fzf_lua()
+
+        local function feedkeys(normal_keys, insert_key)
+          if type(normal_keys) ~= "table" then
+            normal_keys = { normal_keys }
+          end
+
+          for _, key in ipairs(normal_keys) do
+            vim.keymap.set("n", key, function()
+              vim.api.nvim_chan_send(
+                vim.b.terminal_job_id,
+                vim.api.nvim_replace_termcodes(insert_key, true, false, true) or ""
+              )
+            end, { nowait = true, noremap = true, buffer = vim.api.nvim_get_current_buf() })
+          end
         end
-        feedkeys("j", "<c-n>")
-        feedkeys("k", "<c-p>")
-        feedkeys("f", "<c-f>")
-        feedkeys("b", "<c-b>")
-        feedkeys("q", "<Esc>")
-        feedkeys("<CR>", "<CR>")
+
+        feedkeys({ "j", "<c-n>" }, "<c-n>")
+        feedkeys({ "k", "<c-p>" }, "<c-p>")
+        feedkeys({ "f", "<c-f>" }, "<c-f>")
+        feedkeys({ "b", "<c-b>" }, "<c-b>")
+        feedkeys({ "q", "<Esc>" }, "<Esc>")
+        feedkeys({ "o", "<CR>" }, "<CR>")
       end,
     },
     grep = {
       prompt = "   ",
       rg_opts = " --hidden --line-number --no-heading --color=never --smart-case " .. "-g '!{.git,node_modules}/*'",
+      no_header_i = true, -- hide interactive header?
     },
   }
-  require("custom.autocmds").fzf_lua()
 end
 
 function M.lspconfig()
