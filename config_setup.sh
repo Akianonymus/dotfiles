@@ -18,6 +18,15 @@ handle_repo() {
     fi
 }
 
+symlink() {
+    local symlink full_path
+    for symlink in "${@}"; do
+        full_path="${HOME}/${symlink}"
+        [[ -d ${full_path} || -f ${full_path} ]] && mv -f "${full_path}" "${full_path}.bak"
+        ln -sfr "${symlink}" "${full_path}"
+    done
+}
+
 main() {
     for cmd in zsh git grep; do
         command -v "${cmd}" >| /dev/null || { echo "${cmd} not available." && exit 1; }
@@ -44,9 +53,9 @@ main() {
 
     # now symlink
     # create dirs
-    mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd},.local/share/fonts,.cache/zsh}
+    mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd,mpv,nvim/lua/custom},.local/share/fonts,.cache/zsh}
     # files to be symlinked
-    symlink_list=(.config/gh/config.yml .config/gotop/gotop.conf .config/kitty/kitty.conf .config/lsd/config.yaml
+    symlink_list=(.config/mpv .config/gh/config.yml .config/gotop/gotop.conf .config/kitty/kitty.conf .config/lsd/config.yaml
         '.local/share/fonts/JetBrains Mono Bold Italic Nerd Font Complete.ttf'
         '.local/share/fonts/JetBrains Mono Bold Nerd Font Complete.ttf'
         '.local/share/fonts/JetBrains Mono ExtBd Ita Nerd Font Complete.ttf'
@@ -62,34 +71,16 @@ main() {
         .p10k.zsh .zshrc .zshenv .gitconfig)
 
     cd "${current_dir}/src" || return 1
-    for symlink in "${symlink_list[@]}"; do
-        full_path="${HOME}/${symlink}"
-        [[ -d ${full_path} || -f ${full_path} ]] && mv -f "${full_path}" "${full_path}.bak"
-        ln -sfr "${symlink}" "${full_path}"
-    done
-
-    # handle neovim stuff
-    mkdir -p ~/.config/nvim/lua
-    ln -sfr .config/nvim/lua/custom ~/.config/nvim/lua/
+    symlink "${symlink_list[@]}"
 
     # handle termux stuff
     [[ ${1:-} = arch ]] || {
         [[ -n ${TERMUX_VERSION} ]] || return 0
 
         mkdir -p "${HOME}/.termux"
-        symlink_list=(
-            .termux/colors.properties
-            .termux/dark
-            .termux/font.ttf
-            .termux/light
-            .termux/termux.properties
-        )
+        symlink_list=(.termux/{colors.properties,dark,font.ttf,light,termux.properties})
 
-        for symlink in "${symlink_list[@]}"; do
-            full_path="${HOME}/${symlink}"
-            [[ -d ${full_path} || -f ${full_path} ]] && mv -f "${full_path}" "${full_path}.bak"
-            ln -sfr "${symlink}" "${full_path}"
-        done
+        symlink "${symlink_list[@]}"
     }
 }
 
