@@ -1,4 +1,8 @@
 return {
+  -- removed plugins from nvchad
+  ["kyazdani42/nvim-tree.lua"] = false,
+  ["folke/which-key.nvim"] = false,
+  ["NvChad/nvterm"] = false,
   ------------------------------------------------------------------------------
   ------------------------------------------------------------------------------
   ------------------------------------------------------------------------------
@@ -9,6 +13,7 @@ return {
     config = function()
       require "custom.plugins.lspconfig"
     end,
+    setup = function() end,
   },
 
   ["williamboman/mason-lspconfig.nvim"] = { module = "mason-lspconfig" },
@@ -51,7 +56,7 @@ return {
 
   -- go lsp stuff
   ["crispgm/nvim-go"] = {
-    after = "nvim-lspconfig",
+    ft = "go",
     config = function()
       require("custom.plugins.common").nvim_go()
     end,
@@ -118,7 +123,7 @@ return {
     end,
   },
 
-  ["Akianonymus/fzf-lua"] = {
+  ["ibhagwan/fzf-lua"] = {
     cmd = { "FzfLua" },
     module = "fzf-lua",
     config = function()
@@ -128,7 +133,16 @@ return {
       require("custom.utils").packer_lazy_load("fzf-lua", 3000)
       vim.keymap.set("n", "<leader>fw", function()
         require("fzf-lua").live_grep { continue_last_search = true }
-      end)
+      end, {})
+      vim.keymap.set("n", "<leader>ch", function()
+        require("fzf-lua").command_history()
+      end, {})
+    end,
+  },
+
+  ["nmac427/guess-indent.nvim"] = {
+    config = function()
+      require("guess-indent").setup {}
     end,
   },
 
@@ -146,7 +160,9 @@ return {
     module = "neogen",
     cmd = "Neogen",
     config = function()
-      require("neogen").setup { { snippet_engine = "luasnip" } }
+      require("neogen").setup {
+        { snippet_engine = "luasnip" },
+      }
     end,
     setup = function()
       require("custom.mappings").neogen()
@@ -172,6 +188,10 @@ return {
       require("numb").setup()
     end,
   },
+
+  ["windwp/nvim-autopairs"] = { override_options = { check_ts = true } },
+
+  ["NvChad/nvim-colorizer.lua"] = { override_options = require("custom.plugins.common").colorizer() },
 
   ["kevinhwang91/nvim-bqf"] = { ft = "qf" },
 
@@ -219,6 +239,8 @@ return {
       require("custom.mappings").searchbox()
     end,
   },
+
+  ["nvim-telescope/telescope.nvim"] = { override_options = require("custom.plugins.common").telescope() },
 
   ["nvim-telescope/telescope-fzf-native.nvim"] = {
     run = "make",
@@ -283,5 +305,9 @@ return {
     setup = function()
       require("custom.mappings").vim_visual_multi()
     end,
+  },
+
+  ["NvChad/ui"] = {
+    override_options = { tabufline = { enabled = false }, statusline = { separator_style = "arrow" } },
   },
 }

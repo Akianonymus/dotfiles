@@ -1,4 +1,5 @@
 local autocmd = vim.api.nvim_create_autocmd
+local augroup = vim.api.nvim_create_augroup
 local M = {}
 
 -- non plugin autocmds
@@ -47,12 +48,15 @@ function M.cmp()
   })
 end
 
-function M.fzf_lua()
-  autocmd("VimResized", { buffer = 0, command = 'lua require("fzf-lua").redraw()' })
-end
-
 function M.lsp_autosave_format(bufnr)
+  local id = augroup("LspFormatSave_aki", { clear = false })
+  local i = vim.api.nvim_get_autocmds { group = id, event = "BufWritePre", buffer = bufnr }
+  if not vim.tbl_isempty(i) then
+    return
+  end
+
   autocmd({ "BufWritePre" }, {
+    group = id,
     buffer = bufnr,
     callback = function()
       if vim.g.vim_version > 7 then

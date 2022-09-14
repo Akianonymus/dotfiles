@@ -10,16 +10,17 @@ end
 
 function M.colorizer()
   return {
+    filetypes = { "*", "!cmp_menu" },
     user_default_options = {
-      names = false, -- "Name" codes like Blue
       RRGGBBAA = true, -- #RRGGBBAA hex codes
-      rgb_fn = true, -- CSS rgb() and rgba() functions
-      hsl_fn = true, -- CSS hsl() and hsla() functions
+      AARRGGBB = true, -- #0xAARRGGBA hex codes
       css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-      css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
       -- Available modes: foreground, background
       mode = "background", -- Set the display mode.
+      tailwind = false,
+      sass = { enable = true },
     },
+    buftypes = { "*", "!terminal", "!prompt", "!popup" },
   }
 end
 
@@ -44,8 +45,6 @@ function M.fzf_lua()
       },
       hl = { cursor = "MoreMsg", cursorline = "Visual", title = "TelescopePreviewTitle" },
       on_create = function()
-        require("custom.autocmds").fzf_lua()
-
         local function feedkeys(normal_keys, insert_key)
           if type(normal_keys) ~= "table" then
             normal_keys = { normal_keys }

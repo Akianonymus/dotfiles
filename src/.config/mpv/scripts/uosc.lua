@@ -1,9 +1,7 @@
 --https://raw.githubusercontent.com/tomasklaen/uosc/master/uosc.lua
---[[
-uosc 3.0.0 - 2022-Aug-22 | https://github.com/tomasklaen/uosc
-Minimalist cursor proximity based UI for MPV player.
-]]
+--[[ uosc 3.1.1 - 2022-Aug-24 | https://github.com/tomasklaen/uosc ]]
 
+local mp = require "mp"
 if mp.get_property "osc" == "yes" then
   mp.msg.info "Disabled because original osc is enabled!"
   return
@@ -92,6 +90,7 @@ local options = {
   color_background = "000000",
   color_background_text = "ffffff",
   total_time = false,
+  time_precision = 0,
   font_bold = false,
   autohide = false,
   pause_indicator = "flash",
@@ -135,8 +134,10 @@ local state = {
   end)(),
   cwd = mp.get_property "working-directory",
   media_title = "",
-  duration = nil,
-  position = nil,
+  time = nil, -- current media playback time
+  duration = nil, -- current media duration
+  time_human = nil, -- current playback time in human format
+  duration_or_remaining_time_human = nil, -- depends on options.total_time
   pause = mp.get_property_native "pause",
   chapters = nil,
   chapter_ranges = nil,
@@ -355,12 +356,14 @@ function tween(from, to, setter, speed, callback)
     callback = speed
     speed = 0.3
   end
+
   local timeout
   local getTo = type(to) == "function" and to or function()
     return to
   end
   local cutoff = math.abs(getTo() - from) * 0.01
-  function tick()
+
+  local function tick()
     from = from + ((getTo() - from) * speed)
     local is_end = math.abs(getTo() - from) <= cutoff
     setter(is_end and getTo() or from)
@@ -371,8 +374,10 @@ function tween(from, to, setter, speed, callback)
       timeout:resume()
     end
   end
+
   timeout = mp.add_timeout(0.016, tick)
   tick()
+
   return function()
     timeout:kill()
     call_me_maybe(callback)
@@ -554,6 +559,17 @@ function ass_escape(str)
   return str
 end
 
+---@param seconds number
+---@return string
+function format_time(seconds)
+  local human = mp.format_time(seconds)
+  if options.time_precision > 0 then
+    local formatted = string.format("%." .. options.time_precision .. "f", math.abs(seconds) % 1)
+    human = human .. "." .. string.sub(formatted, 3)
+  end
+  return human
+end
+
 function opacity_to_alpha(opacity)
   return 255 - math.ceil(255 * opacity)
 end
@@ -584,8 +600,19 @@ function normalize_path(path)
     path = utils.join_path(state.cwd, path)
   end
 
+  -- Remove trailing slashes
+  if #path > 1 then
+    path = path:gsub("[\\/]+$", "")
+    path = #path == 0 and "/" or path
+  end
+
   -- Use proper slashes
   if state.os == "windows" then
+    -- Drive letters on windows need trailing backslash
+    if path:sub(#path) == ":" then
+      path = path .. "\\"
+    end
+
     return path:gsub("/", "\\")
   else
     return path:gsub("\\", "/")
@@ -607,17 +634,19 @@ function serialize_path(path)
   if not path or is_protocol(path) then
     return
   end
-  path = normalize_path(path)
-  local parts = split(path, "[\\/]+")
-  if parts[#parts] == "" then
-    table.remove(parts, #parts)
-  end -- remove trailing separator
-  local basename = parts and parts[#parts] or path
+
+  local normal_path = normalize_path(path)
+  -- normalize_path() already strips slashes, but leaves trailing backslash
+  -- for windows drive letters, but we don't need it here.
+  local working_path = normal_path:sub(#normal_path) == "\\" and normal_path:sub(1, #normal_path - 1) or normal_path
+  local parts = split(working_path, "[\\/]+")
+  local basename = parts and parts[#parts] or working_path
   local dirname = #parts > 1 and table.concat(itable_slice(parts, 1, #parts - 1), state.os == "windows" and "\\" or "/")
     or nil
   local dot_split = split(basename, "%.")
+
   return {
-    path = path:sub(-1) == ":" and state.os == "windows" and path .. "\\" or path,
+    path = normal_path,
     is_root = dirname == nil,
     dirname = dirname,
     basename = basename,
@@ -682,7 +711,8 @@ function get_adjacent_file(file_path, direction, allowed_types)
 end
 
 -- Can't use `os.remove()` as it fails on paths with unicode characters.
--- Returns `result, error`, result is table of `status:number(<0=error), stdout, stderr, error_string, killed_by_us:boolean`
+-- Returns `result, error`, result is table of:
+-- `status:number(<0=error), stdout, stderr, error_string, killed_by_us:boolean`
 function delete_file(file_path)
   local args = state.os == "windows" and { "cmd", "/C", "del", file_path } or { "rm", file_path }
   return mp.command_native {
@@ -724,11 +754,11 @@ Signature:
 {
 	-- element rectangle coordinates
 	ax = 0, ay = 0, bx = 0, by = 0,
-	-- cursor<>element relative proximity as a 0-1 floating number
+	-- cursor<->element relative proximity as a 0-1 floating number
 	-- where 0 = completely away, and 1 = touching/hovering
 	-- so it's easy to work with and throw into equations
 	proximity = 0,
-	-- raw cursor<>element proximity in pixels
+	-- raw cursor<->element proximity in pixels
 	proximity_raw = infinity,
 	-- called when element is created
 	?init = function(this),
@@ -773,6 +803,7 @@ function Element.new(props)
 end
 
 function Element:init() end
+
 function Element:destroy() end
 
 -- Call method if it exists
@@ -786,12 +817,15 @@ end
 function Element:tween(...)
   tween_element(self, ...)
 end
+
 function Element:tween_property(...)
   tween_element_property(self, ...)
 end
+
 function Element:tween_stop()
   tween_element_stop(self)
 end
+
 function Element:is_tweening()
   tween_element_is_tweening(self)
 end
@@ -808,6 +842,7 @@ function Element:on(name, handler)
     self._eventListeners[name][#self._eventListeners[name] + 1] = handler
   end
 end
+
 function Element:off(name, handler)
   if self._eventListeners[name] == nil then
     return
@@ -817,6 +852,7 @@ function Element:off(name, handler)
     table.remove(self._eventListeners, index)
   end
 end
+
 function Element:trigger(name, ...)
   self:maybe("on_" .. name, ...)
   if self._eventListeners[name] == nil then
@@ -878,6 +914,7 @@ end
 function Elements:has(name)
   return self[name] ~= nil
 end
+
 function Elements:ipairs()
   return ipairs(self.itable)
 end
@@ -913,6 +950,12 @@ function Menu:is_open(menu_type)
   return elements.menu ~= nil and (not menu_type or elements.menu.type == menu_type)
 end
 
+---@alias MenuItem {title?: string, hint?: string, value: any}
+---@alias MenuOptions {title?: string, active_index?: number, selected_index?: number, on_open?: fun(), on_close?: fun(), parent_menu?: any}
+
+---@param items MenuItem[]
+---@param open_item fun(value: any)
+---@param opts? MenuOptions
 function Menu:open(items, open_item, opts)
   opts = opts or {}
 
@@ -941,14 +984,14 @@ function Menu:open(items, open_item, opts)
       item_content_spacing = nil,
       font_size = nil,
       font_size_hint = nil,
-      scroll_step = nil,
-      scroll_height = nil,
+      scroll_step = nil, -- item height + item spacing
+      scroll_height = nil, -- items + spacings - container height
       scroll_y = 0,
       opacity = 0,
       relative_parent_opacity = 0.4,
       items = items,
-      active_item = nil,
-      selected_item = nil,
+      active_index = nil,
+      selected_index = nil,
       open_item = open_item,
       parent_menu = nil,
       init = function(this)
@@ -962,8 +1005,8 @@ function Menu:open(items, open_item, opts)
           this[key] = value
         end
 
-        if not this.selected_item then
-          this.selected_item = this.active_item
+        if not this.selected_index then
+          this.selected_index = this.active_index
         end
 
         -- Set initial dimensions
@@ -971,7 +1014,7 @@ function Menu:open(items, open_item, opts)
         this:on_display_change()
 
         -- Scroll to selected item
-        this:scroll_to_item(this.selected_item)
+        this:scroll_to_item(this.selected_index)
 
         -- Transition in animation
         menu.transition = { to = "child", target = this }
@@ -1059,8 +1102,8 @@ function Menu:open(items, open_item, opts)
         this:on_display_change()
 
         -- Reset indexes and scroll
-        this:select_index(this.selected_item)
-        this:activate_index(this.active_item)
+        this:select_index(this.selected_index)
+        this:activate_index(this.active_index)
         this:scroll_to(this.scroll_y)
         request_render()
       end,
@@ -1088,16 +1131,10 @@ function Menu:open(items, open_item, opts)
         end
       end,
       get_item_index_below_cursor = function(this)
-        return math.ceil((cursor.y - this.ay + this.scroll_y) / this.scroll_step)
-      end,
-      get_first_visible_index = function(this)
-        return round(this.scroll_y / this.scroll_step) + 1
-      end,
-      get_last_visible_index = function(this)
-        return round((this.scroll_y + this.height) / this.scroll_step)
-      end,
-      get_centermost_visible_index = function(this)
-        return round((this.scroll_y + (this.height / 2)) / this.scroll_step)
+        if #this.items < 1 then
+          return nil
+        end
+        return math.max(1, math.min(math.ceil((cursor.y - this.ay + this.scroll_y) / this.scroll_step), #this.items))
       end,
       scroll_to = function(this, pos)
         this.scroll_y = math.max(math.min(pos, this.scroll_height), 0)
@@ -1109,7 +1146,7 @@ function Menu:open(items, open_item, opts)
         end
       end,
       select_index = function(this, index)
-        this.selected_item = (index and index >= 1 and index <= #this.items) and index or nil
+        this.selected_index = (index and index >= 1 and index <= #this.items) and index or nil
         request_render()
       end,
       select_value = function(this, value)
@@ -1118,10 +1155,10 @@ function Menu:open(items, open_item, opts)
         end))
       end,
       activate_index = function(this, index)
-        this.active_item = (index and index >= 1 and index <= #this.items) and index or nil
-        if not this.selected_item then
-          this.selected_item = this.active_item
-          this:scroll_to_item(this.selected_item)
+        this.active_index = (index and index >= 1 and index <= #this.items) and index or nil
+        if not this.selected_index then
+          this.selected_index = this.active_index
+          this:scroll_to_item(this.selected_index)
         end
         request_render()
       end,
@@ -1139,7 +1176,7 @@ function Menu:open(items, open_item, opts)
           if previous_active_value then
             this:activate_value(previous_active_value)
           end
-          this:scroll_to_item(this.selected_item)
+          this:scroll_to_item(this.selected_index)
         end
       end,
       delete_value = function(this, value)
@@ -1148,18 +1185,12 @@ function Menu:open(items, open_item, opts)
         end))
       end,
       prev = function(this)
-        local default_anchor = this.scroll_height > this.scroll_step and this:get_centermost_visible_index()
-          or this:get_last_visible_index()
-        local current_index = this.selected_item or default_anchor + 1
-        this.selected_item = math.max(current_index - 1, 1)
-        this:scroll_to_item(this.selected_item)
+        this.selected_index = math.max(this.selected_index and this.selected_index - 1 or #this.items, 1)
+        this:scroll_to_item(this.selected_index)
       end,
       next = function(this)
-        local default_anchor = this.scroll_height > this.scroll_step and this:get_centermost_visible_index()
-          or this:get_first_visible_index()
-        local current_index = this.selected_item or default_anchor - 1
-        this.selected_item = math.min(current_index + 1, #this.items)
-        this:scroll_to_item(this.selected_item)
+        this.selected_index = math.min(this.selected_index and this.selected_index + 1 or 1, #this.items)
+        this:scroll_to_item(this.selected_index)
       end,
       back = function(this)
         if menu.transition then
@@ -1210,8 +1241,8 @@ function Menu:open(items, open_item, opts)
           return
         end
 
-        if this.selected_item then
-          local item = this.items[this.selected_item]
+        if this.selected_index then
+          local item = this.items[this.selected_index]
           -- Is submenu
           if item.items then
             local opts = table_copy(opts)
@@ -1236,7 +1267,7 @@ function Menu:open(items, open_item, opts)
       end,
       on_global_mbtn_left_down = function(this)
         if this.proximity_raw == 0 then
-          this.selected_item = this:get_item_index_below_cursor()
+          this.selected_index = this:get_item_index_below_cursor()
           this:open_selected_item()
         else
           -- check if this is clicking on any parent menus
@@ -1256,43 +1287,55 @@ function Menu:open(items, open_item, opts)
       end,
       on_global_mouse_move = function(this)
         if this.proximity_raw == 0 then
-          this.selected_item = this:get_item_index_below_cursor()
+          this.selected_index = this:get_item_index_below_cursor()
         else
-          if this.selected_item then
-            this.selected_item = nil
+          if this.selected_index then
+            this.selected_index = nil
           end
         end
         request_render()
       end,
       on_wheel_up = function(this)
-        this.selected_item = nil
+        this.selected_index = nil
         this:scroll_to(this.scroll_y - this.scroll_step)
         -- Selects item below cursor
         this:on_global_mouse_move()
         request_render()
       end,
       on_wheel_down = function(this)
-        this.selected_item = nil
+        this.selected_index = nil
         this:scroll_to(this.scroll_y + this.scroll_step)
         -- Selects item below cursor
         this:on_global_mouse_move()
         request_render()
       end,
       on_pgup = function(this)
-        this.selected_item = nil
-        this:scroll_to(this.scroll_y - this.height)
+        local items_per_page = round((this.height / this.scroll_step) * 0.4)
+        local paged_index = (this.selected_index and this.selected_index or #this.items) - items_per_page
+        this.selected_index = math.min(math.max(1, paged_index), #this.items)
+        if this.selected_index > 0 then
+          this:scroll_to_item(this.selected_index)
+        end
       end,
       on_pgdwn = function(this)
-        this.selected_item = nil
-        this:scroll_to(this.scroll_y + this.height)
+        local items_per_page = round((this.height / this.scroll_step) * 0.4)
+        local paged_index = (this.selected_index and this.selected_index or 1) + items_per_page
+        this.selected_index = math.min(math.max(1, paged_index), #this.items)
+        if this.selected_index > 0 then
+          this:scroll_to_item(this.selected_index)
+        end
       end,
       on_home = function(this)
-        this.selected_item = nil
-        this:scroll_to(0)
+        this.selected_index = math.min(1, #this.items)
+        if this.selected_index > 0 then
+          this:scroll_to_item(this.selected_index)
+        end
       end,
       on_end = function(this)
-        this.selected_item = nil
-        this:scroll_to(this.scroll_height)
+        this.selected_index = #this.items
+        if this.selected_index > 0 then
+          this:scroll_to_item(this.selected_index)
+        end
       end,
       render = render_menu,
     }
@@ -1365,7 +1408,7 @@ function Menu:close(immediate, callback)
   end
 
   if elements:has "menu" and not menu.is_closing then
-    function close()
+    local function close()
       elements.menu:maybe "on_close"
       elements.menu:destroy()
       elements:remove "menu"
@@ -1439,10 +1482,10 @@ end
 function icons._volume(muted, pos_x, pos_y, size)
   local ass = assdraw.ass_new()
   local scale = size / 200
-  function x(number)
+  local function x(number)
     return pos_x + (number * scale)
   end
-  function y(number)
+  local function y(number)
     return pos_y + (number * scale)
   end
   ass:move_to(x(-85), y(-35))
@@ -1477,9 +1520,11 @@ function icons._volume(muted, pos_x, pos_y, size)
   end
   return ass.text
 end
+
 function icons.volume(pos_x, pos_y, size)
   return icons._volume(false, pos_x, pos_y, size)
 end
+
 function icons.volume_muted(pos_x, pos_y, size)
   return icons._volume(true, pos_x, pos_y, size)
 end
@@ -1487,10 +1532,10 @@ end
 function icons.menu_button(pos_x, pos_y, size)
   local ass = assdraw.ass_new()
   local scale = size / 100
-  function x(number)
+  local function x(number)
     return pos_x + (number * scale)
   end
-  function y(number)
+  local function y(number)
     return pos_y + (number * scale)
   end
   local line_height = 14
@@ -1508,10 +1553,10 @@ end
 function icons.arrow_right(pos_x, pos_y, size)
   local ass = assdraw.ass_new()
   local scale = size / 200
-  function x(number)
+  local function x(number)
     return pos_x + (number * scale)
   end
-  function y(number)
+  local function y(number)
     return pos_y + (number * scale)
   end
   ass:move_to(x(-22), y(-80))
@@ -1629,10 +1674,24 @@ function update_proximities()
   end
 end
 
+function update_human_times()
+  if state.time then
+    state.time_human = format_time(state.time)
+    if state.duration then
+      state.duration_or_remaining_time_human =
+        format_time(options.total_time and state.duration or state.time - state.duration)
+    else
+      state.duration_or_remaining_time_human = nil
+    end
+  else
+    state.time_human = nil
+  end
+end
+
 -- ELEMENT RENDERERS
 
 function render_timeline(this)
-  if this.size_max == 0 or state.duration == nil or state.duration == 0 or state.position == nil then
+  if this.size_max == 0 or state.duration == nil or state.duration == 0 or state.time == nil then
     return
   end
 
@@ -1651,7 +1710,7 @@ function render_timeline(this)
   local text_opacity = math.max(math.min(size - hide_text_below, hide_text_ramp), 0) / hide_text_ramp
 
   local spacing = math.max(math.floor((this.size_max - this.font_size) / 2.5), 4)
-  local progress = state.position / state.duration
+  local progress = state.time / state.duration
   local is_line = options.timeline_style == "line"
 
   -- Background bar coordinates
@@ -1666,6 +1725,11 @@ function render_timeline(this)
   local fbx = 0
   local fby = bby
 
+  -- Controls the padding of time on the timeline due to line width.
+  -- It's a distance of the center of the line when from the side when at the
+  -- start or end of the timeline. Effectively half of the line width.
+  local time_padding = 0
+
   if is_line then
     local minimized_fraction = 1 - (size - size_min) / (this.size_max - size_min)
     local width_normal = this:get_effective_line_width()
@@ -1674,12 +1738,17 @@ function render_timeline(this)
     local current_time_x = round((bbx - bax - line_width) * progress)
     fax = current_time_x
     fbx = fax + line_width
+    if line_width > 2 then
+      time_padding = round(line_width / 2)
+    end
   else
     fax = bax
     fay = bay + this.top_border
     fbx = round(bax + this.width * progress)
   end
 
+  local time_x = bax + time_padding
+  local time_width = this.width - time_padding * 2
   local foreground_size = bby - bay
   local foreground_coordinates = fax .. "," .. fay .. "," .. fbx .. "," .. fby -- for clipping
 
@@ -1708,8 +1777,8 @@ function render_timeline(this)
     if state.chapter_ranges ~= nil then
       for i, chapter_range in ipairs(state.chapter_ranges) do
         for i, range in ipairs(chapter_range.ranges) do
-          local rax = bax + this.width * (range["start"].time / state.duration)
-          local rbx = bax + this.width * (range["end"].time / state.duration)
+          local rax = time_x + time_width * (range["start"].time / state.duration)
+          local rbx = time_x + time_width * (range["end"].time / state.duration)
           ass:new_event()
           ass:append("{\\blur0\\bord0\\1c&H" .. chapter_range.color .. "}")
           ass:append(ass_opacity(chapter_range.opacity))
@@ -1761,8 +1830,8 @@ function render_timeline(this)
       local chapter_half_width = chapter_width / 2
       local chapter_half_height = chapter_height / 2
       local function draw_chapter(time)
-        local chapter_x = bax + this.width * (time / state.duration)
-        local color = chapter_x > fbx and options.color_foreground or options.color_background
+        local chapter_x = time_x + time_width * (time / state.duration)
+        local color = (fax < chapter_x and chapter_x < fbx) and options.color_background or options.color_foreground
 
         ass:new_event()
         ass:append("{\\blur0\\bord0\\1c&H" .. color .. "}")
@@ -1824,6 +1893,7 @@ function render_timeline(this)
     if options.timeline_cached_ranges and state.cached_ranges then
       local range_height = math.max(math.min(this.size_max / 8, foreground_size / 3), 1)
       local range_ay = fby - range_height
+
       for _, range in ipairs(state.cached_ranges) do
         ass:new_event()
         ass:append("{\\blur0\\bord0\\1c&H" .. options.timeline_cached_ranges.color .. "}")
@@ -1833,11 +1903,28 @@ function render_timeline(this)
         local range_start = math.max(type(range["start"]) == "number" and range["start"] or 0.000001, 0.000001)
         local range_end = math.min(type(range["end"]) and range["end"] or state.duration, state.duration)
         ass:rect_cw(
-          bax + this.width * (range_start / state.duration),
+          time_x + time_width * (range_start / state.duration),
           range_ay,
-          bax + this.width * (range_end / state.duration),
+          time_x + time_width * (range_end / state.duration),
           range_ay + range_height
         )
+        ass:draw_stop()
+      end
+
+      -- Visualize padded time area limits
+      if time_padding > 0 then
+        local notch_ay = math.max(range_ay - 2, fay)
+        ass:new_event()
+        ass:append("{\\blur0\\bord0\\1c&H" .. options.timeline_cached_ranges.color .. "}")
+        ass:pos(0, 0)
+        ass:draw_start()
+        ass:rect_cw(time_x, notch_ay, time_x + 1, bby)
+        ass:draw_stop()
+        ass:new_event()
+        ass:append("{\\blur0\\bord0\\1c&H" .. options.timeline_cached_ranges.color .. "}")
+        ass:pos(0, 0)
+        ass:draw_start()
+        ass:rect_cw(time_x + time_width - 1, notch_ay, time_x + time_width, bby)
         ass:draw_stop()
       end
     end
@@ -1847,7 +1934,7 @@ function render_timeline(this)
   local function render_time()
     if text_opacity > 0 then
       -- Elapsed time
-      if state.elapsed_seconds then
+      if state.time_human then
         local elapsed_x = bax + spacing
         local elapsed_y = fay + (size / 2)
         ass:new_event()
@@ -1866,7 +1953,7 @@ function render_timeline(this)
         ass:append(ass_opacity(math.min(options.timeline_opacity + 0.1, 1), text_opacity))
         ass:pos(elapsed_x, elapsed_y)
         ass:an(4)
-        ass:append(state.elapsed_time)
+        ass:append(state.time_human)
         ass:new_event()
         ass:append(
           "{\\blur0\\bord0\\shad1\\1c&H"
@@ -1885,17 +1972,11 @@ function render_timeline(this)
         ass:append(ass_opacity(math.min(options.timeline_opacity + 0.1, 1), text_opacity))
         ass:pos(elapsed_x, elapsed_y)
         ass:an(4)
-        ass:append(state.elapsed_time)
+        ass:append(state.time_human)
       end
 
       -- End time
-      local end_time
-      if options.total_time then
-        end_time = this.total_time
-      else
-        end_time = state.remaining_time and "-" .. state.remaining_time
-      end
-      if end_time then
+      if state.duration_or_remaining_time_human then
         local end_x = bbx - spacing
         local end_y = fay + (size / 2)
         ass:new_event()
@@ -1914,7 +1995,7 @@ function render_timeline(this)
         ass:append(ass_opacity(math.min(options.timeline_opacity + 0.1, 1), text_opacity))
         ass:pos(end_x, end_y)
         ass:an(6)
-        ass:append(end_time)
+        ass:append(state.duration_or_remaining_time_human)
         ass:new_event()
         ass:append(
           "{\\blur0\\bord0\\shad1\\1c&H"
@@ -1933,7 +2014,7 @@ function render_timeline(this)
         ass:append(ass_opacity(math.min(options.timeline_opacity + 0.1, 1), text_opacity))
         ass:pos(end_x, end_y)
         ass:an(6)
-        ass:append(end_time)
+        ass:append(state.duration_or_remaining_time_human)
       end
     end
   end
@@ -1971,7 +2052,7 @@ function render_timeline(this)
         end
       end
     end
-    local time_formatted = mp.format_time(hovered_seconds)
+    local time_formatted = format_time(hovered_seconds)
     local margin_time = text_width_estimate(time_formatted, this.font_size) / 2
     local margin_title = chapter_title_width * this.font_size * options.font_height_to_letter_width_ratio / 2
     ass:new_event()
@@ -2486,7 +2567,7 @@ function render_menu(this)
         item_clip = scroll_area_clip
       end
 
-      local is_active = this.active_item == index
+      local is_active = this.active_index == index
       local font_color, background_color, ass_shadow, ass_shadow_color
       local icon_size = this.font_size
 
@@ -2516,7 +2597,7 @@ function render_menu(this)
       ass:draw_stop()
 
       -- Selected highlight
-      if this.selected_item == index then
+      if this.selected_index == index then
         ass:new_event()
         ass:append("{\\blur0\\bord0\\1c&H" .. options.color_foreground .. item_clip .. "}")
         ass:append(ass_opacity(0.1, this.opacity))
@@ -2825,7 +2906,6 @@ elements:add(
     size_min = 0, -- set in `on_display_change` handler based on `state.fullormaxed`
     size_min_override = options.timeline_start_hidden and 0 or nil, -- used for toggle-progress command
     font_size = 0, -- calculated in on_display_change
-    total_time = nil, -- set in op_prop_duration listener
     top_border = options.timeline_border,
     get_effective_proximity = function(this)
       if this.pressed or is_element_persistent "timeline" then
@@ -2873,9 +2953,6 @@ elements:add(
     end,
     on_display_change = function(this)
       this:update_dimensions()
-    end,
-    on_prop_duration = function(this, value)
-      this.total_time = value and mp.format_time(value) or nil
     end,
     set_from_cursor = function(this)
       -- padding serves the purpose of matching cursor to timeline_style=line exactly
@@ -3155,7 +3232,7 @@ if itable_find({ "center", "bottom-bar" }, options.menu_button) then
         end
         if options.menu_button == "bottom-bar" then
           local timeline_proximity = elements.timeline.forced_proximity or elements.timeline.proximity
-          return this.forced_proximity or math[cursor.hidden and "min" or "max"](this.proximity, timeline_proximity)
+          return this.forced_proximity or math.max(this.proximity, timeline_proximity)
         end
         return this.proximity
       end,
@@ -3213,6 +3290,7 @@ if options.speed then
       end
     end
   end
+
   elements:add(
     "speed",
     Element.new {
@@ -3233,7 +3311,7 @@ if options.speed then
           return this.forced_proximity
         end
         local timeline_proximity = elements.timeline.forced_proximity or elements.timeline.proximity
-        return this.forced_proximity or math[cursor.hidden and "min" or "max"](this.proximity, timeline_proximity)
+        return this.forced_proximity or math.max(this.proximity, timeline_proximity)
       end,
       update_dimensions = function(this)
         this.height = state.fullormaxed and options.speed_size_fullscreen or options.speed_size
@@ -3393,13 +3471,13 @@ for _, definition in ipairs(split(options.chapter_ranges, " *,+ *")) do
       -- eof is only used when last range is missing end
       local bof_used = false
 
-      function start_range(chapter)
+      local function start_range(chapter)
         -- If there is already a range started, should we append or overwrite?
         -- I chose overwrite here.
         current_range = { ["start"] = chapter }
       end
 
-      function end_range(chapter)
+      local function end_range(chapter)
         current_range["end"] = chapter
         chapter_range.ranges[#chapter_range.ranges + 1] = current_range
         -- Mark both chapter objects
@@ -3541,6 +3619,45 @@ state.context_menu_items = (function()
 
   if #main_menu.items > 0 then
     return main_menu.items
+  else
+    -- Default context menu
+    return {
+      { title = "Open file", value = "script-binding uosc/open-file" },
+      { title = "Playlist", value = "script-binding uosc/playlist" },
+      { title = "Chapters", value = "script-binding uosc/chapters" },
+      { title = "Subtitle tracks", value = "script-binding uosc/subtitles" },
+      { title = "Audio tracks", value = "script-binding uosc/audio" },
+      { title = "Stream quality", value = "script-binding uosc/stream-quality" },
+      {
+        title = "Navigation",
+        items = {
+          { title = "Next", hint = "playlist or file", value = "script-binding uosc/next" },
+          { title = "Prev", hint = "playlist or file", value = "script-binding uosc/prev" },
+          { title = "Delete file & Next", value = "script-binding uosc/delete-file-next" },
+          { title = "Delete file & Prev", value = "script-binding uosc/delete-file-prev" },
+          { title = "Delete file & Quit", value = "script-binding uosc/delete-file-quit" },
+        },
+      },
+      {
+        title = "Utils",
+        items = {
+          { title = "Load subtitles", value = "script-binding uosc/load-subtitles" },
+          {
+            title = "Aspect ratio",
+            items = {
+              { title = "Default", value = 'set video-aspect-override "-1"' },
+              { title = "16:9", value = 'set video-aspect-override "16:9"' },
+              { title = "4:3", value = 'set video-aspect-override "4:3"' },
+              { title = "2.35:1", value = 'set video-aspect-override "2.35:1"' },
+            },
+          },
+          { title = "Screenshot", value = "async screenshot" },
+          { title = "Show in directory", value = "script-binding uosc/show-in-directory" },
+          { title = "Open config folder", value = "script-binding uosc/open-config-directory" },
+        },
+      },
+      { title = "Quit", value = "quit" },
+    }
   end
 end)()
 
@@ -3667,39 +3784,55 @@ end
 
 -- MENUS
 
-function create_self_updating_menu_opener(params)
+function toggle_menu_with_items(items, menu_options)
+  menu_options = menu_options or {}
+  menu_options.type = "menu"
+
+  -- preselect 1st item
+  if not menu_options.selected_index then
+    menu_options.selected_index = 1
+  end
+
+  if menu:is_open "menu" then
+    menu:close()
+  elseif items then
+    menu:open(items, function(command)
+      mp.command(command)
+    end, menu_options)
+  end
+end
+
+---@param options {type: string; title: string; list_prop: string; list_serializer: fun(name: string, value: any): MenuItem[]; active_prop?: string; active_index_serializer: fun(name: string, value: any): integer; on_select: fun(value: any)}
+function create_self_updating_menu_opener(options)
   return function()
-    if menu:is_open(params.type) then
+    if menu:is_open(options.type) then
       menu:close()
       return
     end
 
     -- Update active index and playlist content on playlist changes
     local function handle_list_prop_change(name, value)
-      if menu:is_open(params.type) then
-        local items, active_item = params.list_change_handler(name, value)
-        elements.menu:update {
-          items = items,
-          active_item = active_item,
-        }
+      if menu:is_open(options.type) then
+        local items, active_index = options.list_serializer(name, value)
+        elements.menu:update { items = items, active_index = active_index }
       end
     end
 
     local function handle_active_prop_change(name, value)
-      if menu:is_open(params.type) then
-        elements.menu:activate_index(params.active_change_handler(name, value))
+      if menu:is_open(options.type) then
+        elements.menu:activate_index(options.active_index_serializer(name, value))
       end
     end
 
-    -- Items and active_item are set in the handle_prop_change callback, since adding
+    -- Items and active_index are set in the handle_prop_change callback, since adding
     -- a property observer triggers its handler immediately, we just let that initialize the items.
-    menu:open({}, params.selection_handler, {
-      type = params.type,
-      title = params.title,
+    menu:open({}, options.on_select, {
+      type = options.type,
+      title = options.title,
       on_open = function()
-        mp.observe_property(params.list_prop, "native", handle_list_prop_change)
-        if params.active_prop then
-          mp.observe_property(params.active_prop, "native", handle_active_prop_change)
+        mp.observe_property(options.list_prop, "native", handle_list_prop_change)
+        if options.active_prop then
+          mp.observe_property(options.active_prop, "native", handle_active_prop_change)
         end
       end,
       on_close = function()
@@ -3711,14 +3844,14 @@ function create_self_updating_menu_opener(params)
 end
 
 function create_select_tracklist_type_menu_opener(menu_title, track_type, track_prop)
-  local function tracklist_change_handler(_, tracklist)
+  local function serialize_tracklist(_, tracklist)
     local items = {}
-    local active_item = nil
+    local active_index = nil
 
     for _, track in ipairs(tracklist) do
       if track.type == track_type then
         if track.selected then
-          active_item = track.id
+          active_index = track.id
         end
 
         local hint_vals = {
@@ -3753,10 +3886,10 @@ function create_select_tracklist_type_menu_opener(menu_title, track_type, track_
     -- If I'm mistaken and there is an active need for this, feel free to
     -- open an issue.
     if track_type == "sub" then
-      active_item = active_item and active_item + 1 or 1
+      active_index = active_index and active_index + 1 or 1
       table.insert(items, 1, { hint = "disabled", value = nil })
     end
-    return items, active_item
+    return items, active_index
   end
 
   local function selection_handler(id)
@@ -3772,29 +3905,32 @@ function create_select_tracklist_type_menu_opener(menu_title, track_type, track_
     title = menu_title,
     type = track_type,
     list_prop = "track-list",
-    list_change_handler = tracklist_change_handler,
-    selection_handler = selection_handler,
+    list_serializer = serialize_tracklist,
+    on_select = selection_handler,
   }
 end
 
--- `menu_options`:
--- **allowed_types** - table with file extensions to display
--- **active_path** - full path of a file to preselect
--- Rest of the options are passed to `menu:open()`
-function open_file_navigation_menu(_directory, handle_select, menu_options)
-  directory = serialize_path(_directory)
+---@alias NavigationMenuOptions {type: string, title?: string, allowed_types?: string[], active_path?: string, selected_path?: string}
+
+-- Opens a file navigation menu with items inside `directory_path`.
+---@param directory_path string
+---@param handle_select fun(path: string): nil
+---@param menu_options NavigationMenuOptions
+function open_file_navigation_menu(directory_path, handle_select, menu_options)
+  directory = serialize_path(directory_path)
+  menu_options = menu_options or {}
 
   if not directory then
-    msg.error("Couldn't serialize path \"" .. _directory .. ".")
+    msg.error("Couldn't serialize path \"" .. directory_path .. ".")
     return
   end
 
-  local directories, error = utils.readdir(directory.path, "dirs")
-  local files, error = get_files_in_directory(directory.path, menu_options.allowed_types)
+  local directories, dirs_error = utils.readdir(directory.path, "dirs")
+  local files, files_error = get_files_in_directory(directory.path, menu_options.allowed_types)
   local is_root = not directory.dirname
 
   if not files or not directories then
-    msg.error("Retrieving files from " .. directory .. " failed: " .. (error or ""))
+    msg.error("Retrieving files from " .. directory .. " failed: " .. (dirs_error or files_error or ""))
     return
   end
 
@@ -3802,54 +3938,125 @@ function open_file_navigation_menu(_directory, handle_select, menu_options)
   table.sort(directories, word_order_comparator)
 
   -- Pre-populate items with parent directory selector if not at root
-  local items = is_root and {} or {
-    { title = "..", hint = "parent dir", value = directory.dirname },
-  }
+  -- Each item value is a serialized path table it points to.
+  local items = {}
+
+  if is_root then
+    if state.os == "windows" then
+      items[#items + 1] = { title = "..", hint = "Drives", value = { is_drives = true, is_to_parent = true } }
+    end
+  else
+    local serialized = serialize_path(directory.dirname)
+    serialized.is_directory = true
+    serialized.is_to_parent = true
+    items[#items + 1] = { title = "..", hint = "parent dir", value = serialized }
+  end
+
+  -- Index where actual items start
+  local items_start_index = #items + 1
 
   for _, dir in ipairs(directories) do
     local serialized = serialize_path(utils.join_path(directory.path, dir))
     if serialized then
-      items[#items + 1] = { title = serialized.basename, value = serialized.path, hint = "/" }
+      serialized.is_directory = true
+      items[#items + 1] = { title = serialized.basename, value = serialized, hint = "/" }
     end
   end
 
-  menu_options.active_item = nil
-
   for _, file in ipairs(files) do
     local serialized = serialize_path(utils.join_path(directory.path, file))
-
     if serialized then
-      local item_index = #items + 1
+      serialized.is_file = true
+      items[#items + 1] = { title = serialized.basename, value = serialized }
+    end
+  end
 
-      items[item_index] = {
-        title = serialized.basename,
-        value = serialized.path,
-      }
+  menu_options.active_index = nil
 
-      if menu_options.active_path == serialized.path then
-        menu_options.active_item = item_index
+  for index, item in ipairs(items) do
+    if not item.value.is_to_parent then
+      if menu_options.active_path == item.value.path then
+        menu_options.active_index = index
+      end
+
+      if menu_options.selected_path == item.value.path then
+        menu_options.selected_index = index
       end
     end
   end
 
-  menu_options.selected_item = menu_options.active_item or ((is_root == false and #files > 1) and 2 or 1)
-  menu_options.title = directory.basename .. "/"
+  if menu_options.selected_index == nil then
+    menu_options.selected_index = menu_options.active_index or math.min(items_start_index, #items)
+  end
+
+  local inherit_title = false
+  if menu_options.title == nil then
+    menu_options.title = directory.basename .. "/"
+  else
+    inherit_title = true
+  end
 
   menu:open(items, function(path)
-    local meta, error = utils.file_info(path)
+    local inheritable_options = {
+      type = menu_options.type,
+      title = inherit_title and menu_options.title or nil,
+      allowed_types = menu_options.allowed_types,
+      active_path = menu_options.active_path,
+    }
 
-    if not meta then
-      msg.error("Retrieving file info for " .. path .. " failed: " .. (error or ""))
+    if path.is_drives then
+      open_drives_menu(function(drive_path)
+        open_file_navigation_menu(drive_path, handle_select, inheritable_options)
+      end, { type = inheritable_options.type, title = inheritable_options.title, selected_path = directory.path })
       return
     end
 
-    if meta.is_dir then
-      open_file_navigation_menu(path, handle_select, menu_options)
+    if path.is_directory then
+      --  Preselect directory we are coming from
+      if path.is_to_parent then
+        inheritable_options.selected_path = directory.path
+      end
+
+      open_file_navigation_menu(path.path, handle_select, inheritable_options)
     else
-      handle_select(path)
+      handle_select(path.path)
       menu:close()
     end
   end, menu_options)
+end
+
+-- Opens a file navigation menu with Windows drives as items.
+---@param handle_select fun(path: string): nil
+---@param menu_options? NavigationMenuOptions
+function open_drives_menu(handle_select, menu_options)
+  menu_options = menu_options or {}
+  local process = mp.command_native {
+    name = "subprocess",
+    capture_stdout = true,
+    args = { "wmic", "logicaldisk", "get", "name", "/value" },
+  }
+  local items = {}
+
+  if process.status == 0 then
+    for _, value in ipairs(split(process.stdout, "\n")) do
+      local drive = string.match(value, "Name=([A-Z]:)")
+      if drive then
+        local drive_path = normalize_path(drive)
+        items[#items + 1] = { title = drive, hint = "Drive", value = drive_path }
+        if menu_options.selected_path == drive_path then
+          menu_options.selected_index = #items
+        end
+      end
+    end
+  else
+    msg.error(process.stderr)
+  end
+
+  if not menu_options.title then
+    menu_options.title = "Drives"
+  end
+
+  menu:open(items, handle_select, menu_options)
 end
 
 -- VALUE SERIALIZATION/NORMALIZATION
@@ -3881,6 +4088,16 @@ end
 
 -- HOOKS
 mp.register_event("file-loaded", parse_chapters)
+mp.observe_property("playback-time", "number", function(name, val)
+  state.time = val
+  update_human_times()
+  request_render()
+end)
+mp.observe_property("duration", "number", function(name, val)
+  state.duration = val
+  update_human_times()
+  request_render()
+end)
 mp.observe_property("track-list", "native", function(name, value)
   -- checks if the file is audio only (mp3, etc)
   local has_audio = false
@@ -3906,7 +4123,6 @@ mp.observe_property("chapter-list", "native", parse_chapters)
 mp.observe_property("border", "bool", create_state_setter "border")
 mp.observe_property("ab-loop-a", "number", create_state_setter "ab_loop_a")
 mp.observe_property("ab-loop-b", "number", create_state_setter "ab_loop_b")
-mp.observe_property("duration", "number", create_state_setter "duration")
 mp.observe_property("media-title", "string", create_state_setter "media_title")
 mp.observe_property("playlist-pos-1", "number", create_state_setter "playlist_pos")
 mp.observe_property("playlist-count", "number", create_state_setter "playlist_count")
@@ -3930,23 +4146,6 @@ mp.observe_property("pause", "bool", create_state_setter "pause")
 mp.observe_property("volume", "number", create_state_setter "volume")
 mp.observe_property("volume-max", "number", create_state_setter "volume_max")
 mp.observe_property("mute", "bool", create_state_setter "mute")
-mp.observe_property("playback-time", "number", function(name, val)
-  -- Ignore the initial call with nil value
-  if val == nil then
-    return
-  end
-
-  state.position = val
-  state.elapsed_seconds = val
-  state.elapsed_time = state.elapsed_seconds and mp.format_time(state.elapsed_seconds) or nil
-
-  request_render()
-end)
-mp.observe_property("playtime-remaining", "number", function(name, val)
-  state.remaining_seconds = mp.get_property_native "playtime-remaining"
-  state.remaining_time = state.remaining_seconds and mp.format_time(state.remaining_seconds) or nil
-  request_render()
-end)
 mp.observe_property("osd-dimensions", "native", function(name, val)
   update_display_dimensions()
   request_render()
@@ -4004,7 +4203,7 @@ mp.enable_key_bindings("mouse_movement", "allow-vo-dragging+allow-hide-cursor")
 -- Context based key bind groups
 
 forced_key_bindings = (function()
-  function create_mouse_event_dispatcher(name)
+  local function create_mouse_event_dispatcher(name)
     return function(...)
       for _, element in pairs(elements) do
         if element.proximity_raw == 0 then
@@ -4016,11 +4215,7 @@ forced_key_bindings = (function()
   end
 
   mp.set_key_bindings({
-    {
-      "mbtn_left",
-      create_mouse_event_dispatcher "mbtn_left_up",
-      create_mouse_event_dispatcher "mbtn_left_down",
-    },
+    { "mbtn_left", create_mouse_event_dispatcher "mbtn_left_up", create_mouse_event_dispatcher "mbtn_left_down" },
     { "mbtn_left_dbl", "ignore" },
   }, "mbtn_left", "force")
   mp.set_key_bindings({
@@ -4093,22 +4288,46 @@ mp.add_key_binding(nil, "decide-pause-indicator", function()
   elements.pause_indicator:decide()
 end)
 function menu_key_binding()
-  if menu:is_open "menu" then
-    menu:close()
-  elseif state.context_menu_items then
-    menu:open(state.context_menu_items, function(command)
-      mp.command(command)
-    end, { type = "menu" })
-  end
+  toggle_menu_with_items(state.context_menu_items)
 end
 mp.add_key_binding(nil, "menu", menu_key_binding)
+mp.register_script_message("show-submenu", function(name)
+  local path = split(name, " *>+ *")
+  local items = state.context_menu_items
+  local last_menu_title = nil
+
+  if not items or #items < 1 then
+    msg.error "Can't find submenu, context menu is empty."
+    return
+  end
+
+  while #path > 0 do
+    local menu_title = path[1]
+    last_menu_title = menu_title
+    path = itable_slice(path, 2)
+    local _, submenu_item = itable_find(items, function(_, item)
+      return item.title == menu_title
+    end)
+
+    if not submenu_item then
+      msg.error("Can't find submenu: " .. menu_title)
+      return
+    end
+
+    items = submenu_item.items or {}
+  end
+
+  if items then
+    toggle_menu_with_items(items, { title = last_menu_title, selected_index = 1 })
+  end
+end)
 mp.add_key_binding(nil, "load-subtitles", function()
   if menu:is_open "load-subtitles" then
     menu:close()
     return
   end
 
-  local path = mp.get_property_native "path"
+  local path = mp.get_property_native "path" --[[@as string|nil|false]]
   if path then
     if is_protocol(path) then
       path = false
@@ -4118,13 +4337,14 @@ mp.add_key_binding(nil, "load-subtitles", function()
     end
   end
   if not path then
-    path = os.getenv "HOME"
+    path = os.getenv "HOME" --[[@as string]]
   end
   open_file_navigation_menu(path, function(path)
     mp.commandv("sub-add", path)
   end, {
     type = "load-subtitles",
-    allowed_types = options.subtitle_types,
+    title = "Load subtitles",
+    allowed_types = options.subtitle_types, --[[@as table]]
   })
 end)
 mp.add_key_binding(nil, "subtitles", create_select_tracklist_type_menu_opener("Subtitles", "sub", "sid"))
@@ -4137,7 +4357,7 @@ mp.add_key_binding(
     title = "Playlist",
     type = "playlist",
     list_prop = "playlist",
-    list_change_handler = function(_, playlist)
+    list_serializer = function(_, playlist)
       local items = {}
       for index, item in ipairs(playlist) do
         local is_url = item.filename:find "://"
@@ -4151,10 +4371,10 @@ mp.add_key_binding(
       return items
     end,
     active_prop = "playlist-pos-1",
-    active_change_handler = function(_, playlist_pos)
+    active_index_serializer = function(_, playlist_pos)
       return playlist_pos
     end,
-    selection_handler = function(index)
+    on_select = function(index)
       mp.commandv("set", "playlist-pos-1", tostring(index))
     end,
   }
@@ -4166,7 +4386,7 @@ mp.add_key_binding(
     title = "Chapters",
     type = "chapters",
     list_prop = "chapter-list",
-    list_change_handler = function(_, _)
+    list_serializer = function(_, _)
       local items = {}
       local chapters = get_normalized_chapters()
 
@@ -4180,7 +4400,7 @@ mp.add_key_binding(
       return items
     end,
     active_prop = "playback-time",
-    active_change_handler = function(_, playback_time)
+    active_index_serializer = function(_, playback_time)
       -- Select first chapter from the end with time lower
       -- than current playing position.
       local position = playback_time
@@ -4194,7 +4414,7 @@ mp.add_key_binding(
         end
       end
     end,
-    selection_handler = function(time)
+    on_select = function(time)
       mp.commandv("seek", tostring(time), "absolute")
     end,
   }
@@ -4229,7 +4449,7 @@ mp.add_key_binding(nil, "stream-quality", function()
   end
 
   local ytdl_format = mp.get_property_native "ytdl-format"
-  local active_item = nil
+  local active_index = nil
   local formats = {}
 
   for index, height in ipairs(options.stream_quality_options) do
@@ -4239,7 +4459,7 @@ mp.add_key_binding(nil, "stream-quality", function()
       value = format,
     }
     if format == ytdl_format then
-      active_item = index
+      active_index = index
     end
   end
 
@@ -4271,7 +4491,7 @@ mp.add_key_binding(nil, "stream-quality", function()
   end, {
     type = "stream-quality",
     title = "Stream quality",
-    active_item = active_item,
+    active_index = active_index,
   })
 end)
 mp.add_key_binding(nil, "open-file", function()
@@ -4304,7 +4524,7 @@ mp.add_key_binding(nil, "open-file", function()
   end
 
   -- Update selected file in directory navigation menu
-  function handle_file_loaded()
+  local function handle_file_loaded()
     if menu:is_open "open-file" then
       local path = normalize_path(mp.get_property_native "path")
       elements.menu:activate_value(path)
@@ -4316,7 +4536,7 @@ mp.add_key_binding(nil, "open-file", function()
     mp.commandv("loadfile", path)
   end, {
     type = "open-file",
-    allowed_types = options.media_types,
+    allowed_types = options.media_types, --[[@as table]]
     active_path = active_file,
     on_open = function()
       mp.register_event("file-loaded", handle_file_loaded)

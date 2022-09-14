@@ -1,10 +1,12 @@
-local map = vim.keymap.set
+local map = function(...)
+  vim.keymap.set(...)
+end
 
 local M = {}
 
 M.disabled = {
   -- disable telescope live grep and use ours
-  n = { ["<C-c>"] = "", ["<leader>fw"] = "" },
+  n = { ["<C-s>"] = "", ["<C-c>"] = "", ["<leader>fw"] = "" },
 }
 
 function M.aki()
@@ -80,9 +82,7 @@ function M.lspconfig(client, bufnr)
 
   buf_k("n", m.definition, "<cmd>Lspsaga lsp_finder<CR>")
 
-  buf_k("n", m.hover, function()
-    require("lspsaga.hover").render_hover_doc()
-  end)
+  buf_k("n", m.hover, "<cmd>Lspsaga hover_doc<CR>")
   -- scroll down hover doc or scroll in definition preview
   buf_k("n", "<C-f>", function()
     require("lspsaga.action").smart_scroll_with_saga(1)
@@ -102,14 +102,9 @@ function M.lspconfig(client, bufnr)
 
   buf_k("n", m.rename, vim.lsp.buf.rename)
 
-  buf_k("n", m.code_action, function()
-    require("lspsaga.codeaction").code_action()
-  end)
+  buf_k("n", m.code_action, [[:Lspsaga code_action<cr>]])
 
-  buf_k("v", "<leader>ca", function()
-    vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-U>", true, false, true))
-    require("lspsaga.codeaction").range_code_action()
-  end)
+  buf_k("v", "<leader>ca", [[:Lspsaga range_code_action<cr>]])
 
   buf_k("n", m.references, function()
     require("trouble").open "lsp_references"

@@ -9,26 +9,10 @@ M.options = {
 }
 
 M.ui = {
-  theme = "tokyodark", -- default theme
+  theme = "tokyodark",
 }
 
-M.plugins = {
-  remove = {
-    "folke/which-key.nvim",
-    "kyazdani42/nvim-tree.lua",
-    "neovim/nvim-lspconfig",
-    "NvChad/nvterm",
-  },
-  user = require "custom.plugins",
-}
-
-M.plugins.override = {
-  ["max397574/better-escape.nvim"] = { mapping = { "jk", "JK", "Jk" } },
-  ["windwp/nvim-autopairs"] = { check_ts = true },
-  ["NvChad/nvim-colorizer.lua"] = require("custom.plugins.common").colorizer(),
-  ["nvim-telescope/telescope.nvim"] = require("custom.plugins.common").telescope(),
-  ["NvChad/ui"] = { tabufline = { enabled = false }, statusline = { separator_style = "arrow" } },
-}
+M.plugins = require "custom.plugins"
 
 M.mappings = {
   telescope = require("custom.mappings").telescope,

@@ -40,6 +40,7 @@ detect_skip: number of frames before the filter cropdetect return a metadata, so
     caused by changing the limit used by the filter, increase this option help reduce the impact.
 ]]
 --
+local mp = require "mp"
 require "mp.msg"
 require "mp.options"
 
