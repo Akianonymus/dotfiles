@@ -45,6 +45,13 @@ function M.aki()
   map({ "n", "t", "i" }, "<a-w>", [[<C-\><C-n><C-w>W]])
 end
 
+function M.bufdelete()
+  -- close buffer
+  map({ "n", "x" }, "<leader>x", function()
+    require("bufdelete").bufdelete(0, true)
+  end)
+end
+
 function M.bufferline()
   map("n", "<tab>", "<cmd>:BufferLineCycleNext<cr>")
   map("n", "<s-tab>", "<cmd>:BufferLineCyclePrev<cr>")

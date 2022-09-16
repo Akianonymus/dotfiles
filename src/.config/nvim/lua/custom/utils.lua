@@ -43,6 +43,7 @@ function M.setup_lsp_format(client, bufnr)
   else
     -- stable
     format = client.resolved_capabilities.documentFormattingProvider
+      or client.server_capabilities.documentFormattingProvider
   end
   if format then
     local buf_k = function(mo, k, c)

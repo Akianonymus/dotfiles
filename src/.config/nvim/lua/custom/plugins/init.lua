@@ -85,6 +85,13 @@ return {
     end,
   },
 
+  ["famiu/bufdelete.nvim"] = {
+    module = "bufdelete",
+    setup = function()
+      require("custom.mappings").bufdelete()
+    end,
+  },
+
   ["akinsho/bufferline.nvim"] = {
     -- opt = true,
     -- setup = function()

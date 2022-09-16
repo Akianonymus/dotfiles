@@ -43,7 +43,7 @@ if vim.bo.filetype ~= "" then
     else
       vim.defer_fn(function()
         setup()
-      end)
+      end, 0)
     end
   end
 end

@@ -62,7 +62,7 @@ function M.lsp_autosave_format(bufnr)
       if vim.g.vim_version > 7 then
         vim.lsp.buf.format()
       else
-        vim.lsp.buf.formatting {}
+        vim.lsp.buf.formatting_sync {}
       end
     end,
   })
