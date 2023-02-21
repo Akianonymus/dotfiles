@@ -9,7 +9,7 @@ local config = {
     show_buffer_close_icons = true,
     themable = true,
     color_icons = true,
-    separator_style = "slant",
+    separator_style = "slope",
   },
 }
 

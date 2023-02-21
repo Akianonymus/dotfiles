@@ -7,7 +7,7 @@ function M.aki()
   -- close with	q on certain filetypes
   autocmd("FileType", {
 	    -- stylua: ignore
-		pattern = { "qf", "help", "man", "notify", "lspinfo", "spectre_panel", "startuptime" },
+		pattern = { "qf", "help", "man", "notify", "lspinfo", "spectre_panel", "startuptime", "noice" },
     callback = function(event)
       vim.bo[event.buf].buflisted = false
       vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })

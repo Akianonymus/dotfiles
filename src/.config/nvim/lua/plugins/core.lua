@@ -1,5 +1,6 @@
 local mappings = require("mappings")
 return {
+  { "folke/lazy.nvim", version = "*" },
   {
     "nmac427/guess-indent.nvim",
     event = "VeryLazy",

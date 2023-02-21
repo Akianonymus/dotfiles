@@ -5,7 +5,7 @@ local M = {}
 -- non plugin commands
 function M.aki()
   command("Sudowrite", function()
-    require("custom.utils").sudo_write()
+    require("utils").sudo_write()
   end, { desc = "Write to files using sudo" })
 end
 
