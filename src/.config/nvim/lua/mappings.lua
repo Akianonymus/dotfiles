@@ -14,7 +14,10 @@ function M.aki()
   map({ "n", "x" }, "<Down>", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', { expr = true, silent = true })
   map({ "n", "x" }, "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', { expr = true, silent = true })
   map({ "n", "x" }, "<Up>", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', { expr = true, silent = true })
-  map("x", "p", 'p:let @+=@0<CR>:let @"=@0<CR>')
+
+  -- put without yanking text
+  -- https://github.com/vim/vim/releases/tag/v8.2.4242
+  map("x", "p", "P")
 
   -- Reselect visual selection after indenting
   map("v", "<", "<gv")
