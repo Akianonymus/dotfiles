@@ -1,17 +1,17 @@
 --https://raw.githubusercontent.com/tomasklaen/uosc/master/uosc.lua
 --[[ uosc 3.1.1 - 2022-Aug-24 | https://github.com/tomasklaen/uosc ]]
 
-local mp = require "mp"
-if mp.get_property "osc" == "yes" then
-  mp.msg.info "Disabled because original osc is enabled!"
+local mp = require("mp")
+if mp.get_property("osc") == "yes" then
+  mp.msg.info("Disabled because original osc is enabled!")
   return
 end
 
-local assdraw = require "mp.assdraw"
-local opt = require "mp.options"
-local utils = require "mp.utils"
-local msg = require "mp.msg"
-local osd = mp.create_osd_overlay "ass-events"
+local assdraw = require("mp.assdraw")
+local opt = require("mp.options")
+local utils = require("mp.utils")
+local msg = require("mp.msg")
+local osd = mp.create_osd_overlay("ass-events")
 local infinity = 1e309
 
 -- OPTIONS/CONFIG/STATE
@@ -108,7 +108,7 @@ local config = {
   -- sets max rendering frequency in case the
   -- native rendering frequency could not be detected
   render_delay = 1 / 60,
-  font = mp.get_property "options/osd-font",
+  font = mp.get_property("options/osd-font"),
 }
 local bold_tag = options.font_bold and "\\b1" or ""
 local display = {
@@ -123,28 +123,28 @@ local cursor = {
 }
 local state = {
   os = (function()
-    if os.getenv "windir" ~= nil then
+    if os.getenv("windir") ~= nil then
       return "windows"
     end
-    local homedir = os.getenv "HOME"
+    local homedir = os.getenv("HOME")
     if homedir ~= nil and string.sub(homedir, 1, 6) == "/Users" then
       return "macos"
     end
     return "linux"
   end)(),
-  cwd = mp.get_property "working-directory",
+  cwd = mp.get_property("working-directory"),
   media_title = "",
   time = nil, -- current media playback time
   duration = nil, -- current media duration
   time_human = nil, -- current playback time in human format
   duration_or_remaining_time_human = nil, -- depends on options.total_time
-  pause = mp.get_property_native "pause",
+  pause = mp.get_property_native("pause"),
   chapters = nil,
   chapter_ranges = nil,
-  border = mp.get_property_native "border",
-  fullscreen = mp.get_property_native "fullscreen",
-  maximized = mp.get_property_native "window-maximized",
-  fullormaxed = mp.get_property_native "fullscreen" or mp.get_property_native "window-maximized",
+  border = mp.get_property_native("border"),
+  fullscreen = mp.get_property_native("fullscreen"),
+  maximized = mp.get_property_native("window-maximized"),
+  fullormaxed = mp.get_property_native("fullscreen") or mp.get_property_native("window-maximized"),
   render_timer = nil,
   render_last_time = 0,
   volume = nil,
@@ -154,7 +154,7 @@ local state = {
   is_image = nil,
   has_audio = nil,
   has_video = nil,
-  cursor_autohide_timer = mp.add_timeout(mp.get_property_native "cursor-autohide" / 1000, function()
+  cursor_autohide_timer = mp.add_timeout(mp.get_property_native("cursor-autohide") / 1000, function()
     if not options.autohide then
       return
     end
@@ -596,7 +596,7 @@ function normalize_path(path)
   end
 
   -- Ensure path is absolute
-  if not (path:match "^/" or path:match "^%a+:" or path:match "^\\\\") then
+  if not (path:match("^/") or path:match("^%a+:") or path:match("^\\\\")) then
     path = utils.join_path(state.cwd, path)
   end
 
@@ -621,7 +621,7 @@ end
 
 -- Check if path is a protocol, such as `http://...`
 function is_protocol(path)
-  return path:match "^%a[%a%d-_]+://"
+  return path:match("^%a[%a%d-_]+://")
 end
 
 function get_extension(path)
@@ -715,18 +715,18 @@ end
 -- `status:number(<0=error), stdout, stderr, error_string, killed_by_us:boolean`
 function delete_file(file_path)
   local args = state.os == "windows" and { "cmd", "/C", "del", file_path } or { "rm", file_path }
-  return mp.command_native {
+  return mp.command_native({
     name = "subprocess",
     args = args,
     playback_only = false,
     capture_stdout = true,
     capture_stderr = true,
-  }
+  })
 end
 
 -- Ensures chapters are in chronological order
 function get_normalized_chapters()
-  local chapters = mp.get_property_native "chapter-list"
+  local chapters = mp.get_property_native("chapter-list")
 
   if not chapters then
     return
@@ -973,7 +973,7 @@ function Menu:open(items, open_item, opts)
 
   elements:add(
     "menu",
-    Element.new {
+    Element.new({
       type = nil, -- menu type such as `menu`, `chapters`, ...
       title = nil,
       width = nil,
@@ -1338,10 +1338,10 @@ function Menu:open(items, open_item, opts)
         end
       end,
       render = render_menu,
-    }
+    })
   )
 
-  elements.menu:maybe "on_open"
+  elements.menu:maybe("on_open")
 end
 
 function Menu:add_key_binding(key, name, fn, flags)
@@ -1353,38 +1353,38 @@ function Menu:enable_key_bindings()
   menu.key_bindings = {}
   -- The `mp.set_key_bindings()` method would be easier here, but that
   -- doesn't support 'repeatable' flag, so we are stuck with this monster.
-  menu:add_key_binding("up", "menu-prev1", self:create_action "prev", "repeatable")
-  menu:add_key_binding("down", "menu-next1", self:create_action "next", "repeatable")
-  menu:add_key_binding("left", "menu-back1", self:create_action "back")
-  menu:add_key_binding("right", "menu-select1", self:create_action "open_selected_item")
-  menu:add_key_binding("shift+right", "menu-select-soft1", self:create_action "open_selected_item_soft")
-  menu:add_key_binding("shift+mbtn_left", "menu-select-soft", self:create_action "open_selected_item_soft")
+  menu:add_key_binding("up", "menu-prev1", self:create_action("prev"), "repeatable")
+  menu:add_key_binding("down", "menu-next1", self:create_action("next"), "repeatable")
+  menu:add_key_binding("left", "menu-back1", self:create_action("back"))
+  menu:add_key_binding("right", "menu-select1", self:create_action("open_selected_item"))
+  menu:add_key_binding("shift+right", "menu-select-soft1", self:create_action("open_selected_item_soft"))
+  menu:add_key_binding("shift+mbtn_left", "menu-select-soft", self:create_action("open_selected_item_soft"))
 
   if options.menu_wasd_navigation then
-    menu:add_key_binding("w", "menu-prev2", self:create_action "prev", "repeatable")
-    menu:add_key_binding("a", "menu-back2", self:create_action "back")
-    menu:add_key_binding("s", "menu-next2", self:create_action "next", "repeatable")
-    menu:add_key_binding("d", "menu-select2", self:create_action "open_selected_item")
-    menu:add_key_binding("shift+d", "menu-select-soft2", self:create_action "open_selected_item_soft")
+    menu:add_key_binding("w", "menu-prev2", self:create_action("prev"), "repeatable")
+    menu:add_key_binding("a", "menu-back2", self:create_action("back"))
+    menu:add_key_binding("s", "menu-next2", self:create_action("next"), "repeatable")
+    menu:add_key_binding("d", "menu-select2", self:create_action("open_selected_item"))
+    menu:add_key_binding("shift+d", "menu-select-soft2", self:create_action("open_selected_item_soft"))
   end
 
   if options.menu_hjkl_navigation then
-    menu:add_key_binding("h", "menu-back3", self:create_action "back")
-    menu:add_key_binding("j", "menu-next3", self:create_action "next", "repeatable")
-    menu:add_key_binding("k", "menu-prev3", self:create_action "prev", "repeatable")
-    menu:add_key_binding("l", "menu-select3", self:create_action "open_selected_item")
-    menu:add_key_binding("shift+l", "menu-select-soft3", self:create_action "open_selected_item_soft")
+    menu:add_key_binding("h", "menu-back3", self:create_action("back"))
+    menu:add_key_binding("j", "menu-next3", self:create_action("next"), "repeatable")
+    menu:add_key_binding("k", "menu-prev3", self:create_action("prev"), "repeatable")
+    menu:add_key_binding("l", "menu-select3", self:create_action("open_selected_item"))
+    menu:add_key_binding("shift+l", "menu-select-soft3", self:create_action("open_selected_item_soft"))
   end
 
-  menu:add_key_binding("mbtn_back", "menu-back-alt3", self:create_action "back")
-  menu:add_key_binding("bs", "menu-back-alt4", self:create_action "back")
-  menu:add_key_binding("enter", "menu-select-alt3", self:create_action "open_selected_item")
-  menu:add_key_binding("kp_enter", "menu-select-alt4", self:create_action "open_selected_item")
-  menu:add_key_binding("esc", "menu-close", self:create_action "close")
-  menu:add_key_binding("pgup", "menu-page-up", self:create_action "on_pgup")
-  menu:add_key_binding("pgdwn", "menu-page-down", self:create_action "on_pgdwn")
-  menu:add_key_binding("home", "menu-home", self:create_action "on_home")
-  menu:add_key_binding("end", "menu-end", self:create_action "on_end")
+  menu:add_key_binding("mbtn_back", "menu-back-alt3", self:create_action("back"))
+  menu:add_key_binding("bs", "menu-back-alt4", self:create_action("back"))
+  menu:add_key_binding("enter", "menu-select-alt3", self:create_action("open_selected_item"))
+  menu:add_key_binding("kp_enter", "menu-select-alt4", self:create_action("open_selected_item"))
+  menu:add_key_binding("esc", "menu-close", self:create_action("close"))
+  menu:add_key_binding("pgup", "menu-page-up", self:create_action("on_pgup"))
+  menu:add_key_binding("pgdwn", "menu-page-down", self:create_action("on_pgdwn"))
+  menu:add_key_binding("home", "menu-home", self:create_action("on_home"))
+  menu:add_key_binding("end", "menu-end", self:create_action("on_end"))
 end
 
 function Menu:disable_key_bindings()
@@ -1407,11 +1407,11 @@ function Menu:close(immediate, callback)
     callback = immediate
   end
 
-  if elements:has "menu" and not menu.is_closing then
+  if elements:has("menu") and not menu.is_closing then
     local function close()
-      elements.menu:maybe "on_close"
+      elements.menu:maybe("on_close")
       elements.menu:destroy()
-      elements:remove "menu"
+      elements:remove("menu")
       menu.is_closing = false
       update_proximities()
       menu:disable_key_bindings()
@@ -1580,7 +1580,7 @@ function update_display_dimensions()
   display.aspect = aspect
 
   -- Tell elements about this
-  elements:trigger "display_change"
+  elements:trigger("display_change")
 
   -- Some elements probably changed their rectangles as a reaction to `display_change`
   update_proximities()
@@ -1667,10 +1667,10 @@ function update_proximities()
 
   -- Trigger `mouse_leave` and `mouse_enter` events
   for _, element in ipairs(mouse_leave_elements) do
-    element:trigger "mouse_leave"
+    element:trigger("mouse_leave")
   end
   for _, element in ipairs(mouse_enter_elements) do
-    element:trigger "mouse_enter"
+    element:trigger("mouse_enter")
   end
 end
 
@@ -2122,7 +2122,7 @@ function render_top_bar(this)
     if close.proximity_raw == 0 then
       -- Background on hover
       ass:new_event()
-      ass:append "{\\blur0\\bord0\\1c&H2311e8}"
+      ass:append("{\\blur0\\bord0\\1c&H2311e8}")
       ass:append(ass_opacity(this.button_opacity, opacity))
       ass:pos(0, 0)
       ass:draw_start()
@@ -2130,7 +2130,7 @@ function render_top_bar(this)
       ass:draw_stop()
     end
     ass:new_event()
-    ass:append "{\\blur0\\bord1\\shad1\\3c&HFFFFFF\\4c&H000000}"
+    ass:append("{\\blur0\\bord1\\shad1\\3c&HFFFFFF\\4c&H000000}")
     ass:append(ass_opacity(this.button_opacity, opacity))
     ass:pos(close.ax + (this.button_width / 2), close.ay + (this.size / 2))
     ass:draw_start()
@@ -2145,7 +2145,7 @@ function render_top_bar(this)
     if maximize.proximity_raw == 0 then
       -- Background on hover
       ass:new_event()
-      ass:append "{\\blur0\\bord0\\1c&H222222}"
+      ass:append("{\\blur0\\bord0\\1c&H222222}")
       ass:append(ass_opacity(this.button_opacity, opacity))
       ass:pos(0, 0)
       ass:draw_start()
@@ -2153,14 +2153,14 @@ function render_top_bar(this)
       ass:draw_stop()
     end
     ass:new_event()
-    ass:append "{\\blur0\\bord2\\shad0\\1c\\3c&H000000}"
+    ass:append("{\\blur0\\bord2\\shad0\\1c\\3c&H000000}")
     ass:append(ass_opacity({ [3] = this.button_opacity }, opacity))
     ass:pos(maximize.ax + (this.button_width / 2), maximize.ay + (this.size / 2))
     ass:draw_start()
     ass:rect_cw(-this.icon_size + 1, -this.icon_size + 1, this.icon_size + 1, this.icon_size + 1)
     ass:draw_stop()
     ass:new_event()
-    ass:append "{\\blur0\\bord2\\shad0\\1c\\3c&HFFFFFF}"
+    ass:append("{\\blur0\\bord2\\shad0\\1c\\3c&HFFFFFF}")
     ass:append(ass_opacity({ [3] = this.button_opacity }, opacity))
     ass:pos(maximize.ax + (this.button_width / 2), maximize.ay + (this.size / 2))
     ass:draw_start()
@@ -2172,7 +2172,7 @@ function render_top_bar(this)
     if minimize.proximity_raw == 0 then
       -- Background on hover
       ass:new_event()
-      ass:append "{\\blur0\\bord0\\1c&H222222}"
+      ass:append("{\\blur0\\bord0\\1c&H222222}")
       ass:append(ass_opacity(this.button_opacity, opacity))
       ass:pos(0, 0)
       ass:draw_start()
@@ -2180,9 +2180,9 @@ function render_top_bar(this)
       ass:draw_stop()
     end
     ass:new_event()
-    ass:append "{\\blur0\\bord1\\shad1\\3c&HFFFFFF\\4c&H000000}"
+    ass:append("{\\blur0\\bord1\\shad1\\3c&HFFFFFF\\4c&H000000}")
     ass:append(ass_opacity(this.button_opacity, opacity))
-    ass:append "{\\1a&HFF&}"
+    ass:append("{\\1a&HFF&}")
     ass:pos(minimize.ax + (this.button_width / 2), minimize.ay + (this.size / 2))
     ass:draw_start()
     ass:move_to(-this.icon_size, 0)
@@ -2434,7 +2434,7 @@ function render_speed(this)
       end
 
       ass:new_event()
-      ass:append "{\\blur0\\bord1\\shad0\\1c&HFFFFFF\\3c&H000000}"
+      ass:append("{\\blur0\\bord1\\shad0\\1c&HFFFFFF\\3c&H000000}")
       ass:append(ass_opacity(math.min(1.2 - (math.abs((notch_x - ax - half_width) / half_width)), 1), opacity))
       ass:pos(0, 0)
       ass:draw_start()
@@ -2448,7 +2448,7 @@ function render_speed(this)
 
   -- Center guide
   ass:new_event()
-  ass:append "{\\blur0\\bord1\\shad0\\1c&HFFFFFF\\3c&H000000}"
+  ass:append("{\\blur0\\bord1\\shad0\\1c&HFFFFFF\\3c&H000000}")
   ass:append(ass_opacity(options.speed_opacity, opacity))
   ass:pos(0, 0)
   ass:draw_start()
@@ -2726,7 +2726,7 @@ function render()
   local ass = assdraw.ass_new()
 
   for _, element in elements:ipairs() do
-    local result = element:maybe "render"
+    local result = element:maybe("render")
     if result then
       ass:new_event()
       ass:merge(result)
@@ -2749,7 +2749,7 @@ end
 
 elements:add(
   "window_border",
-  Element.new {
+  Element.new({
     size = nil, -- set in init
     init = function(this)
       this:update_size()
@@ -2787,11 +2787,11 @@ elements:add(
         return ass
       end
     end,
-  }
+  })
 )
 elements:add(
   "pause_indicator",
-  Element.new {
+  Element.new({
     base_icon_opacity = options.pause_indicator == "flash" and 1 or 0.8,
     paused = state.pause,
     type = options.pause_indicator,
@@ -2817,7 +2817,7 @@ elements:add(
       -- can't wait for pause property event listener to set this, because when this is used inside a binding like:
       -- cycle pause; script-binding uosc/flash-pause-indicator
       -- the pause event is not fired fast enough, and indicator starts rendering with old icon
-      this.paused = mp.get_property_native "pause"
+      this.paused = mp.get_property_native("pause")
       if this.is_manual then
         this.type = "flash"
       end
@@ -2829,7 +2829,7 @@ elements:add(
       if not this.is_manual and this.type ~= "static" then
         return
       end
-      this.paused = mp.get_property_native "pause" -- see flash() for why this line is necessary
+      this.paused = mp.get_property_native("pause") -- see flash() for why this line is necessary
       if this.is_manual then
         this.type = "static"
       end
@@ -2896,11 +2896,11 @@ elements:add(
 
       return ass
     end,
-  }
+  })
 )
 elements:add(
   "timeline",
-  Element.new {
+  Element.new({
     pressed = false,
     size_max = 0,
     size_min = 0, -- set in `on_display_change` handler based on `state.fullormaxed`
@@ -2908,7 +2908,7 @@ elements:add(
     font_size = 0, -- calculated in on_display_change
     top_border = options.timeline_border,
     get_effective_proximity = function(this)
-      if this.pressed or is_element_persistent "timeline" then
+      if this.pressed or is_element_persistent("timeline") then
         return 1
       end
       if this.forced_proximity then
@@ -2982,15 +2982,15 @@ elements:add(
       mp.commandv("seek", -options.timeline_step)
     end,
     render = render_timeline,
-  }
+  })
 )
 elements:add(
   "top_bar",
-  Element.new {
+  Element.new({
     button_opacity = 0.8,
     enabled = false,
     get_effective_proximity = function(this)
-      if is_element_persistent "top_bar" then
+      if is_element_persistent("top_bar") then
         return 1
       end
       if this.forced_proximity then
@@ -3032,12 +3032,12 @@ elements:add(
       this:update_dimensions()
     end,
     render = render_top_bar,
-  }
+  })
 )
 if options.top_bar_controls then
   elements:add(
     "window_controls_minimize",
-    Element.new {
+    Element.new({
       update_dimensions = function(this)
         this.ax = elements.top_bar.bx - (elements.top_bar.button_width * 3)
         this.ay = elements.top_bar.ay
@@ -3053,11 +3053,11 @@ if options.top_bar_controls then
       on_mbtn_left_down = function()
         mp.commandv("cycle", "window-minimized")
       end,
-    }
+    })
   )
   elements:add(
     "window_controls_maximize",
-    Element.new {
+    Element.new({
       update_dimensions = function(this)
         this.ax = elements.top_bar.bx - (elements.top_bar.button_width * 2)
         this.ay = elements.top_bar.ay
@@ -3073,11 +3073,11 @@ if options.top_bar_controls then
       on_mbtn_left_down = function()
         mp.commandv("cycle", "window-maximized")
       end,
-    }
+    })
   )
   elements:add(
     "window_controls_close",
-    Element.new {
+    Element.new({
       update_dimensions = function(this)
         this.ax = elements.top_bar.bx - elements.top_bar.button_width
         this.ay = elements.top_bar.ay
@@ -3091,20 +3091,20 @@ if options.top_bar_controls then
         this:update_dimensions()
       end,
       on_mbtn_left_down = function()
-        mp.commandv "quit"
+        mp.commandv("quit")
       end,
-    }
+    })
   )
 end
 if itable_find({ "left", "right" }, options.volume) then
   elements:add(
     "volume",
-    Element.new {
+    Element.new({
       width = nil, -- set in `on_display_change` handler based on `state.fullormaxed`
       height = nil, -- set in `on_display_change` handler based on `state.fullormaxed`
       margin = nil, -- set in `on_display_change` handler based on `state.fullormaxed`
       get_effective_proximity = function(this)
-        if is_element_persistent "volume" or elements.volume_slider.pressed then
+        if is_element_persistent("volume") or elements.volume_slider.pressed then
           return 1
         end
         if this.forced_proximity then
@@ -3132,11 +3132,11 @@ if itable_find({ "left", "right" }, options.volume) then
         this:update_dimensions()
       end,
       render = render_volume,
-    }
+    })
   )
   elements:add(
     "volume_mute",
-    Element.new {
+    Element.new({
       width = 0,
       height = 0,
       on_display_change = function(this)
@@ -3150,11 +3150,11 @@ if itable_find({ "left", "right" }, options.volume) then
       on_mbtn_left_down = function(this)
         mp.commandv("cycle", "mute")
       end,
-    }
+    })
   )
   elements:add(
     "volume_slider",
-    Element.new {
+    Element.new({
       pressed = false,
       width = 0,
       height = 0,
@@ -3208,20 +3208,20 @@ if itable_find({ "left", "right" }, options.volume) then
         local current_rounded_volume = round(state.volume / options.volume_step) * options.volume_step
         mp.commandv("set", "volume", math.min(current_rounded_volume - options.volume_step, state.volume_max))
       end,
-    }
+    })
   )
 end
 if itable_find({ "center", "bottom-bar" }, options.menu_button) then
   elements:add(
     "menu_button",
-    Element.new {
+    Element.new({
       width = 0,
       height = 0,
       get_effective_proximity = function(this)
         if menu:is_open() then
           return 0
         end
-        if is_element_persistent "menu_button" then
+        if is_element_persistent("menu_button") then
           return 1
         end
         if elements.timeline.proximity_raw == 0 then
@@ -3271,7 +3271,7 @@ if itable_find({ "center", "bottom-bar" }, options.menu_button) then
         end
       end,
       render = render_menu_button,
-    }
+    })
   )
 end
 if options.speed then
@@ -3293,7 +3293,7 @@ if options.speed then
 
   elements:add(
     "speed",
-    Element.new {
+    Element.new({
       dragging = nil,
       width = 0,
       height = 0,
@@ -3304,7 +3304,7 @@ if options.speed then
         if elements.timeline.proximity_raw == 0 then
           return 0
         end
-        if is_element_persistent "speed" then
+        if is_element_persistent("speed") then
           return 1
         end
         if this.forced_proximity then
@@ -3406,12 +3406,12 @@ if options.speed then
         mp.set_property_native("speed", speed_step(state.speed, false))
       end,
       render = render_speed,
-    }
+    })
   )
 end
 elements:add(
   "curtain",
-  Element.new {
+  Element.new({
     opacity = 0,
     fadeout = function(this)
       this:tween_property("opacity", this.opacity, 0)
@@ -3432,7 +3432,7 @@ elements:add(
         return ass
       end
     end,
-  }
+  })
 )
 
 -- CHAPTERS SERIALIZATION
@@ -3446,8 +3446,8 @@ for _, definition in ipairs(split(options.chapter_ranges, " *,+ *")) do
   if start_patterns then
     start_patterns = start_patterns:lower()
     end_patterns = end_patterns:lower()
-    local uses_bof = start_patterns:find "{bof}" ~= nil
-    local uses_eof = end_patterns:find "{eof}" ~= nil
+    local uses_bof = start_patterns:find("{bof}") ~= nil
+    local uses_eof = end_patterns:find("{eof}") ~= nil
     local chapter_range = {
       start_patterns = split(start_patterns, "|"),
       end_patterns = split(end_patterns, "|"),
@@ -3502,7 +3502,7 @@ for _, definition in ipairs(split(options.chapter_ranges, " *,+ *")) do
             if is_end then
               if current_range == nil and uses_bof and not bof_used then
                 bof_used = true
-                start_range { time = 0 }
+                start_range({ time = 0 })
               end
               if current_range ~= nil then
                 end_range(chapter)
@@ -3525,7 +3525,7 @@ for _, definition in ipairs(split(options.chapter_ranges, " *,+ *")) do
 
       -- If there is an unfinished range and range type accepts eof, use it
       if current_range ~= nil and uses_eof then
-        end_range { time = state.duration or infinity }
+        end_range({ time = state.duration or infinity })
       end
     end
 
@@ -3536,7 +3536,7 @@ end
 
 function parse_chapters()
   -- Sometimes state.duration is not initialized yet for some reason
-  state.duration = mp.get_property_native "duration"
+  state.duration = mp.get_property_native("duration")
 
   local chapters = get_normalized_chapters()
 
@@ -3562,7 +3562,7 @@ end
 -- CONTEXT MENU SERIALIZATION
 
 state.context_menu_items = (function()
-  local input_conf_path = mp.command_native { "expand-path", "~~/input.conf" }
+  local input_conf_path = mp.command_native({ "expand-path", "~~/input.conf" })
   local input_conf_meta, meta_error = utils.file_info(input_conf_path)
 
   -- File doesn't exist
@@ -3692,7 +3692,7 @@ end
 
 function handle_mouse_leave()
   -- Slowly fadeout elements that are currently visible
-  for _, element_name in ipairs { "timeline", "volume", "top_bar" } do
+  for _, element_name in ipairs({ "timeline", "volume", "top_bar" }) do
     local element = elements[element_name]
     if element and element.proximity > 0 then
       element:tween_property("forced_proximity", element:get_effective_proximity(), 0, function()
@@ -3703,14 +3703,14 @@ function handle_mouse_leave()
 
   cursor.hidden = true
   update_proximities()
-  elements:trigger "global_mouse_leave"
+  elements:trigger("global_mouse_leave")
 end
 
 function handle_mouse_enter()
   cursor.hidden = false
   update_cursor_position()
   tween_element_stop(state)
-  elements:trigger "global_mouse_enter"
+  elements:trigger("global_mouse_enter")
 end
 
 function handle_mouse_move()
@@ -3722,7 +3722,7 @@ function handle_mouse_move()
   end
 
   update_cursor_position()
-  elements:trigger "global_mouse_move"
+  elements:trigger("global_mouse_move")
   request_render()
 
   -- Restart timer that hides UI when mouse is autohidden
@@ -3733,7 +3733,7 @@ function handle_mouse_move()
 end
 
 function navigate_directory(direction)
-  local path = mp.get_property_native "path"
+  local path = mp.get_property_native("path")
 
   if not path or is_protocol(path) then
     return
@@ -3747,7 +3747,7 @@ function navigate_directory(direction)
 end
 
 function load_file_in_current_directory(index)
-  local path = mp.get_property_native "path"
+  local path = mp.get_property_native("path")
 
   if not path or is_protocol(path) then
     return
@@ -3793,7 +3793,7 @@ function toggle_menu_with_items(items, menu_options)
     menu_options.selected_index = 1
   end
 
-  if menu:is_open "menu" then
+  if menu:is_open("menu") then
     menu:close()
   elseif items then
     menu:open(items, function(command)
@@ -3814,7 +3814,7 @@ function create_self_updating_menu_opener(options)
     local function handle_list_prop_change(name, value)
       if menu:is_open(options.type) then
         local items, active_index = options.list_serializer(name, value)
-        elements.menu:update { items = items, active_index = active_index }
+        elements.menu:update({ items = items, active_index = active_index })
       end
     end
 
@@ -3901,13 +3901,13 @@ function create_select_tracklist_type_menu_opener(menu_title, track_type, track_
     end
   end
 
-  return create_self_updating_menu_opener {
+  return create_self_updating_menu_opener({
     title = menu_title,
     type = track_type,
     list_prop = "track-list",
     list_serializer = serialize_tracklist,
     on_select = selection_handler,
-  }
+  })
 end
 
 ---@alias NavigationMenuOptions {type: string, title?: string, allowed_types?: string[], active_path?: string, selected_path?: string}
@@ -4030,11 +4030,11 @@ end
 ---@param menu_options? NavigationMenuOptions
 function open_drives_menu(handle_select, menu_options)
   menu_options = menu_options or {}
-  local process = mp.command_native {
+  local process = mp.command_native({
     name = "subprocess",
     capture_stdout = true,
     args = { "wmic", "logicaldisk", "get", "name", "/value" },
-  }
+  })
   local items = {}
 
   if process.status == 0 then
@@ -4075,7 +4075,7 @@ options.timeline_cached_ranges = (function()
   local parts = split(options.timeline_cached_ranges, ":")
   return parts[1] and { color = parts[1], opacity = tonumber(parts[2]) } or nil
 end)()
-for _, name in ipairs { "timeline", "volume", "top_bar", "speed" } do
+for _, name in ipairs({ "timeline", "volume", "top_bar", "speed" }) do
   local option_name = name .. "_persistency"
   local flags = {}
   for _, state in ipairs(split(options[option_name], " *, *")) do
@@ -4120,12 +4120,12 @@ mp.observe_property("track-list", "native", function(name, value)
   state.has_video = has_video
 end)
 mp.observe_property("chapter-list", "native", parse_chapters)
-mp.observe_property("border", "bool", create_state_setter "border")
-mp.observe_property("ab-loop-a", "number", create_state_setter "ab_loop_a")
-mp.observe_property("ab-loop-b", "number", create_state_setter "ab_loop_b")
-mp.observe_property("media-title", "string", create_state_setter "media_title")
-mp.observe_property("playlist-pos-1", "number", create_state_setter "playlist_pos")
-mp.observe_property("playlist-count", "number", create_state_setter "playlist_count")
+mp.observe_property("border", "bool", create_state_setter("border"))
+mp.observe_property("ab-loop-a", "number", create_state_setter("ab_loop_a"))
+mp.observe_property("ab-loop-b", "number", create_state_setter("ab_loop_b"))
+mp.observe_property("media-title", "string", create_state_setter("media_title"))
+mp.observe_property("playlist-pos-1", "number", create_state_setter("playlist_pos"))
+mp.observe_property("playlist-count", "number", create_state_setter("playlist_count"))
 mp.observe_property("fullscreen", "bool", function(_, value)
   state.fullscreen = value
   state.fullormaxed = state.fullscreen or state.maximized
@@ -4140,12 +4140,12 @@ mp.observe_property("window-maximized", "bool", function(_, value)
   elements:trigger("prop_maximized", value)
   elements:trigger("prop_fullormaxed", state.fullormaxed)
 end)
-mp.observe_property("idle-active", "bool", create_state_setter "idle")
-mp.observe_property("speed", "number", create_state_setter "speed")
-mp.observe_property("pause", "bool", create_state_setter "pause")
-mp.observe_property("volume", "number", create_state_setter "volume")
-mp.observe_property("volume-max", "number", create_state_setter "volume_max")
-mp.observe_property("mute", "bool", create_state_setter "mute")
+mp.observe_property("idle-active", "bool", create_state_setter("idle"))
+mp.observe_property("speed", "number", create_state_setter("speed"))
+mp.observe_property("pause", "bool", create_state_setter("pause"))
+mp.observe_property("volume", "number", create_state_setter("volume"))
+mp.observe_property("volume-max", "number", create_state_setter("volume_max"))
+mp.observe_property("mute", "bool", create_state_setter("mute"))
 mp.observe_property("osd-dimensions", "native", function(name, val)
   update_display_dimensions()
   request_render()
@@ -4177,7 +4177,7 @@ if options.pause_on_click_shorter_than > 0 then
   local duration_seconds = options.pause_on_click_shorter_than / 1000
   local last_down_event
   local click_timer = mp.add_timeout(duration_seconds, function()
-    mp.command "cycle pause"
+    mp.command("cycle pause")
   end)
   click_timer:kill()
   base_keybinds[#base_keybinds + 1] = {
@@ -4215,16 +4215,16 @@ forced_key_bindings = (function()
   end
 
   mp.set_key_bindings({
-    { "mbtn_left", create_mouse_event_dispatcher "mbtn_left_up", create_mouse_event_dispatcher "mbtn_left_down" },
+    { "mbtn_left", create_mouse_event_dispatcher("mbtn_left_up"), create_mouse_event_dispatcher("mbtn_left_down") },
     { "mbtn_left_dbl", "ignore" },
   }, "mbtn_left", "force")
   mp.set_key_bindings({
-    { "wheel_up", create_mouse_event_dispatcher "wheel_up" },
-    { "wheel_down", create_mouse_event_dispatcher "wheel_down" },
+    { "wheel_up", create_mouse_event_dispatcher("wheel_up") },
+    { "wheel_down", create_mouse_event_dispatcher("wheel_down") },
   }, "wheel", "force")
 
   local groups = {}
-  for _, group in ipairs { "mbtn_left", "wheel" } do
+  for _, group in ipairs({ "mbtn_left", "wheel" }) do
     groups[group] = {
       is_enabled = false,
       enable = function(this)
@@ -4297,7 +4297,7 @@ mp.register_script_message("show-submenu", function(name)
   local last_menu_title = nil
 
   if not items or #items < 1 then
-    msg.error "Can't find submenu, context menu is empty."
+    msg.error("Can't find submenu, context menu is empty.")
     return
   end
 
@@ -4322,12 +4322,12 @@ mp.register_script_message("show-submenu", function(name)
   end
 end)
 mp.add_key_binding(nil, "load-subtitles", function()
-  if menu:is_open "load-subtitles" then
+  if menu:is_open("load-subtitles") then
     menu:close()
     return
   end
 
-  local path = mp.get_property_native "path" --[[@as string|nil|false]]
+  local path = mp.get_property_native("path") --[[@as string|nil|false]]
   if path then
     if is_protocol(path) then
       path = false
@@ -4337,7 +4337,7 @@ mp.add_key_binding(nil, "load-subtitles", function()
     end
   end
   if not path then
-    path = os.getenv "HOME" --[[@as string]]
+    path = os.getenv("HOME") --[[@as string]]
   end
   open_file_navigation_menu(path, function(path)
     mp.commandv("sub-add", path)
@@ -4353,14 +4353,14 @@ mp.add_key_binding(nil, "video", create_select_tracklist_type_menu_opener("Video
 mp.add_key_binding(
   nil,
   "playlist",
-  create_self_updating_menu_opener {
+  create_self_updating_menu_opener({
     title = "Playlist",
     type = "playlist",
     list_prop = "playlist",
     list_serializer = function(_, playlist)
       local items = {}
       for index, item in ipairs(playlist) do
-        local is_url = item.filename:find "://"
+        local is_url = item.filename:find("://")
         local item_title = type(item.title) == "string" and #item.title > 0 and item.title or false
         items[index] = {
           title = item_title or (is_url and item.filename or serialize_path(item.filename).basename),
@@ -4377,12 +4377,12 @@ mp.add_key_binding(
     on_select = function(index)
       mp.commandv("set", "playlist-pos-1", tostring(index))
     end,
-  }
+  })
 )
 mp.add_key_binding(
   nil,
   "chapters",
-  create_self_updating_menu_opener {
+  create_self_updating_menu_opener({
     title = "Chapters",
     type = "chapters",
     list_prop = "chapter-list",
@@ -4417,10 +4417,10 @@ mp.add_key_binding(
     on_select = function(time)
       mp.commandv("seek", tostring(time), "absolute")
     end,
-  }
+  })
 )
 mp.add_key_binding(nil, "show-in-directory", function()
-  local path = mp.get_property_native "path"
+  local path = mp.get_property_native("path")
 
   -- Ignore URLs
   if not path or is_protocol(path) then
@@ -4430,25 +4430,25 @@ mp.add_key_binding(nil, "show-in-directory", function()
   path = normalize_path(path)
 
   if state.os == "windows" then
-    utils.subprocess_detached { args = { "explorer", "/select,", path }, cancellable = false }
+    utils.subprocess_detached({ args = { "explorer", "/select,", path }, cancellable = false })
   elseif state.os == "macos" then
-    utils.subprocess_detached { args = { "open", "-R", path }, cancellable = false }
+    utils.subprocess_detached({ args = { "open", "-R", path }, cancellable = false })
   elseif state.os == "linux" then
-    local result = utils.subprocess { args = { "nautilus", path }, cancellable = false }
+    local result = utils.subprocess({ args = { "nautilus", path }, cancellable = false })
 
     -- Fallback opens the folder with xdg-open instead
     if result.status ~= 0 then
-      utils.subprocess { args = { "xdg-open", serialize_path(path).dirname }, cancellable = false }
+      utils.subprocess({ args = { "xdg-open", serialize_path(path).dirname }, cancellable = false })
     end
   end
 end)
 mp.add_key_binding(nil, "stream-quality", function()
-  if menu:is_open "stream-quality" then
+  if menu:is_open("stream-quality") then
     menu:close()
     return
   end
 
-  local ytdl_format = mp.get_property_native "ytdl-format"
+  local ytdl_format = mp.get_property_native("ytdl-format")
   local active_index = nil
   local formats = {}
 
@@ -4470,9 +4470,9 @@ mp.add_key_binding(nil, "stream-quality", function()
     -- This is taken from https://github.com/jgreco/mpv-youtube-quality
     -- which is in turn taken from https://github.com/4e6/mpv-reload/
     -- Dunno if playlist_pos shenanigans below are necessary.
-    local playlist_pos = mp.get_property_number "playlist-pos"
-    local duration = mp.get_property_native "duration"
-    local time_pos = mp.get_property "time-pos"
+    local playlist_pos = mp.get_property_number("playlist-pos")
+    local duration = mp.get_property_native("duration")
+    local time_pos = mp.get_property("time-pos")
 
     mp.set_property_number("playlist-pos", playlist_pos)
 
@@ -4495,17 +4495,17 @@ mp.add_key_binding(nil, "stream-quality", function()
   })
 end)
 mp.add_key_binding(nil, "open-file", function()
-  if menu:is_open "open-file" then
+  if menu:is_open("open-file") then
     menu:close()
     return
   end
 
-  local path = mp.get_property_native "path"
+  local path = mp.get_property_native("path")
   local directory
   local active_file
 
   if path == nil or is_protocol(path) then
-    local serialized = serialize_path(mp.command_native { "expand-path", options.default_directory })
+    local serialized = serialize_path(mp.command_native({ "expand-path", options.default_directory }))
     if serialized then
       directory = serialized.path
       active_file = nil
@@ -4525,8 +4525,8 @@ mp.add_key_binding(nil, "open-file", function()
 
   -- Update selected file in directory navigation menu
   local function handle_file_loaded()
-    if menu:is_open "open-file" then
-      local path = normalize_path(mp.get_property_native "path")
+    if menu:is_open("open-file") then
+      local path = normalize_path(mp.get_property_native("path"))
       elements.menu:activate_value(path)
       elements.menu:select_value(path)
     end
@@ -4547,34 +4547,34 @@ mp.add_key_binding(nil, "open-file", function()
   })
 end)
 mp.add_key_binding(nil, "next", function()
-  if mp.get_property_native "playlist-count" > 1 then
-    mp.command "playlist-next"
+  if mp.get_property_native("playlist-count") > 1 then
+    mp.command("playlist-next")
   else
-    navigate_directory "forward"
+    navigate_directory("forward")
   end
 end)
 mp.add_key_binding(nil, "prev", function()
-  if mp.get_property_native "playlist-count" > 1 then
-    mp.command "playlist-prev"
+  if mp.get_property_native("playlist-count") > 1 then
+    mp.command("playlist-prev")
   else
-    navigate_directory "backward"
+    navigate_directory("backward")
   end
 end)
 mp.add_key_binding(nil, "next-file", function()
-  navigate_directory "forward"
+  navigate_directory("forward")
 end)
 mp.add_key_binding(nil, "prev-file", function()
-  navigate_directory "backward"
+  navigate_directory("backward")
 end)
 mp.add_key_binding(nil, "first", function()
-  if mp.get_property_native "playlist-count" > 1 then
+  if mp.get_property_native("playlist-count") > 1 then
     mp.commandv("set", "playlist-pos-1", "1")
   else
     load_file_in_current_directory(1)
   end
 end)
 mp.add_key_binding(nil, "last", function()
-  local playlist_count = mp.get_property_native "playlist-count"
+  local playlist_count = mp.get_property_native("playlist-count")
   if playlist_count > 1 then
     mp.commandv("set", "playlist-pos-1", tostring(playlist_count))
   else
@@ -4588,17 +4588,17 @@ mp.add_key_binding(nil, "last-file", function()
   load_file_in_current_directory(-1)
 end)
 mp.add_key_binding(nil, "delete-file-next", function()
-  local playlist_count = mp.get_property_native "playlist-count"
+  local playlist_count = mp.get_property_native("playlist-count")
 
   local next_file = nil
 
-  local path = mp.get_property_native "path"
+  local path = mp.get_property_native("path")
   local is_local_file = path and not is_protocol(path)
 
   if is_local_file then
     path = normalize_path(path)
 
-    if menu:is_open "open-file" then
+    if menu:is_open("open-file") then
       elements.menu:delete_value(path)
     end
   end
@@ -4613,7 +4613,7 @@ mp.add_key_binding(nil, "delete-file-next", function()
     if next_file then
       mp.commandv("loadfile", next_file)
     else
-      mp.commandv "stop"
+      mp.commandv("stop")
     end
   end
 
@@ -4622,15 +4622,15 @@ mp.add_key_binding(nil, "delete-file-next", function()
   end
 end)
 mp.add_key_binding(nil, "delete-file-quit", function()
-  local path = mp.get_property_native "path"
-  mp.command "stop"
+  local path = mp.get_property_native("path")
+  mp.command("stop")
   if path and not is_protocol(path) then
     delete_file(normalize_path(path))
   end
-  mp.command "quit"
+  mp.command("quit")
 end)
 mp.add_key_binding(nil, "open-config-directory", function()
-  local config_path = mp.command_native { "expand-path", "~~/mpv.conf" }
+  local config_path = mp.command_native({ "expand-path", "~~/mpv.conf" })
   local config = serialize_path(config_path)
 
   if config then
@@ -4644,7 +4644,7 @@ mp.add_key_binding(nil, "open-config-directory", function()
       args = { "xdg-open", config.dirname }
     end
 
-    utils.subprocess_detached { args = args, cancellable = false }
+    utils.subprocess_detached({ args = args, cancellable = false })
   else
     msg.error("Couldn't serialize config path \"" .. config_path .. '".')
   end

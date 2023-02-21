@@ -1,6 +1,6 @@
 -- https://github.com/familyfriendlymikey/mpv-cut
-local mp = require "mp"
-local utils = require "mp.utils"
+local mp = require("mp")
+local utils = require("mp.utils")
 
 local function print(s)
   mp.msg.info(s)
@@ -79,7 +79,7 @@ ACTIONS.COPY = function(d)
     args = args,
     playback_only = false,
   }, function()
-    print "Done"
+    print("Done")
   end)
 end
 
@@ -120,22 +120,22 @@ ACTIONS.ENCODE = function(d)
     args = args,
     playback_only = false,
   }, function()
-    print "Done"
+    print("Done")
   end)
 end
 
 ACTIONS.LIST = function(d)
-  local inpath = mp.get_property "path"
+  local inpath = mp.get_property("path")
   local outpath = inpath .. ".list"
   local file = io.open(outpath, "a")
   if not file then
-    print "Error writing to cut list"
+    print("Error writing to cut list")
     return
   end
-  local filesize = file:seek "end"
+  local filesize = file:seek("end")
   local s = "\n" .. d.channel .. ":" .. d.start_time .. ":" .. d.end_time
   file:write(s)
-  local delta = file:seek "end" - filesize
+  local delta = file:seek("end") - filesize
   io.close(file)
   print("Δ " .. delta)
 end
@@ -150,7 +150,7 @@ CHANNEL_NAMES = {}
 
 pcall(require, "config")
 
-mp.msg.info "MPV-CUT LOADED."
+mp.msg.info("MPV-CUT LOADED.")
 
 for i, v in ipairs(CHANNEL_NAMES) do
   CHANNEL_NAMES[i] = string.gsub(v, ":", "-")
@@ -168,11 +168,11 @@ end
 
 local function get_data()
   local d = {}
-  d.inpath = mp.get_property "path"
+  d.inpath = mp.get_property("path")
   d.indir = utils.split_path(d.inpath)
-  d.infile = mp.get_property "filename"
-  d.infile_noext = mp.get_property "filename/no-ext"
-  d.ext = mp.get_property("filename"):match "^.+(%..+)$" or ".mp4"
+  d.infile = mp.get_property("filename")
+  d.infile_noext = mp.get_property("filename/no-ext")
+  d.ext = mp.get_property("filename"):match("^.+(%..+)$") or ".mp4"
   d.channel = get_current_channel_name()
   return d
 end
@@ -188,7 +188,7 @@ local function get_times(start_time, end_time)
   return d
 end
 
-local text_overlay = mp.create_osd_overlay "ass-events"
+local text_overlay = mp.create_osd_overlay("ass-events")
 text_overlay.hidden = true
 text_overlay:update()
 
@@ -220,15 +220,15 @@ local function cycle_action()
 end
 
 local function make_cuts()
-  print "MAKING CUTS"
+  print("MAKING CUTS")
   if not MAKE_CUT then
-    print "MAKE_CUT function not found."
+    print("MAKE_CUT function not found.")
     return
   end
-  local inpath = mp.get_property "path" .. ".list"
+  local inpath = mp.get_property("path") .. ".list"
   local file = io.open(inpath, "r")
   if not file then
-    print "Error reading cut list"
+    print("Error reading cut list")
     return
   end
   for line in file:lines() do
@@ -243,7 +243,7 @@ local function make_cuts()
       for k, v in pairs(t) do
         d[k] = v
       end
-      mp.msg.info "MAKE_CUT"
+      mp.msg.info("MAKE_CUT")
       mp.msg.info(table_to_str(d))
       MAKE_CUT(d)
     end
@@ -263,7 +263,7 @@ local function cut(start_time, end_time)
 end
 
 local function put_time()
-  local time = mp.get_property_number "time-pos"
+  local time = mp.get_property_number("time-pos")
   if not START_TIME then
     START_TIME = time
     text_overlay_on()
@@ -274,7 +274,7 @@ local function put_time()
     cut(START_TIME, time)
     START_TIME = nil
   else
-    print "INVALID"
+    print("INVALID")
     START_TIME = nil
   end
 end
@@ -313,13 +313,13 @@ local function bookmark_add()
   local outpath = get_bookmark_file_path()
   local file = io.open(outpath, "a")
   if not file then
-    print "Failed to open bookmark file for writing"
+    print("Failed to open bookmark file for writing")
     return
   end
-  local out_string = mp.get_property_number "time-pos" .. "\n"
-  local filesize = file:seek "end"
+  local out_string = mp.get_property_number("time-pos") .. "\n"
+  local filesize = file:seek("end")
   file:write(out_string)
-  local delta = file:seek "end" - filesize
+  local delta = file:seek("end") - filesize
   io.close(file)
   bookmarks_load()
   print(string.format("Δ %s, %s", delta, d.channel))

@@ -11,7 +11,7 @@
 --
 -- This will set the save period to once every 60 seconds of playback, time while paused is not counted towards the save period timer.
 -- The default save period is 30 seconds.
-local options = require "mp.options"
+local options = require("mp.options")
 
 local o = {
   save_period = 30,
@@ -19,11 +19,11 @@ local o = {
 
 options.read_options(o)
 
-local mp = require "mp"
+local mp = require("mp")
 
 local function save()
   mp.commandv("set", "msg-level", "cplayer=warn")
-  mp.command "write-watch-later-config"
+  mp.command("write-watch-later-config")
   mp.commandv("set", "msg-level", "cplayer=status")
 end
 
@@ -43,7 +43,7 @@ mp.register_event("file-loaded", save)
 
 local function end_file(data)
   if data.reason == "eof" or data.reason == "stop" then
-    local playlist = mp.get_property_native "playlist"
+    local playlist = mp.get_property_native("playlist")
     for i, entry in pairs(playlist) do
       if entry.id == data.playlist_entry_id then
         mp.commandv("delete-watch-later-config", entry.filename)

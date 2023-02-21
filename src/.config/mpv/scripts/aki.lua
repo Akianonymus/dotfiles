@@ -1,4 +1,4 @@
-local mp = require "mp"
+local mp = require("mp")
 
 --- print with align support
 ---@param pos number - one of the positions from numpad
