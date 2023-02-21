@@ -11,8 +11,8 @@ end
 
 function M.spectre()
   command("FindReplace", function()
-    require("spectre").open {}
-  end, { desc = "Find and Replace in the current folder" })
+    require("spectre").open({})
+  end, { desc = "Find and Replace [ Folder Wide ]" })
 end
 
 return M

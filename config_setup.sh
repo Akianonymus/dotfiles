@@ -49,13 +49,12 @@ main() {
         handle_repo "${repo}" || return 1
     done
 
-    handle_repo "https://github.com/NvChad/NvChad" ~/.config/nvim 'NvChad/NvChad' || return 1
-
     # now symlink
     # create dirs
-    mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd,mpv,nvim/lua/custom},.local/share/fonts,.cache/zsh}
+    mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd,mpv,nvim},.local/share/fonts,.cache/zsh}
     # files to be symlinked
-    symlink_list=(.config/mpv .config/gh/config.yml .config/gotop/gotop.conf .config/kitty/kitty.conf .config/lsd/config.yaml
+    symlink_list=(.config/mpv .config/nvim
+        .config/gh/config.yml .config/gotop/gotop.conf .config/kitty/kitty.conf .config/lsd/config.yaml
         '.local/share/fonts/JetBrains Mono Bold Italic Nerd Font Complete.ttf'
         '.local/share/fonts/JetBrains Mono Bold Nerd Font Complete.ttf'
         '.local/share/fonts/JetBrains Mono ExtBd Ita Nerd Font Complete.ttf'

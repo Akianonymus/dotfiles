@@ -4,22 +4,28 @@ local M = {}
 
 -- non plugin autocmds
 function M.aki()
+  -- close with	q on certain filetypes
   autocmd("FileType", {
-    pattern = "qf",
-    callback = function()
-      vim.keymap.set("", "q", "<cmd>:close<cr>", { silent = true, buffer = 0 })
+	    -- stylua: ignore
+		pattern = { "qf", "help", "man", "notify", "lspinfo", "spectre_panel", "startuptime" },
+    callback = function(event)
+      vim.bo[event.buf].buflisted = false
+      vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
     end,
   })
 
   -- Create directory if missing: https://github.com/jghauser/mkdir.nvim
   autocmd("BufWritePre", {
-    pattern = "*",
     callback = function()
-      require("custom.utils").create_dirs()
+      require("utils").create_dirs()
     end,
   })
 
-  autocmd("VimLeavePre", { command = [[silent! FidgetClose]] })
+  -- Check if we need to reload the file when it changed
+  autocmd({ "FocusGained", "TermClose", "TermLeave" }, { command = "checktime" })
+
+  -- Highlight on yank
+  autocmd("TextYankPost", { callback = vim.highlight.on_yank })
 end
 
 function M.cmp()
@@ -41,29 +47,23 @@ function M.cmp()
           },
         })
       else
-        vim.notify("Nvim CMP not loaded", "Error")
+        vim.notify("Nvim CMP not loaded", 4)
       end
     end,
     once = true,
   })
 end
 
-function M.lsp_autosave_format(bufnr)
-  local id = augroup("LspFormatSave_aki", { clear = false })
-  local i = vim.api.nvim_get_autocmds { group = id, event = "BufWritePre", buffer = bufnr }
-  if not vim.tbl_isempty(i) then
-    return
-  end
+function M.lsp_autosave_format(bufnr, name)
+  local augroup_name = "LspAutoFormatOnSave" .. bufnr
+  -- always remove the existing autocmd
+  pcall(vim.api.nvim_del_augroup_by_name, augroup_name)
 
   autocmd({ "BufWritePre" }, {
-    group = id,
+    group = augroup(augroup_name, {}),
     buffer = bufnr,
     callback = function()
-      if vim.g.vim_version > 7 then
-        vim.lsp.buf.format()
-      else
-        vim.lsp.buf.formatting_sync {}
-      end
+      vim.lsp.buf.format({ name = name })
     end,
   })
 end
@@ -83,13 +83,13 @@ function M.treesitter()
       local char = vim.fn.wordcount()["chars"]
       -- manually disable/enable treesitter after a buffer is created
       if char < 500000 then
-        vim.cmd [[silent! TSBufEnable highlight]]
-        vim.cmd [[silent! TSBufEnable indent]]
-        vim.cmd [[silent! TSBufEnable matchup]]
+        vim.cmd([[silent! TSBufEnable highlight]])
+        vim.cmd([[silent! TSBufEnable indent]])
+        vim.cmd([[silent! TSBufEnable matchup]])
       else
-        vim.cmd [[silent! TSBufDisable highlight]]
-        vim.cmd [[silent! TSBufDisable indent]]
-        vim.cmd [[silent! TSBufDisable matchup]]
+        vim.cmd([[silent! TSBufDisable highlight]])
+        vim.cmd([[silent! TSBufDisable indent]])
+        vim.cmd([[silent! TSBufDisable matchup]])
       end
     end,
   })
