@@ -1,6 +1,6 @@
 [user]
 	email = anonymus.aki@gmail.com
-	name = Akianonymus
+	name = akianonymus
 [push]
 	default = simple
 [color]
@@ -8,7 +8,7 @@
 [format]
 	signoff = true
 [credential]
-	helper = cache --timeout=999999
+	helper = cache
 [merge]
 	log = true
 [color "diff-highlight"]
@@ -48,9 +48,18 @@
   pushInsteadOf = git://github.com/
   insteadOf = https://github.com/
   insteadOf = git://github.com/
+  
 [url "git@gitlab.com:"]
   pushInsteadOf = https://gitlab.com/
   pushInsteadOf = git://gitlab.com/
   insteadOf = https://gitlab.com/
   insteadOf = git://gitlab.com/
 
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[include]
+  path = ~/.gitconfig-work

@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
 
+# batch rename files
+brename() {
+    abspath() {
+        case "$1" in
+            /*) printf "%s\n" "$1" ;;
+            *) printf "%s\n" "$PWD/$1" ;;
+        esac
+    }
+    if [ $# -gt 1 ]; then
+        sed_pattern=$1
+        shift
+        for file in "${@}"; do
+            target="$(sed "${sed_pattern}" <<< "$file")"
+            mkdir -p "$(dirname "$(abspath "$target")")"
+            mv -v "$file" "$target"
+        done
+    else
+        echo "usage: $0 sed_pattern files..."
+    fi
+}
+
 # funtion to upload to pixeldrain
 upload() {
     if [[ -n ${1} && -f ${1} ]]; then
@@ -63,3 +84,10 @@ addsshkey() {
         ssh-add "${key}"
 }
 export addsshkey
+
+reload_plasmashell() {
+    killall plasmashell
+    plasmashell > /dev/null 2>&1 &
+    disown
+}
+export reload_plasmashell
