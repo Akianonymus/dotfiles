@@ -243,7 +243,7 @@ function M.lspconfig(client, bufnr)
 
   buf_k("n", m.code_action, "<cmd>:Lspsaga code_action<cr>")
 
-  buf_k("n", m.references, "<cmd>:Trouble lsp_refrences<cr>")
+  buf_k("n", m.references, "<cmd>:Trouble lsp_references<cr>")
 
   buf_k("n", m.goto_prev, "<cmd>Lspsaga diagnostic_jump_prev<CR>")
 
