@@ -3,7 +3,7 @@ return {
   { "folke/lazy.nvim", version = "*" },
   {
     "nmac427/guess-indent.nvim",
-    event = "VeryLazy",
+    event = "BufReadPost",
     config = function()
       require("guess-indent").setup()
     end,
