@@ -55,6 +55,7 @@ function M.cmp()
 end
 
 function M.lsp_autosave_format(bufnr, name)
+  vim.b.autoformat_aki = vim.g.autoformat_aki
   local augroup_name = "LspAutoFormatOnSave" .. bufnr
   -- always remove the existing autocmd
   pcall(vim.api.nvim_del_augroup_by_name, augroup_name)
@@ -63,7 +64,9 @@ function M.lsp_autosave_format(bufnr, name)
     group = augroup(augroup_name, {}),
     buffer = bufnr,
     callback = function()
-      vim.lsp.buf.format({ name = name })
+      if vim.b.autoformat_aki then
+        vim.lsp.buf.format({ name = name })
+      end
     end,
   })
 end

@@ -107,6 +107,7 @@ function M.setup_lsp_format(client, buffer)
   end, { buffer = buffer })
 
   require("autocmds").lsp_autosave_format(buffer, name)
+  require("commands").toggle_autoformat(buffer)
 end
 
 -- https://www.reddit.com/r/neovim/comments/p3b20j/lua_solution_to_writing_a_file_using_sudo

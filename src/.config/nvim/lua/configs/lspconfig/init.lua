@@ -51,6 +51,9 @@ vim.diagnostic.config({
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
+-- setup the GLobalAutoFormat command
+require("commands").toggle_autoformat_global()
+
 local servers = require("configs.lspconfig.servers")
 for server, conf in pairs(servers) do
   local name = server

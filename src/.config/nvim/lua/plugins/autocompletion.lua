@@ -38,6 +38,7 @@ return {
       "hrsh7th/cmp-nvim-lua",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
+      "jcha0713/cmp-tw2css",
       "saadparwaiz1/cmp_luasnip",
     },
     config = require("configs.cmp"),

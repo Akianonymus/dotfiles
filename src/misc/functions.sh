@@ -91,3 +91,8 @@ reload_plasmashell() {
     disown
 }
 export reload_plasmashell
+
+update_mirror() {
+    sudo reflector --latest 5 --age 2 --fastest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+}
+export update_mirror
