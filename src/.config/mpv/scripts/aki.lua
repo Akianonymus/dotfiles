@@ -9,11 +9,7 @@ local function pprint(pos, msg, time)
 end
 
 local function on_pause_change(_, value)
-  pprint(
-    8,
-    [[[${playlist-pos-1}/${playlist-count}] ${filename}\n${time-pos} / ${duration}${?percent-pos: ( ${percent-pos}% ) ]],
-    value and 99999 or ""
-  )
+  -- mp.command([[script-binding uosc/toggle-ui]])
 end
 
 mp.register_event("file-loaded", function()
