@@ -5,7 +5,7 @@ main() {
 
     [[ $EUID -eq 0 ]] && exit 1
 
-    decalre os=""
+    declare os=""
 
     { grep -qE 'Arch Linux|EndeavourOS' /etc/os-release 2> /dev/null && os=arch; } ||
         { [[ -n ${TERMUX_VERSION} ]] && os=termux; } || :
