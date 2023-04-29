@@ -9,10 +9,10 @@ return {
     end,
   },
   {
-    "TheBlob42/houdini.nvim",
-    event = { "InsertEnter", "TermEnter" },
+    "max397574/better-escape.nvim",
+    event = { "InsertEnter" },
     config = function()
-      require("houdini").setup({ mappings = { "jk", "JK", "Jk" } })
+      require("better_escape").setup({ mapping = { "jk", "JK", "Jk" } })
     end,
   },
   {
@@ -37,7 +37,7 @@ return {
       require("nvim-lastplace").setup({
         lastplace_open_folds = true,
 			-- stylua: ignore
-			lastplace_ignore_filetype = { "gitcommit", "gitrebase", "hgcommit", "help", "terminal", "packer", "lspinfo", "TelescopePrompt", "TelescopeResults", "mason", "lazy", "", },
+        lastplace_ignore_filetype = { "gitcommit", "gitrebase", "hgcommit", "help", "terminal", "packer", "lspinfo", "TelescopePrompt", "TelescopeResults", "mason", "lazy", "", },
         buftype_exclude = { "nofile", "quickfix", "nofile", "help", "fzf", "terminal" },
       })
     end,

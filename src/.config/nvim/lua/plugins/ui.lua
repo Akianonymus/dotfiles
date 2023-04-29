@@ -1,11 +1,15 @@
 local mappings = require("mappings")
+local commands = require("commands")
 return {
   -- bufferline
   {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
     config = require("configs.bufferline"),
-    init = mappings.bufferline,
+    init = function()
+      mappings.bufferline()
+      commands.bufferline()
+    end,
   },
   -- statusline
   {

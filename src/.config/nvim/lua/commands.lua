@@ -10,6 +10,12 @@ function M.aki()
   end, { desc = "Write to files using sudo" })
 end
 
+function M.bufferline()
+  command("BufferLineCloseOthers", function()
+    vim.cmd([[:BufferLineCloseLeft
+:BufferLineCloseRight]])
+  end, { desc = "Close all buffers except current" })
+end
 function M.spectre()
   command("FindReplace", function()
     require("spectre").open({})

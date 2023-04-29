@@ -4,12 +4,12 @@ return function(builtins)
     builtins.formatting.clang_format.with({ filetypes = { "java", "c", "cpp" } }),
 
     -- python
-    builtins.formatting.black,
-    builtins.formatting.isort,
+    -- builtins.formatting.black,
+    -- builtins.formatting.isort,
 
     -- E501 - line too long
     -- W503 - line break before binary operator
-    builtins.diagnostics.flake8.with({ extra_args = { "--ignore", "E501,W503" } }),
+    -- builtins.diagnostics.flake8.with({ extra_args = { "--ignore", "E501,W503" } }),
 
     -- rust
     builtins.formatting.rustfmt,
@@ -27,6 +27,7 @@ return function(builtins)
     -- Shell
     builtins.formatting.shfmt,
     builtins.diagnostics.shellcheck.with({ diagnostics_format = "#{m} [#{c}]" }),
+    -- require("typescript.extensions.null-ls.code-actions"),
   }
 
   return sources

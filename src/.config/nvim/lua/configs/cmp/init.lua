@@ -27,6 +27,8 @@ return function()
       documentation = cmp.config.window.bordered(),
     },
     mapping = cmp.mapping.preset.insert({
+      ["<Down>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+      ["<Up>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
       ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
       ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
       ["<C-b>"] = cmp.mapping.scroll_docs(-4),
@@ -39,6 +41,7 @@ return function()
       }),
       ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
+          cmp.complete()
           cmp.select_next_item()
         elseif luasnip.expand_or_jumpable() then
           luasnip.expand_or_jump()
@@ -51,6 +54,7 @@ return function()
       }),
       ["<S-Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
+          cmp.complete()
           cmp.select_prev_item()
         elseif luasnip.jumpable(-1) then
           luasnip.jump(-1)

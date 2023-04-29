@@ -42,10 +42,14 @@ function M.aki()
   -- cycle between split windows using Alt+w
   map({ "n", "t", "i" }, "<a-w>", [[<C-\><C-n><C-w>W]], { desc = "Cycle between Windows" })
   -- Move to window using the <ctrl> hjkl keys
-  map({ "", "x" }, "<C-h>", "<C-w>h", { desc = "Go to left window" })
-  map({ "", "x" }, "<C-j>", "<C-w>j", { desc = "Go to lower window" })
-  map({ "", "x" }, "<C-k>", "<C-w>k", { desc = "Go to upper window" })
-  map({ "", "x" }, "<C-l>", "<C-w>l", { desc = "Go to right window" })
+  map({ "", "t" }, "<C-h>", [[<Cmd>wincmd h<CR>]], { desc = "Go to left window" })
+  map({ "", "t" }, "<c-j>", [[<cmd>wincmd j<cr>]], { desc = "Go to lower window" })
+  map({ "", "t" }, "<C-k>", [[<Cmd>wincmd k<CR>]], { desc = "Go to upper window" })
+  map({ "", "t" }, "<C-l>", [[<Cmd>wincmd l<CR>]], { desc = "Go to right window" })
+
+  -- escape from terminal mode
+  map("t", "<esc>", [[<C-\><C-n>]])
+  map("t", "jk", [[<C-\><C-n>]])
 
   -- navigate in insert mode
   map("i", "<C-h>", "<Left>")
@@ -131,6 +135,10 @@ function M.aki()
   if vim.fn.has("nvim-0.9.0") == 1 then
     map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
   end
+
+  --convert px to rem, base 13
+  map("n", "m", [[<cmd>s#\v(\d+\.?\d*)px#\=printf("%g",(str2float(submatch(1))/16))."rem"#g<cr>]])
+  map("v", "m", [[<cmd>'<,'>s#\v(\d+\.?\d*)px#\=printf("%g",(str2float(submatch(1))/16))."rem"#g<cr>]])
 end
 
 M.bufremove = {

@@ -71,6 +71,10 @@ opt.undolevels = 10000
 opt.wildmode = "longest:full,full" -- Command-line completion mode
 opt.winminwidth = 5 -- Minimum window width
 
+if vim.fn.has("nvim-0.9") == 1 then
+  opt.splitkeep = "screen" -- Reduce scroll during window split
+end
+
 -- Disable some in built plugins completely
 local disabled_built_ins = {
   "netrw",

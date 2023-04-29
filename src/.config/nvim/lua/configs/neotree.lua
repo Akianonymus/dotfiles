@@ -1,9 +1,17 @@
 local config = {
   sort_case_insensitive = true, -- used when sorting files and directories in the tree
   default_component_configs = { indent = { padding = 2 } },
+  source_selector = {
+    winbar = true,
+    statusline = false,
+    sources = {
+      { source = "filesystem" },
+      { source = "buffers" },
+    },
+    content_layout = "center",
+  },
   window = {
     position = "left",
-    width = 25,
     mappings = {
       ["o"] = "open",
       ["s"] = "open_split",
@@ -20,8 +28,8 @@ local config = {
     },
   },
   filesystem = {
-    filtered_items = { visible = true, hide_dotfiles = false, hide_gitignored = false, hide_hidden = false },
-    follow_current_file = false,
+    filtered_items = { visible = true, hide_dotfiles = false, hide_gitignored = true, hide_hidden = false },
+    follow_current_file = true,
     group_empty_dirs = false, -- when true, empty folders will be grouped together
     window = { mappings = { ["b"] = "navigate_up", ["O"] = "set_root" } },
   },

@@ -4,17 +4,21 @@ local servers = {
   -- no need to specify config if no changes are required
   bashls = {},
   clangd = {},
-  emmet_ls = {},
   gopls = { disable_format = true },
-  html = { disable_format = true },
-  cssls = {},
   pyright = {},
+  -- pylsp = {},
   rust_analyzer = {},
   lua_ls = {},
+  emmet_ls = {},
+  html = { disable_format = true },
+  cssls = {},
+  cssmodules_ls = { capabilities = { definitionProvider = false } },
   tsserver = {},
   tailwindcss = {},
   jdtls = {},
 }
+
+servers.emmet_ls = { config = { filetypes = { "javascript" } } }
 
 -- These below needs some extra stuff done to their default config
 servers.clangd = {

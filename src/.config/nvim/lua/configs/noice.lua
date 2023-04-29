@@ -10,6 +10,11 @@ local config = {
       ["vim.lsp.util.stylize_markdown"] = true,
     },
   },
+  popupmenu = {
+    -- backend to use to show regular cmdline completions
+    ---@type 'nui'|'cmp'
+    backend = "cmp",
+  },
   presets = {
     bottom_search = true,
     command_palette = true,
