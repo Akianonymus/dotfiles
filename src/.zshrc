@@ -34,6 +34,10 @@ autoload -Uz compinit && compinit
 # fish like auto suggestions for zsh
 [[ -f ${zsh_plugin_folder}/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source "${zsh_plugin_folder}/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
+
+# history search fzf
+[[ -f ${zsh_plugin_folder}/zsh-fzf-history-search/zsh-fzf-history-search.zsh ]] && source "${zsh_plugin_folder}/zsh-fzf-history-search/zsh-fzf-history-search.zsh"
+
 # a powerful alternative for cd
 command -v zoxide > /dev/null && eval "$(zoxide init zsh)" && alias cd="z"
 

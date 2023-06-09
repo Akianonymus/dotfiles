@@ -40,6 +40,7 @@ main() {
         https://github.com/zdharma-continuum/fast-syntax-highlighting
         https://github.com/Aloxaf/fzf-tab
         https://github.com/zsh-users/zsh-autosuggestions
+        https://github.com/joshskidmore/zsh-fzf-history-search
     )
 
     mkdir -p "${zsh_stuff}"
