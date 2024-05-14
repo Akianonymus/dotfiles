@@ -29,7 +29,7 @@ local config = {
   },
   filesystem = {
     filtered_items = { visible = true, hide_dotfiles = false, hide_gitignored = true, hide_hidden = false },
-    follow_current_file = true,
+    follow_current_file = { enabled = true },
     group_empty_dirs = false, -- when true, empty folders will be grouped together
     window = { mappings = { ["b"] = "navigate_up", ["O"] = "set_root" } },
   },

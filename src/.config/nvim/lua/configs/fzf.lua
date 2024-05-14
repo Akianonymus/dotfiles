@@ -50,6 +50,13 @@ local config = {
     rg_opts = " --hidden --line-number --no-heading --color=never --smart-case " .. "-g '!{.git,node_modules}/*'",
     no_header_i = true, -- hide interactive header?
   },
+  builtin = {
+    extensions = {
+      ["png"] = { "chafa" },
+      ["svg"] = { "chafa" },
+      ["jpg"] = { "chafa" },
+    },
+  },
 }
 
 return function()

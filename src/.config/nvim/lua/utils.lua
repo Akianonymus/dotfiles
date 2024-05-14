@@ -89,6 +89,19 @@ M.resize = function(vertical, margin)
   vim.cmd(cmd)
 end
 
+function M.typescript_format_import()
+  local params = { command = "_typescript.organizeImports", arguments = { vim.fn.expand("%:p") } }
+
+  -- Get the list of supported commands from the server
+  local commands = vim.lsp.buf_request_sync(0, "workspace/executeCommand", params, 500)
+
+  -- Check if _typescript.organizeImports exists
+  if commands and commands[1] and commands[1].result and commands[1].result._typescript.organizeImports then
+    -- If it exists, execute the command
+    vim.lsp.buf_request_sync(0, "workspace/executeCommand", params, 500)
+  end
+end
+
 function M.setup_lsp_format(client, buffer)
   -- dont format if client disabled it or not supported
   if
@@ -99,14 +112,22 @@ function M.setup_lsp_format(client, buffer)
   end
 
   local key = require("mappings").lspkeymaps.formatting
+  local key_i = require("mappings").lspkeymaps.formatting_imports
   local ft = vim.bo[buffer].filetype
   local have_nls = #require("null-ls.sources").get_available(ft, "NULL_LS_FORMATTING") > 0
   local name = have_nls and "null-ls" or nil
   vim.keymap.set({ "n", "v" }, key, function()
+    M.typescript_format_import()
     vim.lsp.buf.format({ name = name })
   end, { buffer = buffer })
 
-  require("autocmds").lsp_autosave_format(buffer, name)
+  if ft == "typescript" or ft == "vue" then
+    vim.keymap.set({ "n", "v" }, key_i, function()
+      vim.lsp.buf.execute_command({ command = "_typescript.organizeImports", arguments = { vim.fn.expand("%:p") } })
+    end, { buffer = buffer })
+  end
+
+  require("autocmds").format_on_save(buffer, name)
   require("commands").toggle_autoformat(buffer)
 end
 

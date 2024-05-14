@@ -3,18 +3,19 @@ local diag_icons = require("icons").diagnostics
 
 local function fg(name)
   return function()
-    local hl = vim.api.nvim_get_hl_by_name(name, true)
+    local hl = vim.api.nvim_get_hl(0, { name = name })
     return hl and hl.foreground and { fg = string.format("#%06x", hl.foreground) }
   end
 end
 local function bg(name)
   return function()
-    local hl = vim.api.nvim_get_hl_by_name(name, true)
+    local hl = vim.api.nvim_get_hl(0, { name = name })
     return hl and hl.background and { bg = string.format("#%06x", hl.background) }
   end
 end
+
 local function full_hl(name)
-  local hl = vim.api.nvim_get_hl_by_name(name, true)
+  local hl = vim.api.nvim_get_hl(0, { name = name })
   local r = {}
   if hl then
     r["bg"] = hl.background and string.format("#%06x", hl.background)
@@ -87,7 +88,7 @@ local config = {
         padding = 1,
       },
     },
-    lualine_z = { { "progress", padding = 1 } },
+    lualine_z = { "selectioncount", { "progress" }, "location" },
   },
   extensions = { "neo-tree", "fzf", "toggleterm", "quickfix" },
 }

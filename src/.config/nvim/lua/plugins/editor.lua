@@ -30,7 +30,7 @@ return {
   {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = "Neotree",
-    dependencies = { "nvim-lua/plenary.nvim", "kyazdani42/nvim-web-devicons", "MunifTanjim/nui.nvim" },
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
     config = require("configs.neotree"),
     init = require("mappings").neotree,
   },
@@ -41,11 +41,11 @@ return {
   },
   {
     "windwp/nvim-spectre",
-    command = "FindReplace",
+    cmd = "FindReplace",
     config = function()
       require("spectre").setup({
         highlight = { search = "DiagnosticVirtualTextWarn" },
-        open_cmd = "vertical new",
+        open_cmd = "noswapfile vnew",
         is_insert_mode = true,
         line_sep_start = "╭" .. string.rep("─", vim.o.columns),
         line_sep = "╰" .. string.rep("─", vim.o.columns),
@@ -91,7 +91,7 @@ return {
   },
   {
     "VonHeikemen/searchbox.nvim",
-    command = "SearchBox",
+    cmd = "SearchBox",
     dependencies = { "MunifTanjim/nui.nvim" },
     init = require("mappings").searchbox,
     config = function()
@@ -110,5 +110,91 @@ return {
     cmd = "ToggleTerm",
     config = require("configs.toggleterm"),
     init = require("mappings").toggleterm,
+  },
+  {
+    "stevearc/oil.nvim",
+    init = function()
+      require("oil").setup({
+        default_file_explorer = true,
+        columns = { "icon", "size" },
+      })
+    end,
+    -- Optional dependencies
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
+    "RRethy/vim-illuminate",
+    event = "VeryLazy",
+    opts = {
+      delay = 200,
+      large_file_cutoff = 2000,
+      large_file_overrides = { providers = { "lsp" } },
+      min_count_to_highlight = 2,
+    },
+    config = function(_, opts)
+      require("illuminate").configure(opts)
+
+      local function map(key, dir, buffer)
+        vim.keymap.set("n", key, function()
+          require("illuminate")["goto_" .. dir .. "_reference"](true)
+        end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " Reference", buffer = buffer })
+      end
+
+      map("]]", "next")
+      map("[[", "prev")
+
+      -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function()
+          local buffer = vim.api.nvim_get_current_buf()
+          map("]]", "next", buffer)
+          map("[[", "prev", buffer)
+        end,
+      })
+    end,
+    keys = {
+      { "]]", desc = "Next Reference" },
+      { "[[", desc = "Prev Reference" },
+    },
+  },
+  {
+    "chrisgrieser/nvim-early-retirement",
+    config = true,
+    event = "VeryLazy",
+    opts = {
+      retirementAgeMins = 15,
+      ignoredFiletypes = { "neo-tree" },
+      minimumBufferNum = 5,
+      ignoreSpecialBuftypes = true,
+    },
+  },
+  {
+    "MagicDuck/grug-far.nvim",
+    cmd = "GrugFar",
+    config = function()
+      require("grug-far").setup({
+        debounceMs = 500,
+        minSearchChars = 2,
+        maxWorkers = 4,
+        extraRgArgs = "",
+        disableBufferLineNumbers = true,
+        maxSearchCharsInTitles = 30,
+        keymaps = {
+          replace = "<C-enter>",
+          qflist = "<C-q>",
+          gotoLocation = "<enter>",
+          close = "<C-x>",
+        },
+        resultsSeparatorLineChar = "",
+        placeholders = {
+          enabled = true,
+
+          search = "ex: foo    foo([a-z0-9]*)    fun\\(",
+          replacement = "ex: bar    ${1}_foo    $$MY_ENV_VAR ",
+          filesGlob = "ex: *.lua     *.{css,js}    **/docs/*.md",
+          flags = "ex: --help --hidden (-.) --ignore-case (-i) --multiline (-U) --fixed-strings (-F)",
+        },
+      })
+    end,
   },
 }

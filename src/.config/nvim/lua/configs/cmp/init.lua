@@ -35,10 +35,18 @@ return function()
       ["<C-f>"] = cmp.mapping.scroll_docs(4),
       ["<C-Space>"] = cmp.mapping.complete(),
       ["<C-e>"] = cmp.mapping.abort(),
-      ["<CR>"] = cmp.mapping.confirm({
-        behavior = cmp.ConfirmBehavior.Replace,
-        select = false,
-      }),
+      ["<C-y>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+      ["<CR>"] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          if cmp.get_selected_entry() then
+            cmp.confirm({ select = false, cmp.ConfirmBehavior.Insert })
+          else
+            cmp.close()
+          end
+        else
+          fallback()
+        end
+      end),
       ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.complete()

@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+alarm(){
+    declare t="${1:?Give time in hrs}"
+    sudo rtcwake -m mem -s "$((t * 60 * 60))"
+    vlc '/data/stash/Distraction/Music/Angrezi/how deep﹖ how deep﹖ Tai Verdes.m4a'
+}
+
+vidmerge() {
+    declare output="${1:?videmerge: GIve output file}"
+    shift
+    ffmpeg -f concat -safe 0 -i <(printf "file '%s'\n" "${@:?give filesnames}") -c copy "${2:vidmerge: Give output file}"
+}
+
 # batch rename files
 brename() {
     abspath() {

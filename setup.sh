@@ -16,8 +16,8 @@ main() {
                 auto-cpufreq
                 baka-mplayer base-devel bat
                 fd fzf firefox
-                git git-delta-git github-cli gotop
-                htop
+                git git-delta-git github-cli
+                htop btop
                 jq
                 kitty
                 lsd

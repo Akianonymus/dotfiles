@@ -55,7 +55,7 @@ function M.aki()
   map("i", "<C-h>", "<Left>")
   map("i", "<C-l>", "<Right>")
   map("i", "<C-j>", "<Down>")
-  map("i", "<C-j>", "<Up>")
+  map("i", "<C-k>", "<Up>")
 
   -- select all text in a buffer
   map({ "n", "x" }, "<C-a>", "gg0vG$")
@@ -136,9 +136,9 @@ function M.aki()
     map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
   end
 
-  --convert px to rem, base 13
-  map("n", "m", [[<cmd>s#\v(\d+\.?\d*)px#\=printf("%g",(str2float(submatch(1))/16))."rem"#g<cr>]])
-  map("v", "m", [[<cmd>'<,'>s#\v(\d+\.?\d*)px#\=printf("%g",(str2float(submatch(1))/16))."rem"#g<cr>]])
+  -- --convert px to rem, base 13
+  -- map("n", "m", [[<cmd>s#\v(\d+\.?\d*)px#\=printf("%g",(str2float(submatch(1))/16))."rem"#g<cr>]])
+  -- map("v", "m", [[<cmd>'<,'>s#\v(\d+\.?\d*)px#\=printf("%g",(str2float(submatch(1))/16))."rem"#g<cr>]])
 end
 
 M.bufremove = {
@@ -218,11 +218,13 @@ M.lspkeymaps = {
   code_action = "<leader>ca",
   references = "gr",
   formatting = "<leader>fm",
+  formatting_imports = "<leader>fi",
   -- diagnostics
   workspace_diagnostics = "<leader>q",
   buffer_diagnostics = "ge",
   goto_prev = "[d",
   goto_next = "]d",
+  document_symbols = "<leader>fs",
 }
 
 function M.lspconfig(client, bufnr)
@@ -237,7 +239,7 @@ function M.lspconfig(client, bufnr)
     vim.lsp.buf.declaration()
   end)
 
-  buf_k("n", m.definition, "<cmd>Lspsaga lsp_finder<CR>")
+  buf_k("n", m.definition, "<cmd>FzfLua lsp_finder<CR>")
 
   buf_k("n", m.hover, "<cmd>Lspsaga hover_doc ++quiet<CR>")
 
@@ -280,6 +282,8 @@ function M.lspconfig(client, bufnr)
   buf_k("n", m.list_workspace_folders, function()
     vim.pretty_print(vim.lsp.buf.list_workspace_folders())
   end)
+
+  buf_k("n", m.document_symbols, "<cmd>:FzfLua lsp_document_symbols<cr>")
 
   require("utils").setup_lsp_format(client, bufnr)
 end

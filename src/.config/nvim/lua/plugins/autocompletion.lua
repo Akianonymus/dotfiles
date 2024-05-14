@@ -49,4 +49,6 @@ return {
     dependencies = { "nvim-cmp" },
     config = require("configs.cmp.cmdline"),
   },
+
+  -- ai
 }

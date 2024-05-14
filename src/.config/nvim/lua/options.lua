@@ -97,8 +97,6 @@ local disabled_built_ins = {
   -- 'matchit',
   --'matchparen',
 }
--- disable default fzf plugin if not
--- root since we will be using fzf-lua
 for _, plugin in pairs(disabled_built_ins) do
   vim.g["loaded_" .. plugin] = 1
 end

@@ -12,13 +12,33 @@ local servers = {
   emmet_ls = {},
   html = { disable_format = true },
   cssls = {},
-  cssmodules_ls = { capabilities = { definitionProvider = false } },
+  cssmodules_ls = {},
   tsserver = {},
+  volar = {},
   tailwindcss = {},
   jdtls = {},
+  phpactor = {},
 }
 
-servers.emmet_ls = { config = { filetypes = { "javascript" } } }
+servers.tsserver = {
+  config = {
+    init_options = {
+      plugins = {
+        { name = "@vue/typescript-plugin", location = "", languages = { "javascript", "typescript", "vue" } },
+      },
+    },
+    filetypes = { "javascript", "typescript", "vue" },
+  },
+}
+
+servers.tailwindcss = { filetypes_exclude = { "javascript", "typescript" } }
+
+servers.cssmodules_ls = {
+  capabilities = { definitionProvider = false },
+  filetypes_exclude = { "javascript", "typescript" },
+}
+
+servers.emmet_ls = { config = { filetypes = { "javascriptreact", "typescriptreact" } } }
 
 -- These below needs some extra stuff done to their default config
 servers.clangd = {

@@ -6,12 +6,15 @@ local config = {
     "css",
     "go",
     "javascript",
+    "typescript",
     "json",
     "lua",
     "markdown",
+    "markdown_inline",
     "python",
     "vim",
   },
+  autotag = { enable = true },
   -- autopairs = { enable = true },
   -- context_commentstring = { enable = true },
   highlight = { enable = true, use_languagetree = true, additional_vim_regex_highlighting = false },
@@ -51,7 +54,18 @@ local configfn = function()
 end
 return {
   {
+    "windwp/nvim-ts-autotag",
+    opts = {
+      enable = true,
+      enable_rename = true,
+      enable_close = true,
+      enable_close_on_slash = true,
+      filetypes = { "html", "xml" },
+    },
+  },
+  {
     "nvim-treesitter/nvim-treesitter",
+    dependencies = { "windwp/nvim-ts-autotag" },
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     config = configfn,

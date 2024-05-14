@@ -49,11 +49,11 @@
   insteadOf = https://github.com/
   insteadOf = git://github.com/
   
-[url "git@gitlab.com:"]
-  pushInsteadOf = https://gitlab.com/
-  pushInsteadOf = git://gitlab.com/
-  insteadOf = https://gitlab.com/
-  insteadOf = git://gitlab.com/
+; [url "git@gitlab.com:"]
+;   pushInsteadOf = https://gitlab.com/
+;   pushInsteadOf = git://gitlab.com/
+;   insteadOf = https://gitlab.com/
+;   insteadOf = git://gitlab.com/
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f

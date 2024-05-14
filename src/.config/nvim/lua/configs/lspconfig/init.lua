@@ -57,7 +57,9 @@ require("commands").toggle_autoformat_global()
 local servers = require("configs.lspconfig.servers")
 for server, conf in pairs(servers) do
   local name = server
+  local currentlsp = lspconfig[name]
   local disable_format = conf.disable_format or false
+  local filetypes_exclude = conf.filetypes_exclude or false
   local config = conf.config or {}
   local final_config = config
 
@@ -68,6 +70,17 @@ for server, conf in pairs(servers) do
   if type(final_config) ~= "table" then
     vim.notify("custom/lspconfig.lua: final_config was not a table for " .. name, 3)
     final_config = {}
+  end
+
+  if filetypes_exclude then
+    local old_filetypes = currentlsp.document_config.default_config.filetypes
+    local new_filetypes = {}
+    for _, filetype in ipairs(old_filetypes) do
+      if not vim.tbl_contains(filetypes_exclude, filetype) then
+        table.insert(new_filetypes, filetype)
+      end
+    end
+    final_config.filetypes = new_filetypes
   end
 
   local default_config = {
@@ -84,5 +97,5 @@ for server, conf in pairs(servers) do
   }
 
   final_config = vim.tbl_deep_extend("force", default_config, final_config) or default_config
-  lspconfig[name].setup(final_config)
+  currentlsp.setup(final_config)
 end

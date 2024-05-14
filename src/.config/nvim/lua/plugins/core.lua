@@ -16,6 +16,11 @@ return {
     end,
   },
   {
+    "0xAdk/full_visual_line.nvim",
+    keys = "V",
+    opts = {},
+  },
+  {
     "ggandor/lightspeed.nvim",
     keys = { "s", "S", "t", "T", "f", "F" },
     config = function()

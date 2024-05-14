@@ -1,6 +1,7 @@
 return {
   {
     "luisiacc/gruvbox-baby",
+    lazy = false,
     config = function()
       vim.g.gruvbox_baby_background_color = "dark"
     end,
@@ -49,4 +50,5 @@ return {
       vim.cmd("colorscheme kanagawa")
     end,
   },
+  { "olimorris/onedarkpro.nvim", lazy = false },
 }

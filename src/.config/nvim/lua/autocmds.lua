@@ -22,10 +22,54 @@ function M.aki()
   })
 
   -- Check if we need to reload the file when it changed
-  autocmd({ "FocusGained", "TermClose", "TermLeave" }, { command = "checktime" })
+  autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+    callback = function()
+      if vim.o.buftype ~= "nofile" then
+        vim.cmd("checktime")
+      end
+    end,
+  })
 
   -- Highlight on yank
   autocmd("TextYankPost", { callback = vim.highlight.on_yank })
+
+  -- https://vim.fandom.com/wiki/Avoid_scrolling_when_switch_buffers
+  local function is_float(winnr)
+    local wincfg = vim.api.nvim_win_get_config(winnr)
+    if wincfg and (wincfg.external or wincfg.relative and #wincfg.relative > 0) then
+      return true
+    end
+    return false
+  end
+
+  autocmd("BufLeave", {
+    pattern = "*",
+    desc = "Avoid autoscroll when switching buffers",
+    callback = function()
+      -- at this stage, current buffer is the buffer we leave
+      -- but the current window already changed, verify neither
+      -- source nor destination are floating windows
+      local from_buf = vim.api.nvim_get_current_buf()
+      local from_win = vim.fn.bufwinid(from_buf)
+      local to_win = vim.api.nvim_get_current_win()
+      if not is_float(to_win) and not is_float(from_win) then
+        vim.b.__VIEWSTATE = vim.fn.winsaveview()
+      end
+    end,
+  })
+  autocmd("BufEnter", {
+    pattern = "*",
+    desc = "Avoid autoscroll when switching buffers",
+    callback = function()
+      if vim.b.__VIEWSTATE then
+        local to_win = vim.api.nvim_get_current_win()
+        if not is_float(to_win) then
+          vim.fn.winrestview(vim.b.__VIEWSTATE)
+        end
+        vim.b.__VIEWSTATE = nil
+      end
+    end,
+  })
 end
 
 function M.cmp()
@@ -54,9 +98,9 @@ function M.cmp()
   })
 end
 
-function M.lsp_autosave_format(bufnr, name)
+function M.format_on_save(bufnr, name)
   vim.b.autoformat_aki = vim.g.autoformat_aki
-  local augroup_name = "LspAutoFormatOnSave" .. bufnr
+  local augroup_name = "LspFormatOnSave" .. bufnr
   -- always remove the existing autocmd
   pcall(vim.api.nvim_del_augroup_by_name, augroup_name)
 
@@ -65,6 +109,7 @@ function M.lsp_autosave_format(bufnr, name)
     buffer = bufnr,
     callback = function()
       if vim.b.autoformat_aki then
+        require("utils").typescript_format_import()
         vim.lsp.buf.format({ name = name })
       end
     end,

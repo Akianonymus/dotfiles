@@ -23,9 +23,9 @@ return {
   },
   { "smjonas/inc-rename.nvim", cmd = "IncRename", config = true },
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     event = { "BufReadPre", "BufNewFile" },
-    dependencies = { "neovim/nvim-lspconfig" },
+    dependencies = { "neovim/nvim-lspconfig", "gbprod/none-ls-shellcheck.nvim", "gbprod/none-ls-luacheck.nvim" },
     config = require("configs.null-ls"),
   },
   {
@@ -42,7 +42,7 @@ return {
   {
     "folke/trouble.nvim",
     cmd = "Trouble",
-    dependencies = { "kyazdani42/nvim-web-devicons" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("trouble").setup({ auto_close = true, use_diagnostic_signs = true, padding = false })
     end,
@@ -55,17 +55,5 @@ return {
     config = function()
       require("neodev").setup({ library = { plugins = false }, experimental = { pathStrict = true } })
     end,
-  },
-  {
-    "jose-elias-alvarez/typescript.nvim",
-    -- config = function()
-    --   require("typescript").setup({
-    --     disable_commands = false, -- prevent the plugin from creating Vim commands
-    --     debug = false, -- enable debug logging for commands
-    --     go_to_source_definition = {
-    --       fallback = true, -- fall back to standard LSP definition on failure
-    --     },
-    --   })
-    -- end,
   },
 }

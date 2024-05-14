@@ -12,7 +12,10 @@ return function(builtins)
     -- builtins.diagnostics.flake8.with({ extra_args = { "--ignore", "E501,W503" } }),
 
     -- rust
-    builtins.formatting.rustfmt,
+    -- builtins.formatting.rustfmt,
+
+    -- php
+    builtins.formatting.pretty_php,
 
     -- JS html css stuff
     builtins.formatting.prettierd.with({
@@ -22,12 +25,12 @@ return function(builtins)
 
     -- Lua
     builtins.formatting.stylua,
-    builtins.diagnostics.luacheck.with({ extra_args = { "--global vim" } }),
+    require("none-ls-luacheck.diagnostics.luacheck").with({ extra_args = { "--global vim" } }),
 
     -- Shell
     builtins.formatting.shfmt,
-    builtins.diagnostics.shellcheck.with({ diagnostics_format = "#{m} [#{c}]" }),
-    -- require("typescript.extensions.null-ls.code-actions"),
+    require("none-ls-shellcheck.diagnostics").with({ diagnostics_format = "#{m} [#{c}]" }),
+    require("none-ls-shellcheck.code_actions"),
   }
 
   return sources
