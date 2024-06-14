@@ -21,7 +21,6 @@ return {
       require("mason-lspconfig").setup()
     end,
   },
-  { "smjonas/inc-rename.nvim", cmd = "IncRename", config = true },
   {
     "nvimtools/none-ls.nvim",
     event = { "BufReadPre", "BufNewFile" },

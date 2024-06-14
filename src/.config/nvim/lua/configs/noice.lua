@@ -18,7 +18,6 @@ local config = {
   presets = {
     bottom_search = true,
     command_palette = true,
-    inc_rename = true,
   },
 }
 

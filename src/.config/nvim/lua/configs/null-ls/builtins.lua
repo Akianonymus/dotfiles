@@ -19,7 +19,7 @@ return function(builtins)
 
     -- JS html css stuff
     builtins.formatting.prettierd.with({
-      filetypes = { "html", "json", "scss", "css", "javascript", "javascriptreact", "typescript" },
+      filetypes = { "html", "json", "scss", "css", "javascript", "javascriptreact", "typescript", "vue" },
     }),
     -- builtins.diagnostics.eslint.with({ command = "eslint_d" }),
 

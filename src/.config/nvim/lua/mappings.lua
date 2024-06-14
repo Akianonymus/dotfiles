@@ -249,7 +249,7 @@ function M.lspconfig(client, bufnr)
 
   buf_k("n", m.type_definition, vim.lsp.buf.type_definition)
 
-  buf_k("n", m.rename, ":IncRename ")
+  buf_k("n", m.rename, vim.lsp.buf.rename)
 
   buf_k("n", m.code_action, "<cmd>:Lspsaga code_action<cr>")
 

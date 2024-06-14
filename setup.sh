@@ -13,6 +13,7 @@ main() {
     case "${os}" in
         arch)
             packages=(aria2
+                intel-media-driver
                 auto-cpufreq
                 baka-mplayer base-devel bat
                 fd fzf firefox
