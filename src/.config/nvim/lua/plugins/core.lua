@@ -10,9 +10,10 @@ return {
   },
   {
     "max397574/better-escape.nvim",
-    event = { "InsertEnter" },
+    event = "VeryLazy",
     config = function()
-      require("better_escape").setup({ mapping = { "jk", "JK", "Jk" } })
+      local maps = { j = { k = "<Esc>" }, J = { K = "<Esc>", k = "<Esc>" } }
+      require("better_escape").setup({ mappings = { i = maps, c = maps, t = maps, v = maps, s = maps } })
     end,
   },
   {

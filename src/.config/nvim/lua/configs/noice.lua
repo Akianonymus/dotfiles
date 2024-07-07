@@ -1,7 +1,7 @@
 local config = {
-  views = {
-    mini = { win_options = { winhighlight = { Normal = "Normal" } } },
-  },
+  -- https://github.com/neovim/nvim-lspconfig/issues/1931#issuecomment-2138428768
+  routes = { { filter = { event = "notify", find = "No information available" }, opts = { skip = true } } },
+  views = { mini = { win_options = { winhighlight = { Normal = "Normal" } } } },
   lsp = {
     signature = { enabled = false },
     override = {
@@ -10,15 +10,8 @@ local config = {
       ["vim.lsp.util.stylize_markdown"] = true,
     },
   },
-  popupmenu = {
-    -- backend to use to show regular cmdline completions
-    ---@type 'nui'|'cmp'
-    backend = "cmp",
-  },
-  presets = {
-    bottom_search = true,
-    command_palette = true,
-  },
+  popupmenu = { backend = "cmp" },
+  presets = { bottom_search = true, command_palette = true },
 }
 
 return function()

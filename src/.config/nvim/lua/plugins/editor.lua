@@ -197,4 +197,21 @@ return {
       })
     end,
   },
+  -- todo
+  -- wait for this to be resolved
+  -- https://github.com/chrisgrieser/nvim-rip-substitute/issues/6
+  -- {
+  -- "chrisgrieser/nvim-rip-substitute",
+  -- cmd = "RipSubstitute",
+  -- keys = {
+  --   {
+  --     "<leader>fs",
+  --     function()
+  --       require("rip-substitute").sub()
+  --     end,
+  --     mode = { "n", "x" },
+  --     desc = " rip substitute",
+  --   },
+  -- },
+  -- },
 }

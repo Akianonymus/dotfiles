@@ -24,10 +24,16 @@ servers.tsserver = {
   config = {
     init_options = {
       plugins = {
-        { name = "@vue/typescript-plugin", location = "", languages = { "javascript", "typescript", "vue" } },
+        {
+          -- https://github.com/neovim/nvim-lspconfig/issues/1931#issuecomment-2138428768
+          name = "@vue/typescript-plugin",
+          location = require("mason-registry").get_package("vue-language-server"):get_install_path()
+            .. "/node_modules/@vue/language-server",
+          languages = { "vue" },
+        },
       },
     },
-    filetypes = { "javascript", "typescript", "vue" },
+    filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
   },
 }
 

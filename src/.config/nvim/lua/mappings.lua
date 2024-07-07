@@ -49,7 +49,7 @@ function M.aki()
 
   -- escape from terminal mode
   map("t", "<esc>", [[<C-\><C-n>]])
-  map("t", "jk", [[<C-\><C-n>]])
+  -- map("t", "jk", [[<C-\><C-n>]])
 
   -- navigate in insert mode
   map("i", "<C-h>", "<Left>")
