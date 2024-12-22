@@ -32,7 +32,7 @@ opt.ruler = false
 -- disable nvim intro
 opt.shortmess:append("sI")
 
-opt.signcolumn = "yes"
+opt.signcolumn = "yes:3"
 opt.splitbelow = true
 opt.splitright = true
 opt.termguicolors = true

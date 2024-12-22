@@ -24,14 +24,15 @@ return {
   },
   {
     "windwp/nvim-autopairs",
-    dependencies = { "hrsh7th/nvim-cmp", "nvim-treesitter/nvim-treesitter" },
+    dependencies = { "nvim-cmp", "nvim-treesitter/nvim-treesitter" },
     config = function()
       require("nvim-autopairs").setup({ check_ts = true, disable_filetype = { "TelescopePrompt", "vim" } })
     end,
   },
   -- cmp
   {
-    "hrsh7th/nvim-cmp",
+    "iguanacucumber/magazine.nvim",
+    name = "nvim-cmp",
     event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",

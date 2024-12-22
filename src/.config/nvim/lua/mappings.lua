@@ -335,7 +335,7 @@ end
 
 function M.spectre()
   map("n", "<leader>R", function()
-    require("spectre").open()
+    require("spectre").open({ select_word = true })
   end, { desc = "Find and Replace [ Folder wide ]" })
 end
 

@@ -6,6 +6,7 @@ return function()
     global_resume = true, -- enable global `resume`?
     global_resume_query = true, -- include typed query in `resume`?
     prefix = " aki ",
+    hls = { title = "Substitute" },
     winopts = {
       width = 0.90,
       height = 0.75,
@@ -16,10 +17,9 @@ return function()
         delay = 50,
         vertical = "down:45%",
         horizontal = "right:50%",
-        title_align = "center",
+        title_pos = "center",
         wrap = "wrap",
       },
-      hl = { title = "Substitute" },
       on_create = function()
         local function feedkeys(normal_keys, insert_key)
           if type(normal_keys) ~= "table" then
@@ -55,12 +55,14 @@ return function()
       prompt = "   Word ",
       rg_opts = " --hidden --line-number --no-heading --color=never --smart-case " .. "-g '!{.git,node_modules}/*'",
       no_header_i = true, -- hide interactive header?
+      actions = {
+        ["default"] = require("fzf-lua.actions").file_edit,
+      },
     },
     previewers = {
       builtin = {
         extensions = {
           ["png"] = { "ueberzug" },
-          ["svg"] = { "ueberzug" },
           ["jpg"] = { "ueberzug" },
         },
       },

@@ -35,7 +35,8 @@ return {
     init = require("mappings").neotree,
   },
   {
-    "NvChad/nvim-colorizer.lua",
+    -- "NvChad/nvim-colorizer.lua",
+    "catgoose/nvim-colorizer.lua",
     event = "BufReadPost",
     config = require("configs.colorizer"),
   },
@@ -156,46 +157,6 @@ return {
       { "]]", desc = "Next Reference" },
       { "[[", desc = "Prev Reference" },
     },
-  },
-  {
-    "chrisgrieser/nvim-early-retirement",
-    config = true,
-    event = "VeryLazy",
-    opts = {
-      retirementAgeMins = 15,
-      ignoredFiletypes = { "neo-tree" },
-      minimumBufferNum = 5,
-      ignoreSpecialBuftypes = true,
-    },
-  },
-  {
-    "MagicDuck/grug-far.nvim",
-    cmd = "GrugFar",
-    config = function()
-      require("grug-far").setup({
-        debounceMs = 500,
-        minSearchChars = 2,
-        maxWorkers = 4,
-        extraRgArgs = "",
-        disableBufferLineNumbers = true,
-        maxSearchCharsInTitles = 30,
-        keymaps = {
-          replace = "<C-enter>",
-          qflist = "<C-q>",
-          gotoLocation = "<enter>",
-          close = "<C-x>",
-        },
-        resultsSeparatorLineChar = "",
-        placeholders = {
-          enabled = true,
-
-          search = "ex: foo    foo([a-z0-9]*)    fun\\(",
-          replacement = "ex: bar    ${1}_foo    $$MY_ENV_VAR ",
-          filesGlob = "ex: *.lua     *.{css,js}    **/docs/*.md",
-          flags = "ex: --help --hidden (-.) --ignore-case (-i) --multiline (-U) --fixed-strings (-F)",
-        },
-      })
-    end,
   },
   -- todo
   -- wait for this to be resolved

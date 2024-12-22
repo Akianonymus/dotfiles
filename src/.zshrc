@@ -27,7 +27,7 @@ setopt hist_verify               # show command with history expansion to user b
 setopt inc_append_history        # add commands to HISTFILE in order of execution
 
 # enable autocomplete and set related options
-autoload -Uz compinit && compinit
+autoload -U compinit && compinit
 # fzf tab complition
 [[ -f ${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh ]] && source "${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh"
 
@@ -42,7 +42,7 @@ autoload -Uz compinit && compinit
 command -v zoxide > /dev/null && eval "$(zoxide init zsh)" && alias cd="z"
 
 misc_stuff_folder="${HOME:?}/.dotfiles/src/misc"
-files_to_source=(ls_colors.sh keybindings.zsh git_aliases.sh functions.sh)
+files_to_source=(ls_colors.sh keybindings.zsh aliases.sh git_aliases.sh functions.sh)
 for f in "${files_to_source[@]}"; do
 	pp="${misc_stuff_folder}/${f}"
 	[[ -f ${pp} ]] && source "${pp}"
@@ -68,5 +68,5 @@ fi
 
 [ -f "${HOME}/.gdrive-downloader/gdl" ] && [ -x "${HOME}/.gdrive-downloader/gdl" ] && PATH="${HOME}/.gdrive-downloader:${PATH}"
 [ -f "${HOME}/.google-drive-upload/bin/gupload" ] && [ -x "${HOME}/.google-drive-upload/bin" ] && PATH="${HOME}/.google-drive-upload/bin:${PATH}"
-export VOLTA_HOME="$HOME/.volta"
-[ -d "${VOLTA_HOME}" ] && export PATH="$VOLTA_HOME/bin:$PATH"
+
+command -v fzf > /dev/null && source <(fzf --zsh)

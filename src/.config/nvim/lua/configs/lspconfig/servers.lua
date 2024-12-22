@@ -13,14 +13,14 @@ local servers = {
   html = { disable_format = true },
   cssls = {},
   cssmodules_ls = {},
-  tsserver = {},
+  ts_ls = {},
   volar = {},
   tailwindcss = {},
   jdtls = {},
   phpactor = {},
 }
 
-servers.tsserver = {
+servers.ts_ls = {
   config = {
     init_options = {
       plugins = {
@@ -44,7 +44,7 @@ servers.cssmodules_ls = {
   filetypes_exclude = { "javascript", "typescript" },
 }
 
-servers.emmet_ls = { config = { filetypes = { "javascriptreact", "typescriptreact" } } }
+servers.emmet_ls = { config = { filetypes = { "javascriptreact", "typescriptreact", "vue" } } }
 
 -- These below needs some extra stuff done to their default config
 servers.clangd = {

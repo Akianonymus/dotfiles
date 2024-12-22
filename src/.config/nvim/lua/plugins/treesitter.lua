@@ -14,7 +14,6 @@ local config = {
     "python",
     "vim",
   },
-  autotag = { enable = true },
   -- autopairs = { enable = true },
   -- context_commentstring = { enable = true },
   highlight = { enable = true, use_languagetree = true, additional_vim_regex_highlighting = false },

@@ -36,11 +36,6 @@ return {
       require("dressing").setup({ input = { mappings = { n = { ["q"] = "Close" } } } })
     end,
   },
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "VeryLazy",
-    config = require("configs.indent_blankline"),
-  },
   -- noicer ui
   {
     "folke/noice.nvim",
@@ -55,6 +50,7 @@ return {
     config = function()
       vim.notify = require("notify")
       require("notify").setup({
+        render = "compact",
         timeout = 3000,
         max_height = function()
           return math.floor(vim.o.lines * 0.75)
@@ -62,6 +58,12 @@ return {
         max_width = function()
           return math.floor(vim.o.columns * 0.60)
         end,
+        stages = "static",
+        time_formats = {
+          notification = "%T",
+          notification_history = "%FT%T",
+        },
+        top_down = true,
       })
     end,
   },

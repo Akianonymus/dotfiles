@@ -9,3 +9,4 @@ pager: bat
 # Aliases allow you to create nicknames for gh commands
 aliases:
     del: api -X DELETE "repos/akianonymus/$1"
+version: "1"

@@ -109,7 +109,7 @@ function M.format_on_save(bufnr, name)
     buffer = bufnr,
     callback = function()
       if vim.b.autoformat_aki then
-        require("utils").typescript_format_import()
+        -- require("utils").typescript_format_import()
         vim.lsp.buf.format({ name = name })
       end
     end,

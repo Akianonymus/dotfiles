@@ -71,7 +71,7 @@ local config = {
           local arr = " "
           local names = ""
           local max = vim.o.columns * 0.2
-          for _, server in pairs(vim.lsp.get_active_clients({ bufnr = 0 })) do
+          for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
             if not (server.name == "null-ls") then
               local tmp = names .. " " .. server.name
               if #tmp + #arr <= max - 4 then

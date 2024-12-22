@@ -59,7 +59,7 @@ return {
     "gbprod/yanky.nvim",
     keys = mappings.yanky,
     config = function()
-      require("yanky").setup({ highlight = { timer = 200 } })
+      require("yanky").setup({ highlight = { timer = 200 }, system_clipboard = { sync_with_ring = false } })
     end,
   },
 }
