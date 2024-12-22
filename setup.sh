@@ -26,6 +26,7 @@ main() {
                 neovim
                 ripgrep
                 touche touchegg
+                wezterm
                 zoxide zsh)
 
             # install yay
