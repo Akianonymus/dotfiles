@@ -16,10 +16,6 @@ return {
     "williamboman/mason.nvim",
     dependencies = { "williamboman/mason-lspconfig.nvim" },
     cmd = "Mason",
-    config = function()
-      require("mason").setup()
-      require("mason-lspconfig").setup()
-    end,
   },
   {
     "nvimtools/none-ls.nvim",
@@ -54,5 +50,11 @@ return {
     config = function()
       require("neodev").setup({ library = { plugins = false }, experimental = { pathStrict = true } })
     end,
+  },
+  -- {
+  --   "mfussenegger/nvim-jdtls",
+  -- },
+  {
+    "nvim-java/nvim-java",
   },
 }

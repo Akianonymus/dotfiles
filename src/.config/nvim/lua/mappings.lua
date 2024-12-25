@@ -222,8 +222,10 @@ M.lspkeymaps = {
   -- diagnostics
   workspace_diagnostics = "<leader>q",
   buffer_diagnostics = "ge",
-  goto_prev = "[d",
-  goto_next = "]d",
+  goto_prev_diagnostics = "[d",
+  goto_next_diagnostics = "]d",
+  goto_prev_error_diagnostics = "[e",
+  goto_next_error_diagnostics = "]e",
   document_symbols = "<leader>fs",
 }
 
@@ -255,13 +257,19 @@ function M.lspconfig(client, bufnr)
 
   buf_k("n", m.references, "<cmd>:Trouble lsp_references<cr>")
 
-  buf_k("n", m.goto_prev, "<cmd>Lspsaga diagnostic_jump_prev<CR>")
+  buf_k("n", m.goto_prev_diagnostics, "<cmd>Lspsaga diagnostic_jump_prev<CR>")
+  buf_k("n", m.goto_prev_error_diagnostics, function()
+    require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+  end)
 
-  buf_k("n", m.goto_next, "<cmd>Lspsaga diagnostic_jump_next<CR>")
+  buf_k("n", m.goto_next_diagnostics, "<cmd>Lspsaga diagnostic_jump_next<CR>")
+  buf_k("n", m.goto_next_error_diagnostics, function()
+    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+  end)
 
   buf_k("n", m.workspace_diagnostics, function()
     if vim.diagnostic.get()[1] then
-      vim.cmd("Trouble workspace_diagnostics")
+      vim.cmd("FzfLua diagnostics_workspace")
     else
       vim.notify("No diagnostics found.")
     end
@@ -269,9 +277,9 @@ function M.lspconfig(client, bufnr)
 
   buf_k("n", m.buffer_diagnostics, function()
     if vim.diagnostic.get(bufnr)[1] then
-      vim.cmd("Trouble document_diagnostics")
+      vim.cmd("FzfLua diagnostics_document")
     else
-      vim.notify("No diagnostics found.")
+      -- vim.notify("No diagnostics found.")
     end
   end)
 
@@ -280,7 +288,7 @@ function M.lspconfig(client, bufnr)
   buf_k("n", m.remove_workspace_folder, vim.lsp.buf.remove_workspace_folder)
 
   buf_k("n", m.list_workspace_folders, function()
-    vim.pretty_print(vim.lsp.buf.list_workspace_folders())
+    vim.print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end)
 
   buf_k("n", m.document_symbols, "<cmd>:FzfLua lsp_document_symbols<cr>")

@@ -83,4 +83,40 @@ servers.lua_ls = {
   disable_format = true,
 }
 
+servers.jdtls = {
+  before_lspconfig_setup = function()
+    require("java").setup({
+      lombok = { version = "nightly" },
+      java_test = { enable = false },
+      java_debug_adapter = { enable = false },
+      spring_boot_tools = { enable = false },
+      jdk = { auto_install = false, version = "21.0.5" },
+      notifications = { dap = false },
+      verification = {
+        invalid_order = true,
+        duplicate_setup_calls = true,
+        invalid_mason_registry = true,
+      },
+    })
+  end,
+  config = {
+    settings = {
+      references = { includeDecompiledSources = true },
+      implementationsCodeLens = { enabled = false },
+      referenceCodeLens = { enabled = false },
+      inlayHints = { parameterNames = { enabled = "all" } },
+      signatureHelp = { enabled = true, description = { enabled = true } },
+      symbols = { includeSourceMethodDeclarations = true },
+      rename = { enabled = true },
+      contentProvider = { preferred = "fernflower" },
+      sources = { organizeImports = { starThreshold = 9999, staticStarThreshold = 9999 } },
+      redhat = { telemetry = { enabled = false } },
+    },
+    single_file_support = true,
+    init_options = {
+      documentSymbol = { dynamicRegistration = true, hierarchicalDocumentSymbolSupport = true, labelSupport = true },
+    },
+  },
+}
+
 return servers

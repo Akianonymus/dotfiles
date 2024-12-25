@@ -52,14 +52,14 @@ return {
     "andymass/vim-matchup",
     event = "BufReadPost",
     init = function()
-      vim.g.matchup_matchparen_offscreen = { method = "status_manual" }
+      -- vim.g.matchup_matchparen_offscreen = { method = "popup" }
     end,
   },
   {
     "gbprod/yanky.nvim",
     keys = mappings.yanky,
     config = function()
-      require("yanky").setup({ highlight = { timer = 200 }, system_clipboard = { sync_with_ring = false } })
+      require("yanky").setup({ highlight = { timer = 100 }, system_clipboard = { sync_with_ring = false } })
     end,
   },
 }

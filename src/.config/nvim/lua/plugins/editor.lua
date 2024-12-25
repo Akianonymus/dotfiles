@@ -126,14 +126,13 @@ return {
   {
     "RRethy/vim-illuminate",
     event = "VeryLazy",
-    opts = {
-      delay = 200,
-      large_file_cutoff = 2000,
-      large_file_overrides = { providers = { "lsp" } },
-      min_count_to_highlight = 2,
-    },
-    config = function(_, opts)
-      require("illuminate").configure(opts)
+    config = function()
+      require("illuminate").configure({
+        delay = 200,
+        large_file_cutoff = 2000,
+        large_file_overrides = { providers = { "lsp" } },
+        min_count_to_highlight = 2,
+      })
 
       local function map(key, dir, buffer)
         vim.keymap.set("n", key, function()

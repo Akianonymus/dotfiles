@@ -20,16 +20,27 @@ setopt autocd
 HISTFILE="$HOME/.cache/zsh/history"
 HISTSIZE=1000000
 SAVEHIST=$HISTSIZE
+HISTDUP=erase
 setopt hist_expire_dups_first    # delete duplicates first when HISTFILE size exceeds HISTSIZE
 setopt hist_ignore_dups          # ignore duplicated commands history list
 setopt hist_ignore_space         # ignore commands that start with space
 setopt hist_verify               # show command with history expansion to user before running it
 setopt inc_append_history        # add commands to HISTFILE in order of execution
+setopt sharehistory
+setopt appendhistory
+setopt hist_find_no_dups
 
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
 # enable autocomplete and set related options
 autoload -U compinit && compinit
 # fzf tab complition
-[[ -f ${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh ]] && source "${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh"
+[[ -f ${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh ]] && {
+  source "${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh"
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+  zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+}
 
 # fish like auto suggestions for zsh
 [[ -f ${zsh_plugin_folder}/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source "${zsh_plugin_folder}/zsh-autosuggestions/zsh-autosuggestions.zsh"

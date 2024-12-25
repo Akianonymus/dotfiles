@@ -35,7 +35,7 @@ local configfn = function()
   if vim.bo.filetype ~= "" then
     local chars = vim.fn.wordcount()["chars"]
     -- do not load treesitter if file is bigger than 500 kb
-    if chars < 500000 then
+    if chars < 500000 * 2 then
       -- do not lazy load if less than 100kb
       if chars < 100000 then
         setup()
@@ -53,6 +53,13 @@ local configfn = function()
 end
 return {
   {
+    "nvim-treesitter/nvim-treesitter",
+    dependencies = { "windwp/nvim-ts-autotag" },
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
+    config = configfn,
+  },
+  {
     "windwp/nvim-ts-autotag",
     config = function()
       require("nvim-ts-autotag").setup({
@@ -63,12 +70,5 @@ return {
         },
       })
     end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    dependencies = { "windwp/nvim-ts-autotag" },
-    build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
-    config = configfn,
   },
 }

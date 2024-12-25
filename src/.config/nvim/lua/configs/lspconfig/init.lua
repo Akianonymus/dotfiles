@@ -97,5 +97,10 @@ for server, conf in pairs(servers) do
   }
 
   final_config = vim.tbl_deep_extend("force", default_config, final_config) or default_config
+
+  if type(conf.before_lspconfig_setup) == "function" then
+    conf.before_lspconfig_setup()
+  end
+
   currentlsp.setup(final_config)
 end

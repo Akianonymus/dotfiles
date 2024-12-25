@@ -30,51 +30,49 @@ return function()
       ["<Down>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
       ["<Up>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
       ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-      ["<Tab>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
       ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
-      ["<S-Tab>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
       ["<C-b>"] = cmp.mapping.scroll_docs(-4),
       ["<C-f>"] = cmp.mapping.scroll_docs(4),
-      ["<C-Space>"] = cmp.mapping.complete(),
       ["<C-e>"] = cmp.mapping.abort(),
+      ["<C-Space>"] = cmp.mapping(function(fallback)
+        cmp.complete()
+        if cmp.visible_docs() then
+          cmp.close_docs()
+        else
+          cmp.open_docs()
+        end
+      end),
       ["<C-y>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
       ["<CR>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
-          if cmp.get_selected_entry() then
-            cmp.confirm({ select = false, cmp.ConfirmBehavior.Insert })
+          if luasnip.expandable() then
+            luasnip.expand()
           else
-            cmp.close()
+            cmp.confirm({ select = true })
           end
         else
           fallback()
         end
       end),
-      -- ["<Tab>"] = cmp.mapping(function(fallback)
-      --   if cmp.visible() then
-      --     -- cmp.complete()
-      --     cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-      --   elseif luasnip.expand_or_jumpable() then
-      --     luasnip.expand_or_jump()
-      --   else
-      --     fallback()
-      --   end
-      -- end, {
-      --   "i",
-      --   "s",
-      -- }),
-      -- ["<S-Tab>"] = cmp.mapping(function(fallback)
-      --   if cmp.visible() then
-      --     cmp.complete()
-      --     cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-      --   elseif luasnip.jumpable(-1) then
-      --     luasnip.jump(-1)
-      --   else
-      --     fallback()
-      --   end
-      -- end, {
-      --   "i",
-      --   "s",
-      -- }),
+      ["<Tab>"] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif luasnip.locally_jumpable(1) then
+          luasnip.jump(1)
+        else
+          fallback()
+        end
+      end, { "i", "s" }),
+
+      ["<S-Tab>"] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif luasnip.locally_jumpable(-1) then
+          luasnip.jump(-1)
+        else
+          fallback()
+        end
+      end, { "i", "s" }),
     }),
     sources = cmp.config.sources({
       { name = "nvim_lsp" },
@@ -82,7 +80,7 @@ return function()
       { name = "cmp-tw2css" },
       { name = "luasnip" },
       { name = "buffer" },
-      { name = "path" },
+      { name = "async_path" },
     }),
     formatting = {
       format = function(_, item)
@@ -90,14 +88,15 @@ return function()
           item.kind = lsp_icons[item.kind] .. item.kind
         end
         item.abbr = string.sub(item.abbr, 1, 30)
+        item.menu = ""
         return item
       end,
     },
-    -- experimental = {
-    --   ghost_text = {
-    --     hl_group = "Comment",
-    --   },
-    -- },
+    experimental = {
+      ghost_text = {
+        hl_group = "Comment",
+      },
+    },
   }
   cmp.setup(config)
 end
