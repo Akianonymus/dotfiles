@@ -35,7 +35,6 @@ return {
     init = require("mappings").neotree,
   },
   {
-    -- "NvChad/nvim-colorizer.lua",
     "catgoose/nvim-colorizer.lua",
     event = "BufReadPost",
     config = require("configs.colorizer"),

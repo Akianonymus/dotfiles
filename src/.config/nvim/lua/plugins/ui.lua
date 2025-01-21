@@ -49,6 +49,7 @@ return {
     event = "VeryLazy",
     config = function()
       vim.notify = require("notify")
+
       require("notify").setup({
         render = "compact",
         timeout = 3000,
@@ -71,5 +72,15 @@ return {
     "mg979/vim-visual-multi",
     keys = { { "<A-n>", mode = { "" } } },
     init = mappings.vim_visual_multi,
+  },
+  {
+    "Bekaboo/dropbar.nvim",
+    event = "VeryLazy",
+    config = function()
+      local dropbar_api = require("dropbar.api")
+      vim.keymap.set("n", "<Leader>;", dropbar_api.pick, { desc = "Pick symbols in winbar" })
+      vim.keymap.set("n", "[;", dropbar_api.goto_context_start, { desc = "Go to start of current context" })
+      vim.keymap.set("n", "];", dropbar_api.select_next_context, { desc = "Select next context" })
+    end,
   },
 }

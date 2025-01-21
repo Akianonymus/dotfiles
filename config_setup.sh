@@ -52,9 +52,9 @@ main() {
 
     # now symlink
     # create dirs
-    mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd,mpv,nvim,wezterm},.local/share/fonts,.cache/zsh}
+    mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd,mpv,nvim,wezterm,auto-cpufreq},.local/share/fonts,.cache/zsh}
     # files to be symlinked
-    symlink_list=(.config/mpv .config/nvim .config/wezterm
+    symlink_list=(.config/mpv .config/nvim .config/.ideavimrc .config/wezterm .config/auto-cpufreq/auto-cpufreq.conf
         .config/gh/config.yml .config/gotop/gotop.conf .config/kitty/kitty.conf .config/lsd/config.yaml
         '.local/share/fonts/JetBrains Mono Bold Italic Nerd Font Complete.ttf'
         '.local/share/fonts/JetBrains Mono Bold Nerd Font Complete.ttf'

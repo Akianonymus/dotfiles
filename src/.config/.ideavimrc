@@ -1,0 +1,143 @@
+" ------------------------------
+" Handlers
+" ------------------------------
+sethandler <S-Tab> a:vim
+sethandler <S-CR> a:vim
+sethandler <C-Pageup> a:vim
+sethandler <C-Pagedown> a:vim
+sethandler <S-Left> a:vim
+sethandler <C-Left> a:vim
+sethandler <S-Up> a:vim
+sethandler <C-Up> a:vim
+sethandler <S-Right> a:vim
+sethandler <C-Right> a:vim
+sethandler <S-Down> a:vim
+sethandler <C-Down> a:vim
+sethandler <C-2> a:vim
+sethandler <C-6> a:vim
+sethandler <C-B> a:vim
+sethandler <C-C> a:vim
+sethandler <C-D> a:vim
+sethandler <C-E> a:vim
+sethandler <C-F> a:vim
+sethandler <C-G> a:vim
+sethandler <C-H> a:vim
+sethandler <C-I> a:vim
+sethandler <C-J> a:vim
+sethandler <A-J> a:vim
+sethandler <C-K> a:vim
+sethandler <C-L> a:vim
+sethandler <C-M> a:vim
+sethandler <C-N> a:vim
+sethandler <C-O> a:vim
+sethandler <C-P> a:vim
+sethandler <C-Q> a:vim
+sethandler <C-R> a:vim
+sethandler <C-S> a:ide
+sethandler <C-T> a:vim
+sethandler <C-U> a:vim
+sethandler <C-V> a:vim
+sethandler <C-W> a:vim
+sethandler <C-X> a:vim
+sethandler <C-Y> a:vim
+sethandler <C-[> a:vim
+sethandler <C-]> a:vim
+
+" ------------------------------
+" General Settings
+" ------------------------------
+let mapleader = " "
+set hls                       " Highlight search matches
+set ignorecase                " Ignore case in search patterns
+set smartcase                 " Override ignorecase if search contains uppercase
+set incsearch                 " Show incremental search results
+set showmode                  " Display mode in the status line
+set clipboard=unnamedplus     " Use system clipboard
+
+" ------------------------------
+" Key Mappings
+" ------------------------------
+" Escape using 'jk' in Insert mode
+inoremap jk <esc>`^
+
+" Close window with Ctrl+w
+nmap <C-w> :close<CR>
+
+" Better paste in Visual mode
+xmap p P
+
+" Keep visual selection when indenting
+vmap < <gv
+vmap > >gv
+
+" Yank to the end of the line
+nmap Y y$
+xmap Y <esc>y$gv
+
+" Keep cursor centered when jumping
+nmap n nzzzv
+nmap N Nzzzv
+
+" Remap ; to :
+nnoremap ; :
+vnoremap ; :
+onoremap ; :
+
+" Move to the beginning/end of the line
+nmap H 0
+vmap H 0
+omap H 0
+nmap L $
+vmap L $
+omap L $
+
+" Arrow keys in Insert mode
+imap <C-h> <Left>
+imap <C-l> <Right>
+imap <C-j> <Down>
+imap <C-k> <Up>
+
+" Clear search highlight with Escape
+nmap <esc> :noh<cr><esc>
+
+" Select entire buffer
+xmap <C-a> gg0vG$
+nmap <C-a> gg0vG$
+
+" ------------------------------
+" Plugin-Specific Actions
+" ------------------------------
+" File actions
+map <leader>ff <Action>(GotoFile)
+map <leader>fw <Action>(FindInPath)
+
+" Comments
+map <leader>/ <Action>(CommentByLineComment)
+
+" Tabs navigation
+nnoremap <TAB> :action PreviousTab<CR>
+nnoremap <S-TAB> :action NextTab<CR>
+
+" Code navigation
+nnoremap gi :action GotoImplementation<CR>
+nnoremap gd :action GotoImplementation<CR>
+nmap <leader>re :action RenameElement<cr>
+nmap <leader>fm :action ReformatCode<cr>
+nmap <leader>fs :action GotoSymbol<cr>
+nmap [e :action GotoPreviousError<cr>
+nmap ]e :action GotoNextError<cr>
+
+" ------------------------------
+" Move Lines
+" ------------------------------
+" Normal mode
+nnoremap <silent> <A-j> :m .+1<CR>==
+nnoremap <silent> <A-k> :m .-2<CR>==
+
+" Insert mode
+inoremap <silent> <A-j> <Esc>:m .+1<CR>==gi
+inoremap <silent> <A-k> <Esc>:m .-2<CR>==gi
+
+" Visual mode
+vnoremap <silent> <A-k> :m '<-2<CR>gv=gv
+vnoremap <silent> <A-j> :m '>+1<CR>gv=gv

@@ -1,6 +1,16 @@
 local config = {
   -- https://github.com/neovim/nvim-lspconfig/issues/1931#issuecomment-2138428768
-  routes = { { filter = { event = "notify", find = "No information available" }, opts = { skip = true } } },
+  routes = {
+    {
+      filter = {
+        any = {
+          { event = "notify", find = "No information available" },
+          { event = "msg_show", find = "processTicksAndRejections" },
+        },
+      },
+      opts = { skip = true },
+    },
+  },
   views = { mini = { win_options = { winhighlight = { Normal = "Normal" } } } },
   lsp = {
     signature = { enabled = false },

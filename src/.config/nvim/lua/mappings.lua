@@ -19,6 +19,8 @@ function M.aki()
   -- https://github.com/vim/vim/releases/tag/v8.2.4242
   map("x", "p", "P")
 
+  map("n", "u", "<cmd>:silent undo<cr>")
+
   -- Reselect visual selection after indenting
   map("v", "<", "<gv")
   map("v", ">", ">gv")
@@ -61,7 +63,7 @@ function M.aki()
   map({ "n", "x" }, "<C-a>", "gg0vG$")
 
   -- save with c-s in all modes
-  map({ "n", "x", "i" }, "<C-s>", "<cmd>:update<cr>")
+  map({ "n", "x", "i" }, "<C-s>", "<cmd>:silent update<cr>")
 
   -- quit
   map("n", "<leader><leader>q", "<cmd>:qall<cr>")
@@ -215,7 +217,8 @@ M.lspkeymaps = {
   list_workspace_folders = "<leader>wl",
   type_definition = "<leader>D",
   rename = "<leader>re",
-  code_action = "<leader>ca",
+  code_action = "<leader>cc",
+  code_action_all = "<leader>ca",
   references = "gr",
   formatting = "<leader>fm",
   formatting_imports = "<leader>fi",
@@ -251,9 +254,19 @@ function M.lspconfig(client, bufnr)
 
   buf_k("n", m.type_definition, vim.lsp.buf.type_definition)
 
-  buf_k("n", m.rename, vim.lsp.buf.rename)
+  buf_k("n", m.rename, function()
+    vim.lsp.buf.rename()
+  end)
 
-  buf_k("n", m.code_action, "<cmd>:Lspsaga code_action<cr>")
+  -- buf_k("n", m.code_action, "<cmd>:FzfLua lsp_code_actions<cr>")
+  buf_k("n", m.code_action, function()
+    ---@diagnostic disable-next-line: missing-fields
+    vim.lsp.buf.code_action()
+  end)
+  buf_k("n", m.code_action_all, function()
+    ---@diagnostic disable-next-line: missing-fields
+    vim.lsp.buf.code_action({ context = { only = { "source", "refactor", "quickfix" } } })
+  end)
 
   buf_k("n", m.references, "<cmd>:Trouble lsp_references<cr>")
 

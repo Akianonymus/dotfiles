@@ -20,29 +20,6 @@ return function()
         title_pos = "center",
         wrap = "wrap",
       },
-      on_create = function()
-        local function feedkeys(normal_keys, insert_key)
-          if type(normal_keys) ~= "table" then
-            normal_keys = { normal_keys }
-          end
-
-          for _, key in ipairs(normal_keys) do
-            vim.keymap.set("n", key, function()
-              vim.api.nvim_chan_send(
-                vim.b.terminal_job_id,
-                vim.api.nvim_replace_termcodes(insert_key, true, false, true) or ""
-              )
-            end, { nowait = true, noremap = true, buffer = vim.api.nvim_get_current_buf() })
-          end
-        end
-
-        feedkeys({ "j", "<c-n>" }, "<c-n>")
-        feedkeys({ "k", "<c-p>" }, "<c-p>")
-        feedkeys({ "f", "<c-f>" }, "<c-f>")
-        feedkeys({ "b", "<c-b>" }, "<c-b>")
-        feedkeys({ "q", "<Esc>" }, "<Esc>")
-        feedkeys({ "o", "<CR>" }, "<CR>")
-      end,
     },
     files = {
       prompt = "   Files ",
@@ -53,18 +30,16 @@ return function()
     help_tags = { prompt = "   Help " },
     grep = {
       prompt = "   Word ",
-      rg_opts = " --hidden --line-number --no-heading --color=never --smart-case " .. "-g '!{.git,node_modules}/*'",
-      no_header_i = true, -- hide interactive header?
+      rg_opts = " --column --hidden --line-number --no-heading --color=never --smart-case "
+        .. "-g '!{.git,node_modules}/*'",
+      -- no_header_i = true, -- hide interactive header?
       actions = {
         ["default"] = require("fzf-lua.actions").file_edit,
       },
     },
     previewers = {
       builtin = {
-        extensions = {
-          ["png"] = { "ueberzug" },
-          ["jpg"] = { "ueberzug" },
-        },
+        extensions = { ["png"] = { "ueberzug" }, ["jpg"] = { "ueberzug" } },
       },
     },
   }

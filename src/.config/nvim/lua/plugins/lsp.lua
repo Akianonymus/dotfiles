@@ -16,6 +16,7 @@ return {
     "williamboman/mason.nvim",
     dependencies = { "williamboman/mason-lspconfig.nvim" },
     cmd = "Mason",
+    opts = {},
   },
   {
     "nvimtools/none-ls.nvim",
@@ -42,6 +43,13 @@ return {
       require("trouble").setup({ auto_close = true, use_diagnostic_signs = true, padding = false })
     end,
   },
+  {
+    "antosha417/nvim-lsp-file-operations",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      -- require("lsp-file-operations").setup()
+    end,
+  },
 
   -- language specific lsp plugins
   {
@@ -51,10 +59,8 @@ return {
       require("neodev").setup({ library = { plugins = false }, experimental = { pathStrict = true } })
     end,
   },
-  -- {
-  --   "mfussenegger/nvim-jdtls",
-  -- },
+  { "mfussenegger/nvim-jdtls" },
   {
-    "nvim-java/nvim-java",
+    "yioneko/nvim-vtsls",
   },
 }

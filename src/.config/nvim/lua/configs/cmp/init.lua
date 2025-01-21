@@ -15,7 +15,7 @@ return function()
   local config = {
     completion = {
       completeopt = "menu,menuone,noselect",
-      keyword_length = 1,
+      keyword_length = 0,
     },
     snippet = {
       expand = function(args)
@@ -43,17 +43,8 @@ return function()
         end
       end),
       ["<C-y>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
-      ["<CR>"] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-          if luasnip.expandable() then
-            luasnip.expand()
-          else
-            cmp.confirm({ select = true })
-          end
-        else
-          fallback()
-        end
-      end),
+      ["<CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+      ["<C-m>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
       ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.select_next_item()
@@ -88,15 +79,15 @@ return function()
           item.kind = lsp_icons[item.kind] .. item.kind
         end
         item.abbr = string.sub(item.abbr, 1, 30)
-        item.menu = ""
+        -- item.menu = ""
         return item
       end,
     },
-    experimental = {
-      ghost_text = {
-        hl_group = "Comment",
-      },
-    },
+    -- experimental = {
+    --   ghost_text = {
+    --     hl_group = "Comment",
+    --   },
+    -- },
   }
   cmp.setup(config)
 end

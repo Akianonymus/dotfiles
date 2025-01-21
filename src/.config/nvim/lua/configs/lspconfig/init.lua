@@ -6,6 +6,12 @@ if not loaded then
   return
 end
 
+-- todo: move this to a better place
+local l, vtsls = pcall(require, "vtsls")
+if l then
+  require("lspconfig.configs").vtsls = vtsls.lspconfig
+end
+
 -- set border to :LspInfo window
 require("lspconfig.ui.windows").default_options.border = "rounded"
 

@@ -13,29 +13,54 @@ local servers = {
   html = { disable_format = true },
   cssls = {},
   cssmodules_ls = {},
-  ts_ls = {},
+  -- ts_ls = {},
+  vtsls = {},
   volar = {},
   tailwindcss = {},
-  jdtls = {},
+  -- jdtls = {},
   phpactor = {},
 }
 
-servers.ts_ls = {
+-- https://github.com/yioneko/vtsls/issues/148#issuecomment-2119744901
+servers.vtsls = {
   config = {
-    init_options = {
-      plugins = {
-        {
-          -- https://github.com/neovim/nvim-lspconfig/issues/1931#issuecomment-2138428768
-          name = "@vue/typescript-plugin",
-          location = require("mason-registry").get_package("vue-language-server"):get_install_path()
-            .. "/node_modules/@vue/language-server",
-          languages = { "vue" },
-        },
-      },
-    },
+    settings = { vtsls = { tsserver = { globalPlugins = {} } } },
+    before_init = function(params, config)
+      -- local result = vim
+      --   .system({ "npm", "query", "#vue" }, { cwd = params.workspaceFolders[1].name, text = true })
+      --   :wait()
+      -- if result.stdout ~= "[]" then
+      local vuePluginConfig = {
+        name = "@vue/typescript-plugin",
+        location = require("mason-registry").get_package("vue-language-server"):get_install_path()
+          .. "/node_modules/@vue/language-server",
+        languages = { "vue" },
+        configNamespace = "typescript",
+        enableForWorkspaceTypeScriptVersions = true,
+      }
+      table.insert(config.settings.vtsls.tsserver.globalPlugins, vuePluginConfig)
+      -- end
+    end,
     filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
   },
 }
+
+-- servers.ts_ls = {
+--   config = {
+--     init_options = {
+--       plugins = {
+--         {
+--           -- https://github.com/neovim/nvim-lspconfig/issues/1931#issuecomment-2138428768
+--           name = "@vue/typescript-plugin",
+--           location = require("mason-registry").get_package("vue-language-server"):get_install_path()
+--             .. "/node_modules/@vue/language-server",
+--           languages = { "vue" },
+--         },
+--       },
+--     },
+--     filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+--   },
+-- }
 
 servers.tailwindcss = { filetypes_exclude = { "javascript", "typescript" } }
 
@@ -83,40 +108,40 @@ servers.lua_ls = {
   disable_format = true,
 }
 
-servers.jdtls = {
-  before_lspconfig_setup = function()
-    require("java").setup({
-      lombok = { version = "nightly" },
-      java_test = { enable = false },
-      java_debug_adapter = { enable = false },
-      spring_boot_tools = { enable = false },
-      jdk = { auto_install = false, version = "21.0.5" },
-      notifications = { dap = false },
-      verification = {
-        invalid_order = true,
-        duplicate_setup_calls = true,
-        invalid_mason_registry = true,
-      },
-    })
-  end,
-  config = {
-    settings = {
-      references = { includeDecompiledSources = true },
-      implementationsCodeLens = { enabled = false },
-      referenceCodeLens = { enabled = false },
-      inlayHints = { parameterNames = { enabled = "all" } },
-      signatureHelp = { enabled = true, description = { enabled = true } },
-      symbols = { includeSourceMethodDeclarations = true },
-      rename = { enabled = true },
-      contentProvider = { preferred = "fernflower" },
-      sources = { organizeImports = { starThreshold = 9999, staticStarThreshold = 9999 } },
-      redhat = { telemetry = { enabled = false } },
-    },
-    single_file_support = true,
-    init_options = {
-      documentSymbol = { dynamicRegistration = true, hierarchicalDocumentSymbolSupport = true, labelSupport = true },
-    },
-  },
-}
+-- servers.jdtls = {
+--   before_lspconfig_setup = function()
+--     -- require("java").setup({
+--     --   lombok = { version = "nightly" },
+--     --   java_test = { enable = false },
+--     --   java_debug_adapter = { enable = false },
+--     --   spring_boot_tools = { enable = false },
+--     --   jdk = { auto_install = false, version = "21.0.5" },
+--     --   notifications = { dap = false },
+--     --   verification = {
+--     --     invalid_order = true,
+--     --     duplicate_setup_calls = true,
+--     --     invalid_mason_registry = true,
+--     --   },
+--     -- })
+--   end,
+--   config = {
+--     -- settings = {
+--     --   references = { includeDecompiledSources = true },
+--     --   implementationsCodeLens = { enabled = true },
+--     --   referenceCodeLens = { enabled = true },
+--     --   inlayHints = { parameterNames = { enabled = "all" } },
+--     --   signatureHelp = { enabled = true, description = { enabled = true } },
+--     --   symbols = { includeSourceMethodDeclarations = true },
+--     --   rename = { enabled = true },
+--     --   contentProvider = { preferred = "fernflower" },
+--     --   sources = { organizeImports = { starThreshold = 9999, staticStarThreshold = 9999 } },
+--     --   redhat = { telemetry = { enabled = false } },
+--     -- },
+--     -- single_file_support = true,
+--     -- init_options = {
+--     --   documentSymbol = { dynamicRegistration = false, hierarchicalDocumentSymbolSupport = true, labelSupport = true },
+--     -- },
+--   },
+-- }
 
 return servers

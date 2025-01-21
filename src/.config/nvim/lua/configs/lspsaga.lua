@@ -5,7 +5,6 @@ return function()
     scroll_preview = { scroll_down = "<C-d>", scroll_up = "<C-u>" },
     request_timeout = 4000,
     outline = { auto_preview = false },
-    symbol_in_winbar = { separator = "  " },
     code_action = { keys = { quit = { "q", "<Esc>" } } },
     diagnostic = { on_insert = false },
   })

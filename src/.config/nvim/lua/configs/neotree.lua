@@ -39,4 +39,6 @@ return function()
   vim.g.neo_tree_remove_legacy_commands = 1
 
   require("neo-tree").setup(config)
+
+  require("lsp-file-operations").setup()
 end

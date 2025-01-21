@@ -26,8 +26,8 @@ setopt hist_ignore_dups          # ignore duplicated commands history list
 setopt hist_ignore_space         # ignore commands that start with space
 setopt hist_verify               # show command with history expansion to user before running it
 setopt inc_append_history        # add commands to HISTFILE in order of execution
-setopt sharehistory
-setopt appendhistory
+# setopt sharehistory
+# setopt appendhistory
 setopt hist_find_no_dups
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
