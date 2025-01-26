@@ -33,5 +33,6 @@ lazy.setup("plugins", {
   ui = { border = "rounded" },
   debug = false,
   install = { colorscheme = { vim.g.current_theme } },
+  change_detection = { enabled = false },
 })
 require("mappings").lazy()

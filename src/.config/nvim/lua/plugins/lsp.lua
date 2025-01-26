@@ -2,7 +2,7 @@ return {
   -- generic lsp plugins
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufReadPost" },
     dependencies = {
       { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
       "williamboman/mason.nvim",
@@ -20,7 +20,7 @@ return {
   },
   {
     "nvimtools/none-ls.nvim",
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "VeryLazy" },
     dependencies = { "neovim/nvim-lspconfig", "gbprod/none-ls-shellcheck.nvim", "gbprod/none-ls-luacheck.nvim" },
     config = require("configs.null-ls"),
   },

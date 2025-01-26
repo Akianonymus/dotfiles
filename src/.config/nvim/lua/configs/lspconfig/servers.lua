@@ -21,10 +21,30 @@ local servers = {
   phpactor = {},
 }
 
+-- https://github.com/williamboman/mason-lspconfig.nvim/issues/351#issuecomment-2348642855
+servers.volar = {
+  config = {
+    init_options = {
+      vue = {
+        hybridMode = true,
+      },
+      typescript = {
+        tsdk = require("mason-registry").get_package("vue-language-server"):get_install_path()
+          .. "/node_modules/typescript/lib/",
+      },
+    },
+  },
+}
 -- https://github.com/yioneko/vtsls/issues/148#issuecomment-2119744901
 servers.vtsls = {
   config = {
-    settings = { vtsls = { tsserver = { globalPlugins = {} } } },
+    settings = {
+      vtsls = { tsserver = { globalPlugins = {} } },
+      typescript = {
+        tsserver = { maxTsServerMemory = 4000 },
+        updateImportsOnFileMove = "always",
+      },
+    },
     before_init = function(params, config)
       -- local result = vim
       --   .system({ "npm", "query", "#vue" }, { cwd = params.workspaceFolders[1].name, text = true })

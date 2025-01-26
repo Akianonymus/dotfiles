@@ -24,11 +24,6 @@ function M.bufferline()
 :BufferLineCloseRight]])
   end, { desc = "Close all buffers except current" })
 end
-function M.spectre()
-  command("FindReplace", function()
-    require("spectre").open({})
-  end, { desc = "Find and Replace [ Folder Wide ]" })
-end
 
 function M.toggle_autoformat(buffer)
   buf_command(buffer, "AutoFormat", function()
@@ -44,6 +39,12 @@ function M.toggle_autoformat_global()
     vim.b.autoformat_aki = vim.g.autoformat_aki
     vim.notify("AutoFormat " .. (vim.g.autoformat_aki and "Enabled" or "Disabled") .. " Globally")
   end, { desc = "Toggle auto formatting globally" })
+end
+
+function M.grug_far()
+  command("FindReplace", function()
+    require("grug-far").open()
+  end, { desc = "Find and Replace [ Folder Wide ]" })
 end
 
 return M

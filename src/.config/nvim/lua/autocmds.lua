@@ -7,7 +7,7 @@ function M.aki()
   -- close with	q on certain filetypes
   autocmd("FileType", {
 	    -- stylua: ignore
-		pattern = { "qf", "help", "man", "notify", "lspinfo", "spectre_panel", "startuptime", "noice" },
+		pattern = { "qf", "help", "man", "notify", "lspinfo", "startuptime", "noice" },
     callback = function(event)
       vim.bo[event.buf].buflisted = false
       vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
@@ -139,6 +139,16 @@ function M.treesitter()
         vim.cmd([[silent! TSBufDisable indent]])
         vim.cmd([[silent! TSBufDisable matchup]])
       end
+    end,
+  })
+end
+
+function M.grug_far()
+  autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("my-grug-far-custom-keybinds", { clear = true }),
+    pattern = { "grug-far" },
+    callback = function()
+      require("mappings").grug_far_inline()
     end,
   })
 end

@@ -202,6 +202,36 @@ function M.fzflua()
   end, { desc = "Command History" })
 end
 
+function M.grug_far()
+  map("n", "<leader>R", function()
+    require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
+  end, { desc = "Find and Replace [ Folder wide ]" })
+  map("n", "<leader>s", function()
+    require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>"), paths = vim.fn.expand("%") } })
+  end, { desc = "Find and Replace [ Current File ]" })
+  map(
+    "x",
+    "<leader>s",
+    [[:<C-u>lua require('grug-far').with_visual_selection({ prefills = { paths = vim.fn.expand(" % ") } })<cr>]],
+    { desc = "Find and Replace [ Current File ]" }
+  )
+end
+
+function M.grug_far_inline()
+  map("n", "<localleader>i", function()
+    require("grug-far").toggle_flags({ "--ignore-case" })
+  end, { buffer = true })
+  map("n", "<localleader>h", function()
+    require("grug-far").toggle_flags({ "--hidden" })
+  end, { buffer = true })
+  map("n", "<localleader>w", function()
+    require("grug-far").toggle_flags({ "--fixed-strings" })
+  end, { buffer = true })
+  map("n", "<C-i>", function()
+    vim.api.nvim_win_set_cursor(vim.fn.bufwinid(0), { 2, 0 })
+  end, { buffer = true })
+end
+
 M.lazy = function()
   map("n", "<leader>l", "<cmd>:Lazy<cr>", { desc = "Lazy" })
 end
@@ -244,7 +274,7 @@ function M.lspconfig(client, bufnr)
     vim.lsp.buf.declaration()
   end)
 
-  buf_k("n", m.definition, "<cmd>FzfLua lsp_finder<CR>")
+  buf_k("n", m.definition, "<cmd>FzfLua lsp_references<CR>")
 
   buf_k("n", m.hover, "<cmd>Lspsaga hover_doc ++quiet<CR>")
 
@@ -268,7 +298,7 @@ function M.lspconfig(client, bufnr)
     vim.lsp.buf.code_action({ context = { only = { "source", "refactor", "quickfix" } } })
   end)
 
-  buf_k("n", m.references, "<cmd>:Trouble lsp_references<cr>")
+  buf_k("n", m.references, "<cmd>FzfLua lsp_references<CR>")
 
   buf_k("n", m.goto_prev_diagnostics, "<cmd>Lspsaga diagnostic_jump_prev<CR>")
   buf_k("n", m.goto_prev_error_diagnostics, function()
@@ -331,39 +361,6 @@ M.noice = {
 	{ "<c-f>", function() if not require("noice.lsp").scroll(4) then return "<c-f>" end end, silent = true, expr = true, desc = "Scroll forward", mode = { "i", "n", "s" } },
 	{ "<c-b>", function() if not require("noice.lsp").scroll( -4) then return "<c-b>" end end, silent = true, expr = true, desc = "Scroll backward", mode = { "i", "n", "s" } },
 }
-
-function M.searchbox()
-  map("n", "<leader>s", function()
-    require("searchbox").replace({ confirm = "menu", default_value = vim.fn.expand("<cword>") })
-  end, { desc = "Find and Replace [ Current Buffer ]" })
-
-  map("x", "<leader>s", function()
-    -- grab the old value of a register
-    local a_content = vim.fn.getreg("a")
-    -- copy the current visual selection to "a" register
-    vim.cmd('noau normal! "ay"')
-    -- grab content
-    local content, v_mode = vim.fn.getreg("a"), false
-    -- restore the "a" register
-    vim.fn.setreg("a", a_content)
-
-    if content:match("\n") then
-      content, v_mode = "", true
-    end
-    require("searchbox").replace({ confirm = "menu", default_value = content, visual_mode = v_mode })
-  end)
-end
-
-function M.spectre()
-  map("n", "<leader>R", function()
-    require("spectre").open({ select_word = true })
-  end, { desc = "Find and Replace [ Folder wide ]" })
-end
-
-function M.telescope()
-  -- map("n", "<leader>tr", "<cmd>:Telescope resume<cr>")
-  -- map("n", "<leader>ff", "<cmd>:Telescope find_files follow=true hidden=true<cr>")
-end
 
 function M.toggleterm()
   map({ "n", "i", "t" }, "<a-t>", function()

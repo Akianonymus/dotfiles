@@ -1,3 +1,7 @@
+-- LSP spec: https://microsoft.github.io/language-server-protocol/specification.html#initialize
+-- prevent stupid node deprecation warnings
+vim.env.NODE_OPTIONS = "--no-deprecation"
+
 -- no need to touch this file
 -- only custom/plugins/lspconfig/servers.lua should be modified ideally
 local loaded, lspconfig = pcall(require, "lspconfig")

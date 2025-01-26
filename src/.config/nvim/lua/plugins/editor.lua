@@ -32,7 +32,9 @@ return {
     cmd = "Neotree",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
     config = require("configs.neotree"),
-    init = require("mappings").neotree,
+    init = function()
+      require("mappings").neotree()
+    end,
   },
   {
     "catgoose/nvim-colorizer.lua",
@@ -40,62 +42,62 @@ return {
     config = require("configs.colorizer"),
   },
   {
-    "windwp/nvim-spectre",
-    cmd = "FindReplace",
+    "MagicDuck/grug-far.nvim",
+    init = function()
+      require("autocmds").grug_far()
+      require("mappings").grug_far()
+      require("commands").grug_far()
+    end,
     config = function()
-      require("spectre").setup({
-        highlight = { search = "DiagnosticVirtualTextWarn" },
-        open_cmd = "noswapfile vnew",
-        is_insert_mode = true,
-        line_sep_start = "╭" .. string.rep("─", vim.o.columns),
-        line_sep = "╰" .. string.rep("─", vim.o.columns),
-        result_padding = "│  ",
-        mapping = {
-          ["enter_file"] = {
-            map = "o",
-            cmd = "<Cmd>lua require('spectre.actions').select_entry()<CR>",
-            desc = "goto current file",
-          },
-          ["toggle_line"] = {
-            map = "t",
-            cmd = "<Cmd>lua require('spectre').toggle_line()<CR>",
-            desc = "toggle current item",
-          },
-          ["change_view_mode"] = {
-            map = "m",
-            cmd = "<Cmd>lua require('spectre').change_view()<CR>",
-            desc = "change result view mode",
-          },
-          ["toggle_ignore_case"] = {
-            map = "I",
-            cmd = "<Cmd>lua require('spectre').change_options('ignore-case')<CR>",
-            desc = "toggle ignore case",
-          },
-          ["toggle_ignore_hidden"] = {
-            map = "H",
-            cmd = "<Cmd>lua require('spectre').change_options('hidden')<CR>",
-            desc = "toggle search hidden",
-          },
-          ["run_current_replace"] = {
-            map = "<leader>r",
-            cmd = "<cmd>lua require('spectre.actions').run_current_replace()<CR>",
-            desc = "replace current line",
+      require("grug-far").setup({
+        debounceMs = 500,
+        minSearchChars = 2,
+        maxSearchMatches = 2000,
+        normalModeSearch = true,
+        engines = {
+          ripgrep = {
+            path = "rg",
+            showReplaceDiff = true,
+            placeholders = {
+              enabled = true,
+              search = "",
+              replacement = "",
+              replacement_lua = "",
+              filesFilter = "",
+              flags = "e.g. -.(--hidden) --ignore-case (-i) --replace= (empty replace) --multiline (-U)",
+              paths = "e.g. /foo/bar   ../   ./hello\\ world/   ./src/foo.lua   ~/.config",
+            },
           },
         },
+        windowCreationCommand = "vsplit",
+        disableBufferLineNumbers = true,
+        helpLine = { enabled = true },
+        keymaps = {
+          replace = { n = "<localleader>M" },
+          qflist = { n = "<localleader>q" },
+          syncLocations = { n = "<localleader>R" },
+          syncLine = { n = "<localleader>r" },
+          close = { n = "<localleader>x" },
+          historyOpen = { n = "<localleader>t" },
+          historyAdd = { n = "<localleader>a" },
+          refresh = { n = "<localleader>f" },
+          openLocation = { n = "<localleader>o" },
+          openNextLocation = { n = "<down>" },
+          openPrevLocation = { n = "<up>" },
+          gotoLocation = { n = "<enter>" },
+          pickHistoryEntry = { n = "<enter>" },
+          abort = { n = "<localleader>b" },
+          help = { n = "g?" },
+          toggleShowCommand = { n = "<localleader>p" },
+          swapEngine = { n = "" },
+          previewLocation = { n = "" },
+          swapReplacementInterpreter = { n = "" },
+          applyNext = { n = "<localleader>j" },
+          applyPrev = { n = "<localleader>k" },
+        },
+        history = { maxHistoryLines = 500 },
+        instanceName = nil,
       })
-    end,
-    init = function()
-      require("mappings").spectre()
-      require("commands").spectre()
-    end,
-  },
-  {
-    "VonHeikemen/searchbox.nvim",
-    cmd = "SearchBox",
-    dependencies = { "MunifTanjim/nui.nvim" },
-    init = require("mappings").searchbox,
-    config = function()
-      require("searchbox").setup({ popup = { zindex = 100 } })
     end,
   },
   {
@@ -115,12 +117,27 @@ return {
     "stevearc/oil.nvim",
     init = function()
       require("oil").setup({
-        default_file_explorer = true,
+        default_file_explorer = false,
         columns = { "icon", "size" },
       })
     end,
-    -- Optional dependencies
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
+    "mikavilpas/yazi.nvim",
+    event = "VeryLazy",
+    keys = {
+      -- 👇 in this section, choose your own keymappings!
+      {
+        "<leader>-",
+        mode = { "n", "v" },
+        "<cmd>Yazi<cr>",
+        desc = "Open yazi at the current file",
+      },
+    },
+    opts = {
+      open_for_directories = true,
+      keymaps = { show_help = "<f1>" },
+    },
   },
   {
     "RRethy/vim-illuminate",

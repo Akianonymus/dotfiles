@@ -186,21 +186,6 @@ update_mirror() {
 }
 export update_mirror
 
-function y() {
-    command -v yazi &&
-        {
-
-            local tmp
-            tmp="$(mktemp -t 'yazi-cwd.XXXXXX')" cwd
-            yazi "$@" --cwd-file="${tmp}"
-            if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-                builtin cd -- "$cwd" || return
-            fi
-            rm -f -- "$tmp"
-        }
-}
-export y
-
 function waydroid_stop() {
     command -v waydroid && {
         waydroid session stop

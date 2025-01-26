@@ -3,6 +3,7 @@ return function()
   local luasnip = require("luasnip")
 
   local cmp = require("cmp")
+  local compare = require("cmp.config.compare")
 
   -- setup cmp for autopairs
   local ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
@@ -83,11 +84,6 @@ return function()
         return item
       end,
     },
-    -- experimental = {
-    --   ghost_text = {
-    --     hl_group = "Comment",
-    --   },
-    -- },
   }
   cmp.setup(config)
 end
