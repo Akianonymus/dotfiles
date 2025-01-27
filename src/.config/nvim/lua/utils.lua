@@ -102,34 +102,6 @@ function M.typescript_format_import()
   end
 end
 
-function M.setup_lsp_format(client, buffer)
-  -- dont format if client disabled it or not supported
-  if
-    (client.server_capabilities and not client.server_capabilities.documentFormattingProvider)
-    or not client.supports_method("textDocument/formatting")
-  then
-    return
-  end
-
-  local key = require("mappings").lspkeymaps.formatting
-  local key_i = require("mappings").lspkeymaps.formatting_imports
-  local ft = vim.bo[buffer].filetype
-  local have_nls = #require("null-ls.sources").get_available(ft, "NULL_LS_FORMATTING") > 0
-  local name = have_nls and "null-ls" or nil
-
-  vim.keymap.set({ "n", "v" }, key, function()
-    M.typescript_format_import()
-    vim.lsp.buf.format({ name = name })
-  end, { buffer = buffer })
-
-  vim.keymap.set({ "n", "v" }, key_i, function()
-    M.typescript_format_import()
-  end, { buffer = buffer })
-
-  require("autocmds").format_on_save(buffer, name)
-  require("commands").toggle_autoformat(buffer)
-end
-
 -- https://www.reddit.com/r/neovim/comments/p3b20j/lua_solution_to_writing_a_file_using_sudo
 -- execute with sudo
 function M.sudo_exec(cmd, print_output)

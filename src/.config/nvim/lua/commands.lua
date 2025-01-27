@@ -19,13 +19,14 @@ function M.aki()
 end
 
 function M.bufferline()
-  command("BufferLineCloseOthers", function()
+  command("BufferCloseOthers", function()
     vim.cmd([[:BufferLineCloseLeft
 :BufferLineCloseRight]])
   end, { desc = "Close all buffers except current" })
 end
 
 function M.toggle_autoformat(buffer)
+  vim.b.autoformat_aki = true
   buf_command(buffer, "AutoFormat", function()
     vim.b.autoformat_aki = not vim.b.autoformat_aki
     vim.notify("AutoFormat " .. (vim.b.autoformat_aki and "Enabled" or "Disabled") .. " for current buffer.")

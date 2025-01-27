@@ -335,8 +335,6 @@ function M.lspconfig(client, bufnr)
   end)
 
   buf_k("n", m.document_symbols, "<cmd>:FzfLua lsp_document_symbols<cr>")
-
-  require("utils").setup_lsp_format(client, bufnr)
 end
 
 function M.neotree()

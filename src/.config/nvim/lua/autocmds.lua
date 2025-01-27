@@ -70,6 +70,8 @@ function M.aki()
       end
     end,
   })
+
+  M.add_toggle_autoformat()
 end
 
 function M.cmp()
@@ -98,20 +100,21 @@ function M.cmp()
   })
 end
 
-function M.format_on_save(bufnr, name)
-  vim.b.autoformat_aki = vim.g.autoformat_aki
-  local augroup_name = "LspFormatOnSave" .. bufnr
-  -- always remove the existing autocmd
-  pcall(vim.api.nvim_del_augroup_by_name, augroup_name)
-
-  autocmd({ "BufWritePre" }, {
-    group = augroup(augroup_name, {}),
-    buffer = bufnr,
+function M.add_toggle_autoformat()
+  autocmd("BufReadPost", {
+    pattern = "*",
+    desc = "Add Toggle Autoformat commands",
     callback = function()
-      if vim.b.autoformat_aki then
-        -- require("utils").typescript_format_import()
-        vim.lsp.buf.format({ name = name })
-      end
+      require("commands").toggle_autoformat(0)
+      -- require("commands").toggle_autoformat_global()
+    end,
+  })
+end
+
+function M.add_lint()
+  autocmd({ "BufWritePost" }, {
+    callback = function()
+      require("lint").try_lint()
     end,
   })
 end

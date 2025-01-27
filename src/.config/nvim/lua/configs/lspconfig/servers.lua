@@ -1,7 +1,4 @@
 local servers = {
-  --- example ---
-  -- ["bashls"] = { config = function or table , disable_format = true or false }
-  -- no need to specify config if no changes are required
   bashls = {},
   clangd = {},
   gopls = { disable_format = true },
@@ -9,7 +6,8 @@ local servers = {
   -- pylsp = {},
   rust_analyzer = {},
   lua_ls = {},
-  emmet_ls = {},
+  -- emmet_ls = {},
+  emmet_language_server = {},
   html = { disable_format = true },
   cssls = {},
   cssmodules_ls = {},
@@ -18,16 +16,13 @@ local servers = {
   volar = {},
   tailwindcss = {},
   -- jdtls = {},
-  phpactor = {},
 }
 
 -- https://github.com/williamboman/mason-lspconfig.nvim/issues/351#issuecomment-2348642855
 servers.volar = {
   config = {
     init_options = {
-      vue = {
-        hybridMode = true,
-      },
+      vue = { hybridMode = true },
       typescript = {
         tsdk = require("mason-registry").get_package("vue-language-server"):get_install_path()
           .. "/node_modules/typescript/lib/",
@@ -89,7 +84,7 @@ servers.cssmodules_ls = {
   filetypes_exclude = { "javascript", "typescript" },
 }
 
-servers.emmet_ls = { config = { filetypes = { "javascriptreact", "typescriptreact", "vue" } } }
+servers.emmet_language_server = { config = { filetypes = { "javascriptreact", "typescriptreact", "vue" } } }
 
 -- These below needs some extra stuff done to their default config
 servers.clangd = {

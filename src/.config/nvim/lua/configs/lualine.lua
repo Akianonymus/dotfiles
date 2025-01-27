@@ -7,6 +7,7 @@ local function fg(name)
     return hl and hl.foreground and { fg = string.format("#%06x", hl.foreground) }
   end
 end
+
 local function bg(name)
   return function()
     local hl = vim.api.nvim_get_hl(0, { name = name })
@@ -36,7 +37,15 @@ local config = {
     lualine_b = {
       "branch",
       { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-      { "filename", path = 1, symbols = { modified = " ", readonly = "", unnamed = "" } },
+      {
+        "filename",
+        padding = { left = 0, right = 0 },
+        path = 1,
+        symbols = { modified = " ", readonly = "", unnamed = "" },
+        on_click = function()
+          vim.cmd(":Neotree")
+        end,
+      },
     },
     lualine_c = {
       {
@@ -72,11 +81,9 @@ local config = {
           local names = ""
           local max = vim.o.columns * 0.2
           for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
-            if not (server.name == "null-ls") then
-              local tmp = names .. " " .. server.name
-              if #tmp + #arr <= max - 4 then
-                names = tmp
-              end
+            local tmp = names .. " " .. server.name
+            if #tmp + #arr <= max - 4 then
+              names = tmp
             end
           end
           return names == "" and "" or (arr .. "[" .. names .. " ]")

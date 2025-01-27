@@ -16,9 +16,6 @@ if l then
   require("lspconfig.configs").vtsls = vtsls.lspconfig
 end
 
--- set border to :LspInfo window
-require("lspconfig.ui.windows").default_options.border = "rounded"
-
 -- diagnostic setup
 local icons = require("icons").diagnostics
 -- https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
@@ -60,9 +57,6 @@ vim.diagnostic.config({
 -- diagnostic setup end
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-
--- setup the GLobalAutoFormat command
-require("commands").toggle_autoformat_global()
 
 local servers = require("configs.lspconfig.servers")
 for server, conf in pairs(servers) do

@@ -1,5 +1,4 @@
 return {
-  -- generic lsp plugins
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPost" },
@@ -17,12 +16,6 @@ return {
     dependencies = { "williamboman/mason-lspconfig.nvim" },
     cmd = "Mason",
     opts = {},
-  },
-  {
-    "nvimtools/none-ls.nvim",
-    event = { "VeryLazy" },
-    dependencies = { "neovim/nvim-lspconfig", "gbprod/none-ls-shellcheck.nvim", "gbprod/none-ls-luacheck.nvim" },
-    config = require("configs.null-ls"),
   },
   {
     "glepnir/lspsaga.nvim",
@@ -53,14 +46,14 @@ return {
 
   -- language specific lsp plugins
   {
-    "folke/neodev.nvim",
+    "folke/lazydev.nvim",
     ft = "lua",
-    config = function()
-      require("neodev").setup({ library = { plugins = false }, experimental = { pathStrict = true } })
-    end,
+    opts = {
+      library = {
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
   },
   { "mfussenegger/nvim-jdtls" },
-  {
-    "yioneko/nvim-vtsls",
-  },
+  { "yioneko/nvim-vtsls" },
 }
