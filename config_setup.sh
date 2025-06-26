@@ -18,12 +18,28 @@ handle_repo() {
     fi
 }
 
-symlink() {
+symlink_single() {
+    symlink="${1:?Error: Missing path}"
+    target="${2:?Error: Missin Target}"
+    full_path="${target}/${symlink}"
+
+    [[ -d ${full_path} || -f ${full_path} ]] && mv -f "${full_path}" "${full_path}.bak"
+    ln -sfr "${symlink}" "${full_path}"
+}
+
+symlink_multiple() {
     local symlink full_path
     for symlink in "${@}"; do
-        full_path="${HOME}/${symlink}"
-        [[ -d ${full_path} || -f ${full_path} ]] && mv -f "${full_path}" "${full_path}.bak"
-        ln -sfr "${symlink}" "${full_path}"
+        symlink_single "${symlink}" "${HOME}"
+    done
+}
+
+create_dirs() {
+    find "${1:?Error: Give Source Dir}" -type d | while read -r dir; do
+        target_dir="${2:?Error: Give Target Dir}/${dir}"
+        if [[ ! -d "$target_dir" ]]; then
+            mkdir -p "$target_dir"
+        fi
     done
 }
 
@@ -52,26 +68,20 @@ main() {
 
     # now symlink
     # create dirs
-    mkdir -p "${HOME}"/{.bin,.config/{gh,gotop,kitty,lsd,mpv,nvim,wezterm,auto-cpufreq},.local/share/fonts,.cache/zsh}
-    # files to be symlinked
-    symlink_list=(.config/mpv .config/nvim .config/.ideavimrc .config/wezterm .config/auto-cpufreq/auto-cpufreq.conf
-        .config/gh/config.yml .config/gotop/gotop.conf .config/kitty/kitty.conf .config/lsd/config.yaml
-        '.local/share/fonts/JetBrains Mono Bold Italic Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono Bold Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono ExtBd Ita Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono ExtraBold ExBd I Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono ExtraBold ExtBd Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono Extra Bold Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono Italic Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono Medium Italic Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono Medium Med Ita Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono Medium Medium Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono Medium Nerd Font Complete.ttf'
-        '.local/share/fonts/JetBrains Mono Regular Nerd Font Complete.ttf'
-        .p10k.zsh .zshrc .zshenv .gitconfig)
+    cd "${current_dir}/src/home" || return 1
 
-    cd "${current_dir}/src" || return 1
-    symlink "${symlink_list[@]}"
+    mkdir -p "${HOME}"/{.bin,.cache/zsh}
+
+    find "." -type d | while read -r dir; do
+        target_dir="${HOME}/${dir}"
+        if [[ ! -d "$target_dir" ]]; then
+            mkdir -v -p "$target_dir"
+        fi
+    done
+
+    find "." -type f | while read -r file; do
+        symlink_single "${file}" "${HOME}"
+    done
 
     # handle termux stuff
     [[ ${1:-} = arch ]] || {
@@ -80,7 +90,7 @@ main() {
         mkdir -p "${HOME}/.termux"
         symlink_list=(.termux/{colors.properties,dark,font.ttf,light,termux.properties})
 
-        symlink "${symlink_list[@]}"
+        symlink_multiple "${symlink_list[@]}"
     }
 }
 

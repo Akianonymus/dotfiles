@@ -1,0 +1,47 @@
+for hibernation
+create file in /etc/dracut.conf.d/resume-from-hibernate.conf
+add_dracutmodules+=" resume "
+install_items+=" /usr/lib/systemd/system/systemd-hibernate-resume.service "
+kernel_cmdline+=" resume=UUID=e8c73769-3401-4b08-b606-b1e832023877 "
+
+for fstab
+UUID=B4B5-AD5A                                /efi         vfat    noatime              0 2
+UUID=d5e0ad22-fbe4-47ee-bc4c-50883467c215     /            ext4    noatime              0 1
+UUID=f735ec43-9b8f-436b-a876-dbdc9d5a437a     /home        ext4    noatime,nofail              0 2
+UUID=a93322e7-443f-40ff-a6ec-ee6dfc840f5e     /data        ext4    noatime,nofail              0 0
+UUID=628B306C1C89D002                         /data_ntfs   ntfs-3g noatime,nodiratime,nofail,windows_names,uid=1000,gid=1000,fmask=002,dmask=002  0 0
+UUID=e8c73769-3401-4b08-b606-b1e832023877     none         swap    sw,nofail                   0 0
+tmpfs                                         /tmp         tmpfs   noatime,mode=1777    0 0
+
+for /efi/loader/loader.conf
+default ef43402b51814e17bb445f46bd115c30*
+timeout 5
+console-mode auto
+reboot-for-bitlocker 1
+# options root="PARTLABEL=ROOT_LINUX" rw
+entries archlive.conf
+
+for kde krohnkite
+window management > kwin scripts
+https://github.com/anametologin/krohnkite
+
+kpackagetool6 -t KWin/Script -s krohnkite
+
+install:
+
+kpackagetool6 -t KWin/Script -i krohnkite-x.x.x.x.kwinscript
+
+upgrade:
+
+kpackagetool6 -t KWin/Script -u krohnkite-x.x.x.x.kwinscript
+
+uninstall:
+
+kpackagetool6 -t KWin/Script -r krohnkite
+
+kde appearance
+icon - papirus-dark
+research kde appearance stuff, was using orchis
+splash screen - kuro
+window management > window rules
+    for kitty, hide titlebar and frame

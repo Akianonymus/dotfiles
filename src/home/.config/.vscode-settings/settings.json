@@ -1,0 +1,84 @@
+{
+  "C_Cpp.errorSquiggles": "enabled",
+  "C_Cpp.autocompleteAddParentheses": true,
+  "C_Cpp.intelliSenseEngineFallback": "enabled",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "redhat.telemetry.enabled": false,
+  "git.openRepositoryInParentFolders": "never",
+  "java.configuration.runtimes": [],
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "vscode-neovim.NVIM_APPNAME": "nvim-vscode",
+  "vscode-neovim.compositeKeys": {},
+  "vscode-neovim.ctrlKeysForNormalMode": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "o",
+    "r",
+    "t",
+    "u",
+    "v",
+    "x",
+    "y",
+    "z",
+    "/",
+    "]",
+    "right",
+    "left",
+    "up",
+    "down",
+    "backspace",
+    "delete"
+  ],
+  "workbench.colorTheme": "Default Dark Modern",
+  "cursor.cmdk.useThemedDiffBackground": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "cursor.diffs.useCharacterLevelDiffs": true,
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cursor-retrieval.canAttemptGithubLogin": false,
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "local-sync.autobackup": false,
+  "vscode-neovim.ctrlKeysForInsertMode": [
+    "a",
+    "c",
+    "d",
+    "h",
+    "j",
+    "m",
+    "o",
+    "r",
+    "t",
+    "w"
+  ]
+}

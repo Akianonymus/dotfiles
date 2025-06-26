@@ -1,0 +1,15 @@
+[
+  "anweber.local-sync",
+  "asvetliakov.vscode-neovim",
+  "bradlc.vscode-tailwindcss",
+  "esbenp.prettier-vscode",
+  "graphql.vscode-graphql",
+  "graphql.vscode-graphql-syntax",
+  "mechatroner.rainbow-csv",
+  "ms-python.debugpy",
+  "ms-python.isort",
+  "ms-python.python",
+  "ms-python.vscode-pylance",
+  "shopify.theme-check-vscode",
+  "vue.volar"
+]

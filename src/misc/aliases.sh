@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 alias vi='nvim'
-alias y='y'
+alias y='yazi'

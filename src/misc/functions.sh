@@ -106,11 +106,9 @@ brename() {
     fi
 }
 
-# funtion to upload to pixeldrain
-# todo: add this
 upload() {
     if [[ -n ${1} && -f ${1} ]]; then
-        DOWNLOAD='https://pixeldrain.com/api/file/'$(curl -# -F 'file=@'"$1" "https://pixeldrain.com/api/file" | cut -d '"' -f 6)'?download' || return 1
+        DOWNLOAD=$(curl -F"file=@${1}" https://0x0.st) || return 1
         echo "${DOWNLOAD}"
     else
         echo "upload: Needs argument ( filename )"

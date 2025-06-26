@@ -12,22 +12,7 @@ main() {
 
     case "${os}" in
         arch)
-            packages=(aria2
-                intel-media-driver auto-cpufreq base-devel
-                bat fd fzf firefox git git-delta
-                github-cli btop jq kitty lsd mpv
-                bob neovim ripgrep wezterm zoxide zsh
-            )
-
-            # install yay
-            command -v yay > /dev/null || (
-                git clone "https://aur.archlinux.org/yay-bin" .build
-                cd .build && makepkg -si --noconfirm
-                cd ../
-                rm -rf .build
-            )
-
-            yay --noconfirm --norebuild -S "${packages[@]}"
+            sh ./arch-packages.sh
             chsh -s "$(chsh -l zsh | grep -m 1 zsh)"
 
             # get rid of system beep
