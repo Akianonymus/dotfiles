@@ -90,16 +90,28 @@ M.resize = function(vertical, margin)
 end
 
 function M.typescript_format_import()
-  local params = { command = "typescript.organizeImports", arguments = { vim.fn.expand("%:p") } }
+  local params = {
+    command = "_typescript.organizeImports",
+    arguments = { vim.api.nvim_buf_get_name(0) },
+  }
 
-  -- Get the list of supported commands from the server
-  local commands = vim.lsp.buf_request_sync(0, "workspace/executeCommand", params, 500)
+  -- Check if any attached LSP client supports workspace/executeCommand
+  local clients = vim.lsp.get_clients()
+  local supports_execute_command = false
 
-  -- Check if _typescript.organizeImports exists
-  if commands then
-    -- If it exists, execute the command
-    vim.lsp.buf_request_sync(0, "workspace/executeCommand", params, 500)
+  for _, client in pairs(clients) do
+    if client.supports_method("workspace/executeCommand") then
+      supports_execute_command = true
+      break
+    end
   end
+
+  if not supports_execute_command then
+    return
+  end
+
+  -- Execute the organize imports command
+  vim.lsp.buf.execute_command(params)
 end
 
 -- https://www.reddit.com/r/neovim/comments/p3b20j/lua_solution_to_writing_a_file_using_sudo

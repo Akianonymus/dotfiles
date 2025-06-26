@@ -10,7 +10,6 @@ return function()
   if ok then
     require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
   end
-
   require("autocmds").cmp()
 
   local config = {

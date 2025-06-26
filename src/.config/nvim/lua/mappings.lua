@@ -219,13 +219,13 @@ end
 
 function M.grug_far_inline()
   map("n", "<localleader>i", function()
-    require("grug-far").toggle_flags({ "--ignore-case" })
+    require("grug-far").get_instance():toggle_flags({ "--ignore-case" })
   end, { buffer = true })
   map("n", "<localleader>h", function()
-    require("grug-far").toggle_flags({ "--hidden" })
+    require("grug-far").get_instance():toggle_flags({ "--hidden" })
   end, { buffer = true })
   map("n", "<localleader>w", function()
-    require("grug-far").toggle_flags({ "--fixed-strings" })
+    require("grug-far").get_instance():toggle_flags({ "--fixed-strings" })
   end, { buffer = true })
   map("n", "<C-i>", function()
     vim.api.nvim_win_set_cursor(vim.fn.bufwinid(0), { 2, 0 })
@@ -274,7 +274,7 @@ function M.lspconfig(client, bufnr)
     vim.lsp.buf.declaration()
   end)
 
-  buf_k("n", m.definition, "<cmd>FzfLua lsp_references<CR>")
+  buf_k("n", m.definition, vim.lsp.buf.type_definition)
 
   buf_k("n", m.hover, "<cmd>Lspsaga hover_doc ++quiet<CR>")
 

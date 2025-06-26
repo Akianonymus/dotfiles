@@ -31,7 +31,7 @@ function M.aki()
   })
 
   -- Highlight on yank
-  autocmd("TextYankPost", { callback = vim.highlight.on_yank })
+  autocmd("TextYankPost", { callback = vim.hl.on_yank })
 
   -- https://vim.fandom.com/wiki/Avoid_scrolling_when_switch_buffers
   local function is_float(winnr)

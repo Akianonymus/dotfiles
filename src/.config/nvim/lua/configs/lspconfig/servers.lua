@@ -24,8 +24,7 @@ servers.volar = {
     init_options = {
       vue = { hybridMode = true },
       typescript = {
-        tsdk = require("mason-registry").get_package("vue-language-server"):get_install_path()
-          .. "/node_modules/typescript/lib/",
+        tsdk = vim.fn.globpath("$MASON/packages/vue-language-server", "node_modules/typescript/lib/"),
       },
     },
   },
@@ -47,8 +46,7 @@ servers.vtsls = {
       -- if result.stdout ~= "[]" then
       local vuePluginConfig = {
         name = "@vue/typescript-plugin",
-        location = require("mason-registry").get_package("vue-language-server"):get_install_path()
-          .. "/node_modules/@vue/language-server",
+        location = vim.fn.globpath("$MASON/packages/vue-language-server", "node_modules/typescript/lib/"),
         languages = { "vue" },
         configNamespace = "typescript",
         enableForWorkspaceTypeScriptVersions = true,

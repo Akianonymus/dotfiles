@@ -29,6 +29,7 @@ return {
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
+    version = false,
     cmd = "Neotree",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
     config = require("configs.neotree"),
@@ -77,7 +78,7 @@ return {
           qflist = { n = "<localleader>q" },
           syncLocations = { n = "<localleader>R" },
           syncLine = { n = "<localleader>r" },
-          close = { n = "<localleader>x" },
+          close = { n = "<localleader>c" },
           historyOpen = { n = "<localleader>t" },
           historyAdd = { n = "<localleader>a" },
           refresh = { n = "<localleader>f" },

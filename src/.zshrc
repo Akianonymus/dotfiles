@@ -78,3 +78,4 @@ if [[ $(ps --no-header -p $PPID -o comm) =~ '^yakuake|kitty$' ]]; then
 fi
 
 command -v fzf > /dev/null && source <(fzf --zsh)
+command -v mise > /dev/null && eval "$(mise activate zsh)"

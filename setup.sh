@@ -13,21 +13,11 @@ main() {
     case "${os}" in
         arch)
             packages=(aria2
-                intel-media-driver
-                auto-cpufreq
-                baka-mplayer base-devel bat
-                fd fzf firefox
-                git git-delta-git github-cli
-                htop btop
-                jq
-                kitty
-                lsd
-                mpv
-                neovim
-                ripgrep
-                touche touchegg
-                wezterm
-                zoxide zsh)
+                intel-media-driver auto-cpufreq base-devel
+                bat fd fzf firefox git git-delta
+                github-cli btop jq kitty lsd mpv
+                bob neovim ripgrep wezterm zoxide zsh
+            )
 
             # install yay
             command -v yay > /dev/null || (

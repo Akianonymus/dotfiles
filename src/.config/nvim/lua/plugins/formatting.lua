@@ -7,10 +7,19 @@ return {
       {
         "<leader>fm",
         function()
+          require("utils").typescript_format_import()
           require("conform").format({ async = true })
         end,
         mode = "",
         desc = "Format buffer",
+      },
+      {
+        "<leader>fi",
+        function()
+          require("utils").typescript_format_import()
+        end,
+        mode = "",
+        desc = "Format buffer [Imports]",
       },
     },
     opts = {
@@ -27,11 +36,8 @@ return {
       formatters_by_ft = {
         sh = { "shfmt" },
         bash = { "shfmt" },
-
         lua = { "stylua" },
-
         go = { "goimports", "gofmt" },
-
         rust = { "rustfmt" },
 
         c = { "clang-format" },
