@@ -1,0 +1,34 @@
+In .ssh/config
+# Host github.com
+#   Hostname ssh.github.com
+#   Port 443
+
+Host github.com
+HostName github.com
+AddKeysToAgent yes
+User git
+IdentityFile ~/.ssh/aki
+ServerAliveInterval 30
+ServerAliveCountMax 1200
+
+Host github.com-aki
+HostName github.com
+AddKeysToAgent yes
+User git
+IdentityFile ~/.ssh/internship
+
+[user]
+	name = aki
+	email = email@email.com
+
+[url "git@github.com-aki:repo"]
+  pushInsteadOf = https://github.com/repo
+  pushInsteadOf = git://github.com/repo
+  insteadOf = https://github.com/repo
+  insteadOf = git://github.com/repo
+
+[url "git@github.com-aki:repo"]
+  pushInsteadOf = https://github.com/repo
+  pushInsteadOf = git://github.com/repo
+  insteadOf = https://github.com/repo
+  insteadOf = git://github.com/repo

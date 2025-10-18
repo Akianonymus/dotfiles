@@ -45,3 +45,12 @@ research kde appearance stuff, was using orchis
 splash screen - kuro
 window management > window rules
     for kitty, hide titlebar and frame
+
+
+setup windows virtual machine
+download iso
+using virtio drivers: https://wiki.archlinux.org/title/QEMU#Using_virtio_drivers
+Setup common files system
+https://github.com/virtio-win/kvm-guest-drivers-windows/wiki/Virtiofs:-Shared-file-system#guest
+https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.271-1/virtio-win-guest-tools.exe
+more ref: https://virtio-fs.gitlab.io/howto-windows.html

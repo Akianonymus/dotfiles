@@ -1,15 +1,19 @@
 [
   "anweber.local-sync",
+  "anysphere.cursorpyright",
   "asvetliakov.vscode-neovim",
   "bradlc.vscode-tailwindcss",
+  "daelmaak.next-error",
+  "dbaeumer.vscode-eslint",
+  "editorconfig.editorconfig",
   "esbenp.prettier-vscode",
   "graphql.vscode-graphql",
   "graphql.vscode-graphql-syntax",
-  "mechatroner.rainbow-csv",
+  "johnnymorganz.stylua",
+  "mkhl.shfmt",
   "ms-python.debugpy",
   "ms-python.isort",
   "ms-python.python",
-  "ms-python.vscode-pylance",
-  "shopify.theme-check-vscode",
+  "prisma.prisma",
   "vue.volar"
 ]

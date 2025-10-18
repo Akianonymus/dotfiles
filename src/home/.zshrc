@@ -1,3 +1,5 @@
+export LANG=en_US.UTF-8
+#
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -30,11 +32,12 @@ setopt inc_append_history        # add commands to HISTFILE in order of executio
 # setopt appendhistory
 setopt hist_find_no_dups
 
+zstyle ':completion:*' rehash true
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
 # enable autocomplete and set related options
-autoload -U compinit && compinit
+autoload -Uz compinit && compinit
 # fzf tab complition
 [[ -f ${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh ]] && {
   source "${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh"
@@ -78,4 +81,29 @@ if [[ $(ps --no-header -p $PPID -o comm) =~ '^yakuake|kitty$' ]]; then
 fi
 
 command -v fzf > /dev/null && source <(fzf --zsh)
-command -v mise > /dev/null && eval "$(mise activate zsh)"
+
+function command_not_found_handler() {
+  local pkgs cmd="$1"
+  local RED GREEN YELLOW BLUE RESET
+
+  # Define color codes
+  RED=$'%{\e[31m%}'
+  GREEN=$'%{\e[32m%}'
+  YELLOW=$'%{\e[33m%}'
+  RESET=$'%{\e[0m%}'
+  BLUE=$'%{\e[34m%}'
+
+  pkgs=(${(f)"$(pkgfile -b -v -- "$cmd" 2>/dev/null)"})
+  if [[ -n "$pkgs" ]]; then
+    # Use print -P here
+    print -P "${YELLOW}${cmd}${RESET} ${GREEN}may be found in the following packages:${RESET}"
+    for pkg in $pkgs[@]; do
+      print -P "  ${BLUE}${pkg}${RESET}"
+    done
+  else
+    # Use print -P here
+    print -P "${RED}zsh: command not found: ${cmd}${RESET}" 1>&2
+  fi
+
+  return 127
+}

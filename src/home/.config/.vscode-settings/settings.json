@@ -5,9 +5,6 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "extensions.experimental.affinity": {
-    "asvetliakov.vscode-neovim": 1
-  },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -17,7 +14,6 @@
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "vscode-neovim.NVIM_APPNAME": "nvim-vscode",
   "vscode-neovim.compositeKeys": {},
   "vscode-neovim.ctrlKeysForNormalMode": [
     "a",
@@ -60,7 +56,6 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "typescript.updateImportsOnFileMove.enabled": "never",
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -80,5 +75,24 @@
     "r",
     "t",
     "w"
-  ]
+  ],
+  "cursor.composer.shouldAllowCustomModes": true,
+  "cursor.semanticSearch.includePullRequests": false,
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "json.schemaDownload.enable": true,
+  "cursor.composer.usageSummaryDisplay": "always",
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "terminal.integrated.defaultProfile.linux": "zsh (2)",
+  "workbench.activityBar.orientation": "vertical",
+  "eslint.rules.customizations": [],
+  "eslint.ignoreUntitled": true,
+  "terminal.integrated.shellIntegration.environmentReporting": true,
+  "terminal.integrated.detectLocale": "on"
 }

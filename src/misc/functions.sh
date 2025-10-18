@@ -141,13 +141,15 @@ export config_update
 
 # toggle conservation mode
 conservation_mode() {
-    local status="" mode="" node='/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
+    declare cstatus="" mode="" node='/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
 
     [[ -f ${node} ]] || { echo "No node for conservation mode." && return 1; }
     if grep -q 1 "${node}"; then
-        status="Disabled" mode=0
+        cstatus="Disabled"
+        mode=0
     else
-        status="Enabled" mode=1
+        cstatus="Enabled"
+        mode=1
     fi
 
     [[ -w ${node} ]] || {
@@ -155,7 +157,7 @@ conservation_mode() {
         sudo chown -R "$(whoami):$(whoami)" "${node}" || return 1
     }
     echo "${mode}" | sudo tee "${node}" > /dev/null
-    echo "Conservation mode ${status}"
+    echo "Conservation mode ${cstatus}"
 }
 export conservation_mode
 

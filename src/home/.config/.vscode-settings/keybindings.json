@@ -102,5 +102,53 @@
     "key": "ctrl+d",
     "command": "-editor.action.addSelectionToNextFindMatch",
     "when": "editorFocus"
+  },
+  {
+    "key": "ctrl+n",
+    "command": "-workbench.action.files.newUntitledFile"
+  },
+  {
+    "key": "ctrl+d",
+    "command": "-vscode-neovim.ctrl-d",
+    "when": "editorTextFocus && neovim.ctrlKeysNormal && neovim.init && neovim.mode != 'insert'"
+  },
+  {
+    "key": "ctrl+u",
+    "command": "-vscode-neovim.ctrl-u",
+    "when": "editorTextFocus && neovim.ctrlKeysNormal && neovim.init && neovim.mode != 'insert'"
+  },
+  {
+    "key": "ctrl+f",
+    "command": "-vscode-neovim.ctrl-f",
+    "when": "editorTextFocus && neovim.ctrlKeysNormal && neovim.init && neovim.mode != 'insert'"
+  },
+  {
+    "key": "ctrl+b",
+    "command": "-vscode-neovim.ctrl-b",
+    "when": "editorTextFocus && neovim.ctrlKeysNormal && neovim.init && neovim.mode != 'insert'"
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+d",
+    "when": "editorTextFocus && neovim.init && neovim.mode != insert || neovim.recording",
+    "args": "<C-D>"
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+u",
+    "when": "editorTextFocus && neovim.init && neovim.mode != insert || neovim.recording",
+    "args": "<C-U>"
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+f",
+    "when": "editorTextFocus && neovim.init && neovim.mode != insert || neovim.recording",
+    "args": "<C-F>"
+  },
+  {
+    "command": "vscode-neovim.send",
+    "key": "ctrl+b",
+    "when": "editorTextFocus && neovim.init && neovim.mode != insert || neovim.recording",
+    "args": "<C-B>"
   }
 ]

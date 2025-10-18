@@ -1,2 +1,5 @@
 [tools]
-python = "3.9"
+node = "latest"
+
+[settings]
+idiomatic_version_file_enable_tools = ["node"]

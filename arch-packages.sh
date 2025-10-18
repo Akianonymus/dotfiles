@@ -10,7 +10,6 @@ packages=(
     android-file-transfer
     ark
     sqlitebrowser
-    discord
     dolphin
     filelight
     firefox
@@ -20,7 +19,6 @@ packages=(
     mpv
     neovim
     scrcpy
-    transmission-qt
     vlc
     warpinator
     64gram-desktop-bin
@@ -32,14 +30,15 @@ packages=(
     auto-cpufreq
     ventoy-bin
     yazi
+    electron30-bin
     ytdownloader-gui-bin
-    mongodb-compass
+    mongodb-compass-bin
     yt-dlp
     apidog-bin
     libreoffice-fresh visual-studio-code-bin
-    mongodb-compass google-chrome 64gram-desktop-bin
-    vlc yt-dlp ytdownloader-gui-bin
-    anydesk-bin ventoy-bin yazi partitionmanager
+    google-chrome 64gram-desktop-bin
+    vlc yt-dlp
+    anydesk-bin ventoy-bin yazi
     kimageformats5 stow
     android-tools mise
 )
