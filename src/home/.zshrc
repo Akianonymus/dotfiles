@@ -37,7 +37,8 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
 # enable autocomplete and set related options
-autoload -Uz compinit && compinit
+autoload -Uz compinit  && compinit
+autoload -U bashcompinit && bashcompinit
 # fzf tab complition
 [[ -f ${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh ]] && {
   source "${zsh_plugin_folder}/fzf-tab/fzf-tab.plugin.zsh"
@@ -53,6 +54,7 @@ autoload -Uz compinit && compinit
 [[ -f ${zsh_plugin_folder}/zsh-fzf-history-search/zsh-fzf-history-search.zsh ]] && source "${zsh_plugin_folder}/zsh-fzf-history-search/zsh-fzf-history-search.zsh"
 
 # a powerful alternative for cd
+export _ZO_DOCTOR=0
 command -v zoxide > /dev/null && eval "$(zoxide init zsh)" && alias cd="z"
 
 misc_stuff_folder="${HOME:?}/.dotfiles/src/misc"
@@ -107,3 +109,7 @@ function command_not_found_handler() {
 
   return 127
 }
+
+if [[ -r /usr/share/bash-completion/completions/aria2c ]]; then
+  source /usr/share/bash-completion/completions/aria2c
+fi

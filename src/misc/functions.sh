@@ -195,3 +195,21 @@ function waydroid_stop() {
     }
 }
 export waydroid_stop
+
+function c() {
+    cursor "${@:-.}"
+}
+export c
+
+function dl() {
+    aria2c -x8 "${@}"
+}
+export dl
+
+function dls() {
+    local limit="${1:?Error: Enter speed limit}"
+    shift
+    aria2c -x8 --max-overall-download-limit=${limit} "${@}"
+}
+
+export dls

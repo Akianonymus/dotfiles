@@ -155,10 +155,10 @@ map("n", "<leader>o", [[:<C-u>call append(line("."), repeat([''], v:count1))<CR>
 map("n", "<leader>O", [[:<C-u>call append(line(".")-1, repeat([''], v:count1))<CR>]], { noremap = true, silent = true })
 
 -- Buffer commands------
-map("n", "<tab>", function()
+map("n", "<C-tab>", function()
   require("vscode").action("workbench.action.nextEditor")
 end, { noremap = true, silent = true })
-map("n", "<s-tab>", function()
+map("n", "<C-S-tab>", function()
   require("vscode").action("workbench.action.previousEditor")
 end, { noremap = true, silent = true })
 map("n", "<leader>b", function()

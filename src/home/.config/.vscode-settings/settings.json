@@ -1,16 +1,11 @@
 {
-  "C_Cpp.errorSquiggles": "enabled",
-  "C_Cpp.autocompleteAddParentheses": true,
-  "C_Cpp.intelliSenseEngineFallback": "enabled",
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "redhat.telemetry.enabled": false,
   "git.openRepositoryInParentFolders": "never",
-  "java.configuration.runtimes": [],
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -46,10 +41,8 @@
     "delete"
   ],
   "workbench.colorTheme": "Default Dark Modern",
-  "cursor.cmdk.useThemedDiffBackground": true,
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
-  "cursor.diffs.useCharacterLevelDiffs": true,
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -76,8 +69,6 @@
     "t",
     "w"
   ],
-  "cursor.composer.shouldAllowCustomModes": true,
-  "cursor.semanticSearch.includePullRequests": false,
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -86,13 +77,18 @@
   },
   "json.schemaDownload.enable": true,
   "cursor.composer.usageSummaryDisplay": "always",
-  "extensions.experimental.affinity": {
-    "asvetliakov.vscode-neovim": 1
-  },
   "terminal.integrated.defaultProfile.linux": "zsh (2)",
   "workbench.activityBar.orientation": "vertical",
   "eslint.rules.customizations": [],
   "eslint.ignoreUntitled": true,
   "terminal.integrated.shellIntegration.environmentReporting": true,
-  "terminal.integrated.detectLocale": "on"
+  "terminal.integrated.detectLocale": "on",
+  "cursor.composer.cmdPFilePicker2": true,
+  "cursor.general.disableHttp1SSE": true,
+  "cursor.terminal.usePreviewBox": true,
+  "prisma.pinToPrisma6": true,
+  "cursor.inlineDiff.enablePerformanceProtection": false,
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  }
 }
