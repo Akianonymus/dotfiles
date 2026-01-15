@@ -33,6 +33,19 @@ return {
             LspSignatureActiveParameter = { link = "DiagnosticVirtualTextWarn" },
             NormalFloat = { link = "Normal" },
             FloatBorder = { link = "Normal" },
+            -- blink.cmp highlight groups
+            BlinkCmpMenu = { link = "Normal" },
+            BlinkCmpMenuBorder = { link = "NormalFloat" },
+            BlinkCmpMenuSelection = { link = "Visual" },
+            BlinkCmpScrollBarThumb = { link = "FloatBorder" },
+            BlinkCmpScrollBarGutter = { link = "NormalFloat" },
+            BlinkCmpLabel = { link = "Normal" },
+            BlinkCmpKind = { link = "LspInfo" },
+            BlinkCmpGhostText = { link = "Comment" },
+            BlinkCmpDoc = { link = "NormalFloat" },
+            BlinkCmpDocBorder = { link = "FloatBorder" },
+            BlinkCmpSignatureHelp = { link = "NormalFloat" },
+            BlinkCmpSignatureHelpBorder = { link = "FloatBorder" },
           }
           return overrides
         end,

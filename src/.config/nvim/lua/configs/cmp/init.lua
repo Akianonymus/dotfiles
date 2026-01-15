@@ -5,11 +5,6 @@ return function()
   local cmp = require("cmp")
   local compare = require("cmp.config.compare")
 
-  -- setup cmp for autopairs
-  local ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
-  if ok then
-    require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-  end
   require("autocmds").cmp()
 
   local config = {

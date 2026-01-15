@@ -57,7 +57,7 @@ autoload -U bashcompinit && bashcompinit
 export _ZO_DOCTOR=0
 command -v zoxide > /dev/null && eval "$(zoxide init zsh)" && alias cd="z"
 
-misc_stuff_folder="${HOME:?}/.dotfiles/src/misc"
+misc_stuff_folder="${HOME:?}/.dotfiles/misc"
 files_to_source=(ls_colors.sh keybindings.zsh aliases.sh git_aliases.sh functions.sh)
 for f in "${files_to_source[@]}"; do
 	pp="${misc_stuff_folder}/${f}"

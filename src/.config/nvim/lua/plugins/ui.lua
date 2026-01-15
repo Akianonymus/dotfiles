@@ -82,5 +82,15 @@ return {
       vim.keymap.set("n", "[;", dropbar_api.goto_context_start, { desc = "Go to start of current context" })
       vim.keymap.set("n", "];", dropbar_api.select_next_context, { desc = "Select next context" })
     end,
+    opts = {
+      bar = {
+        enable = function(buf, win, _)
+          if vim.bo[buf].buftype == 'terminal' then
+            return false
+          end
+          return true
+        end,
+      },
+    },
   },
 }

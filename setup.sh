@@ -70,7 +70,7 @@ EndSection\n' | sudo tee /etc/X11/xorg.conf.d/40-libinput.conf 1> /dev/null
     esac
 
     # setup zsh and other configs
-    bash config_setup.sh "${os}" || return 1
+    bash scripts/stow_setup.sh "${os}" || return 1
 }
 
 main "${@}" || exit 1

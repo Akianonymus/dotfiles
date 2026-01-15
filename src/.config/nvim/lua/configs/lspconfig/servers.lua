@@ -13,13 +13,13 @@ local servers = {
   cssmodules_ls = {},
   -- ts_ls = {},
   vtsls = {},
-  volar = {},
+  vue_ls = {},
   tailwindcss = {},
   -- jdtls = {},
 }
 
 -- https://github.com/williamboman/mason-lspconfig.nvim/issues/351#issuecomment-2348642855
-servers.volar = {
+servers.vue_ls = {
   config = {
     init_options = {
       vue = { hybridMode = true },

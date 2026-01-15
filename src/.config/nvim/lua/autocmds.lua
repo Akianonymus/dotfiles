@@ -72,6 +72,13 @@ function M.aki()
   })
 
   M.add_toggle_autoformat()
+
+  autocmd("TermOpen", {
+    pattern = "*",
+    callback = function()
+      vim.opt_local.titlestring = ""
+    end,
+  })
 end
 
 function M.cmp()

@@ -55,5 +55,7 @@ return {
     },
   },
   { "mfussenegger/nvim-jdtls" },
-  { "yioneko/nvim-vtsls" },
+  -- Note: nvim-vtsls is no longer needed with vim.lsp.config
+  -- vtsls configuration is now handled directly in configs/lspconfig/servers.lua
+  -- { "yioneko/nvim-vtsls" },
 }

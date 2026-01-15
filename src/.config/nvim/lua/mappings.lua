@@ -255,6 +255,7 @@ M.lspkeymaps = {
   -- diagnostics
   workspace_diagnostics = "<leader>q",
   buffer_diagnostics = "ge",
+  goto_curr_diagnostics = "[c",
   goto_prev_diagnostics = "[d",
   goto_next_diagnostics = "]d",
   goto_prev_error_diagnostics = "[e",
@@ -274,7 +275,7 @@ function M.lspconfig(client, bufnr)
     vim.lsp.buf.declaration()
   end)
 
-  buf_k("n", m.definition, vim.lsp.buf.type_definition)
+  buf_k("n", m.definition, "<cmd>FzfLua lsp_references<CR>")
 
   buf_k("n", m.hover, "<cmd>Lspsaga hover_doc ++quiet<CR>")
 
@@ -290,7 +291,6 @@ function M.lspconfig(client, bufnr)
 
   -- buf_k("n", m.code_action, "<cmd>:FzfLua lsp_code_actions<cr>")
   buf_k("n", m.code_action, function()
-    ---@diagnostic disable-next-line: missing-fields
     vim.lsp.buf.code_action()
   end)
   buf_k("n", m.code_action_all, function()
@@ -300,12 +300,19 @@ function M.lspconfig(client, bufnr)
 
   buf_k("n", m.references, "<cmd>FzfLua lsp_references<CR>")
 
-  buf_k("n", m.goto_prev_diagnostics, "<cmd>Lspsaga diagnostic_jump_prev<CR>")
+  buf_k("n", m.goto_curr_diagnostics, function()
+    require("lspsaga.diagnostic"):goto_pos(0)
+  end)
+  buf_k("n", m.goto_prev_diagnostics, function()
+    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.WARN })
+  end)
   buf_k("n", m.goto_prev_error_diagnostics, function()
     require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
   end)
 
-  buf_k("n", m.goto_next_diagnostics, "<cmd>Lspsaga diagnostic_jump_next<CR>")
+  buf_k("n", m.goto_next_diagnostics, function()
+    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.WARN })
+  end)
   buf_k("n", m.goto_next_error_diagnostics, function()
     require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
   end)
