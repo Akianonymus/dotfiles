@@ -113,3 +113,6 @@ function command_not_found_handler() {
 if [[ -r /usr/share/bash-completion/completions/aria2c ]]; then
   source /usr/share/bash-completion/completions/aria2c
 fi
+
+# shuvcode
+export PATH=/home/aki/.shuvcode/bin:$PATH

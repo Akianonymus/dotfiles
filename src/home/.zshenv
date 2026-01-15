@@ -18,5 +18,6 @@
 # fi
 
 [ -d "$HOME/.npm-global/bin" ] && PATH="$HOME/.npm-global/bin:$PATH"
+export PATH="$HOME/.bun/bin:$PATH"
 
 command -v mise > /dev/null && eval "$(mise activate zsh)"
