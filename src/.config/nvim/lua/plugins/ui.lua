@@ -85,7 +85,7 @@ return {
     opts = {
       bar = {
         enable = function(buf, win, _)
-          if vim.bo[buf].buftype == 'terminal' then
+          if vim.bo[buf].buftype == "terminal" then
             return false
           end
           return true

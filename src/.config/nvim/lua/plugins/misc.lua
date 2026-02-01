@@ -66,10 +66,10 @@ return {
         opencode.prompt(prompt_text)
       end, { desc = "Send content with line numbers to opencode" })
 
-      vim.defer_fn(function()
-        require("opencode").toggle()
-        require("opencode").toggle()
-      end, 5000)
+      -- vim.defer_fn(function()
+      --   require("opencode").toggle()
+      --   require("opencode").toggle()
+      -- end, 5000)
     end,
   },
 }
