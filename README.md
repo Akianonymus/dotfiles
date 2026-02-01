@@ -21,6 +21,7 @@ home/              # single stow package containing all dotfiles
 │   ├── gotop/
 │   ├── mise/
 │   ├── auto-cpufreq/
+│   ├── opencode/
 │   ├── .ideavimrc
 │   ├── nvim-vscode/
 │   └── .vscode-settings/

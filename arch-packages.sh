@@ -3,7 +3,8 @@
 packages=(
     aria2
     papirus-icon-theme
-    intel-media-driver auto-cpufreq base-devel
+    # intel-media-driver
+    auto-cpufreq base-devel
     bat fd fzf git git-delta
     github-cli btop jq lsd mpv
     bob neovim ripgrep wezterm zoxide zsh
@@ -23,7 +24,6 @@ packages=(
     warpinator
     64gram-desktop-bin
     anydesk-bin
-    cursor-bin
     pinta
     freedownloadmanager
     google-chrome
@@ -38,9 +38,12 @@ packages=(
     libreoffice-fresh visual-studio-code-bin
     google-chrome 64gram-desktop-bin
     vlc yt-dlp
-    anydesk-bin ventoy-bin yazi
+    anydesk-bin
     kimageformats5 stow
     android-tools mise
+    claude-code opencode-bin opencode-desktop-bin codenomad-bin
+    dbgate-bin mongodb-bin mongodb-tools-bin
+    bitwarden rclone ngrok ollama glances inxi tldr pandoc-bin
 )
 
 # install yay
