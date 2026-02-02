@@ -135,24 +135,6 @@ function M.nvim_go()
   })
 end
 
-function M.treesitter()
-  autocmd({ "FileType" }, {
-    callback = function()
-      local char = vim.fn.wordcount()["chars"]
-      -- manually disable/enable treesitter after a buffer is created
-      if char < 500000 then
-        vim.cmd([[silent! TSBufEnable highlight]])
-        vim.cmd([[silent! TSBufEnable indent]])
-        vim.cmd([[silent! TSBufEnable matchup]])
-      else
-        vim.cmd([[silent! TSBufDisable highlight]])
-        vim.cmd([[silent! TSBufDisable indent]])
-        vim.cmd([[silent! TSBufDisable matchup]])
-      end
-    end,
-  })
-end
-
 function M.grug_far()
   autocmd("FileType", {
     group = vim.api.nvim_create_augroup("my-grug-far-custom-keybinds", { clear = true }),
