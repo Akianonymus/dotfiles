@@ -25,6 +25,10 @@ return {
     opts = {
       default_format_opts = { lsp_format = "fallback" },
       format_on_save = function(bufnr)
+        local filename = vim.fn.expand("%:t")
+        if filename:match("^%.env") then
+          return
+        end
         if not vim.b.autoformat_aki then
           return
         end

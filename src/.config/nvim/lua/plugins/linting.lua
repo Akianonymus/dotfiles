@@ -15,6 +15,10 @@ return {
       vim.api.nvim_create_autocmd({ "BufWritePost" }, {
         group = lint_augroup,
         callback = function()
+          local filename = vim.fn.expand("%:t")
+          if filename:match("^%.env") then
+            return
+          end
           require("lint").try_lint()
         end,
       })

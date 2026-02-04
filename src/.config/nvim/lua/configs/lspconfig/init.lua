@@ -40,6 +40,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
       return
     end
 
+    local filename = vim.fn.expand("%:t")
+    if filename:match("%.env") then
+      client.stop()
+      return
+    end
+
     -- Handle disable_format
     if client.config and client.config.disable_format then
       client.server_capabilities.documentFormattingProvider = false

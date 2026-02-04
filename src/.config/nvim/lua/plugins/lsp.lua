@@ -1,7 +1,7 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPost" },
+    event = "VeryLazy",
     dependencies = {
       { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
       "williamboman/mason.nvim",

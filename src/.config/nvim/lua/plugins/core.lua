@@ -3,7 +3,7 @@ return {
   { "folke/lazy.nvim", version = "*" },
   {
     "nmac427/guess-indent.nvim",
-    event = "BufReadPost",
+    event = "VeryLazy",
     config = function()
       require("guess-indent").setup({})
     end,
@@ -47,7 +47,7 @@ return {
   },
   {
     "ethanholz/nvim-lastplace",
-    event = "BufReadPost",
+    event = "VeryLazy",
     config = function()
       require("nvim-lastplace").setup({
         lastplace_open_folds = true,
@@ -59,7 +59,7 @@ return {
   },
   {
     "andymass/vim-matchup",
-    event = "BufReadPost",
+    event = "VeryLazy",
     init = function()
       -- vim.g.matchup_matchparen_offscreen = { method = "popup" }
     end,

@@ -39,7 +39,7 @@ return {
   },
   {
     "catgoose/nvim-colorizer.lua",
-    event = "BufReadPost",
+    event = "VeryLazy",
     config = require("configs.colorizer"),
   },
   {
