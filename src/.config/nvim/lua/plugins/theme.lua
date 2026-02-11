@@ -8,7 +8,6 @@ return {
   },
   {
     "rebelot/kanagawa.nvim",
-    dependencies = { "folke/lsp-colors.nvim" },
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
     config = function()
@@ -53,12 +52,6 @@ return {
         theme = "default", -- Load "default" theme or the experimental "light" theme
       })
 
-      require("lsp-colors").setup({
-        Error = "#db4b4b",
-        Warning = "#e0af68",
-        Information = "#0db9d7",
-        Hint = "#10B981",
-      })
       -- setup must be called before loading
       vim.cmd("colorscheme kanagawa")
     end,

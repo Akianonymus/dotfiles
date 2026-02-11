@@ -1,5 +1,5 @@
 local config = {
-  filetypes = { "*", "!cmp_menu", cmp_docs = { always_update = true } },
+  filetypes = { "*", "!blink_menu", blink_docs = { always_update = true } },
   user_default_options = {
     names = true,
     names_custom = nil,

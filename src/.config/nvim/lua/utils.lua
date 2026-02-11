@@ -96,22 +96,14 @@ function M.typescript_format_import()
   }
 
   -- Check if any attached LSP client supports workspace/executeCommand
-  local clients = vim.lsp.get_clients()
-  local supports_execute_command = false
-
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
+  
   for _, client in pairs(clients) do
-    if client.supports_method("workspace/executeCommand") then
-      supports_execute_command = true
-      break
+    if client:supports_method("workspace/executeCommand") then
+      client:request('workspace/executeCommand', params)
+      return
     end
   end
-
-  if not supports_execute_command then
-    return
-  end
-
-  -- Execute the organize imports command
-  vim.lsp.buf.execute_command(params)
 end
 
 -- https://www.reddit.com/r/neovim/comments/p3b20j/lua_solution_to_writing_a_file_using_sudo

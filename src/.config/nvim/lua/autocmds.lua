@@ -81,31 +81,7 @@ function M.aki()
   })
 end
 
-function M.cmp()
-  autocmd("FileType", {
-    pattern = "go",
-    callback = function()
-      local ok, cmp = pcall(require, "cmp")
-      if ok then
-        cmp.setup.filetype({ "go" }, {
-          -- gopls preselects items which I don't like.
-          preselect = cmp.PreselectMode.None,
-          sorting = {
-            -- IMO these comparator settings work better with gopls.
-            comparators = {
-              cmp.config.compare.length,
-              cmp.config.compare.locality,
-              cmp.config.compare.sort_text,
-            },
-          },
-        })
-      else
-        vim.notify("Nvim CMP not loaded", 4)
-      end
-    end,
-    once = true,
-  })
-end
+
 
 function M.add_toggle_autoformat()
   autocmd("BufReadPost", {

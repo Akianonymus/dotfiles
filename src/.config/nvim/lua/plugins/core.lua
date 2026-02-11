@@ -21,13 +21,7 @@ return {
     keys = "V",
     opts = {},
   },
-  {
-    "ggandor/lightspeed.nvim",
-    keys = { "s", "S", "t", "T", "f", "F" },
-    config = function()
-      require("lightspeed").setup({ ignore_case = true, repeat_ft_with_target_char = true })
-    end,
-  },
+
   { "echasnovski/mini.bufremove", keys = mappings.bufremove },
   {
     "nvim-mini/mini.pairs",

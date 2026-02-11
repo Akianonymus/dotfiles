@@ -5,7 +5,6 @@ return {
     dependencies = {
       { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
       "williamboman/mason.nvim",
-      "ray-x/lsp_signature.nvim",
     },
     config = function()
       require("configs.lspconfig")
@@ -22,11 +21,6 @@ return {
     cmd = "Lspsaga",
     dependencies = { "neovim/nvim-lspconfig" },
     config = require("configs.lspsaga"),
-  },
-  {
-    "ray-x/lsp_signature.nvim",
-    dependencies = { "neovim/nvim-lspconfig" },
-    config = require("configs.lsp_signature"),
   },
   {
     "folke/trouble.nvim",
@@ -54,7 +48,6 @@ return {
       },
     },
   },
-  { "mfussenegger/nvim-jdtls" },
   -- Note: nvim-vtsls is no longer needed with vim.lsp.config
   -- vtsls configuration is now handled directly in configs/lspconfig/servers.lua
   -- { "yioneko/nvim-vtsls" },
