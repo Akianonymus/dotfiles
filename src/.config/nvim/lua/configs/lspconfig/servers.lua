@@ -82,7 +82,19 @@ servers.cssmodules_ls = {
   filetypes_exclude = { "javascript", "typescript" },
 }
 
-servers.emmet_language_server = { config = { filetypes = { "javascriptreact", "typescriptreact", "vue" } } }
+servers.emmet_language_server = {
+  config = {
+    filetypes = {
+      "html", "htmldjango", "css", "scss", "sass", "less",
+      "javascriptreact", "typescriptreact", "vue", "eruby", "pug"
+    },
+    init_options = {
+      includeLanguages = {},
+      syntaxProfiles = {},
+      variables = {},
+    },
+  },
+}
 
 -- These below needs some extra stuff done to their default config
 servers.clangd = {
