@@ -2,6 +2,7 @@
 declare os=""
 
 { grep -qE 'Arch Linux|EndeavourOS' /etc/os-release 2> /dev/null && os=arch; } ||
+    { grep -qE 'Ubuntu' /etc/os-release 2> /dev/null && os=ubuntu; } ||
     { [[ -n ${TERMUX_VERSION} ]] && os=termux; } || :
 
 if [[ ${os} = 'arch' ]]; then
@@ -85,6 +86,20 @@ elif [[ ${os} = 'termux' ]]; then
     }
 
     _web() { npm update -g emmet-ls @fsouza/prettierd vscode-langservers-extracted; }
+elif [[ ${os} = 'ubuntu' ]]; then
+    _c() { brew install clang; }
+
+    _bash() { brew install shellcheck shfmt; }
+
+    _lua() { brew install luacheck stylua; }
+
+    _python() { brew install pyright black isort flake8; }
+
+    _rust() { brew install rust rust-analyzer; }
+
+    _treesitter() { brew install tree-sitter-cli; }
+
+    _web() { npm install -g emmet-ls @fsouza/prettierd vscode-langservers-extracted; }
 else
     exit 0
 fi

@@ -1,6 +1,7 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@paflopes/opencode-qwen-auth"],
+  "experimental": { "batch_tool": true },
+  "plugin": ["@paflopes/opencode-qwen-auth", "opencode-pty"],
   "username": "aki",
   "keybinds": {
     "app_exit": "ctrl+q",
@@ -38,13 +39,36 @@
     "context7": {
       "type": "local",
       "command": [
-        "npx",
+        "bunx",
         "-y",
         "@upstash/context7-mcp",
         "--api-key",
         "{env:CONTEXT7_API_KEY}"
       ],
       "enabled": true
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--usage-statistics=false"
+      ]
+    },
+    "chrome-devtools-headless": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--usage-statistics=false",
+        "--headless=true"
+      ]
+    },
+    "type-inject": {
+      "type": "local",
+      "command": ["bunx", "-y", "@nick-vi/type-inject-mcp"]
     }
   },
   "provider": {

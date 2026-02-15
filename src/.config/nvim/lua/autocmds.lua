@@ -14,6 +14,13 @@ function M.aki()
     end,
   })
 
+  autocmd("FileType", {
+    pattern = { "*" },
+    callback = function()
+      pcall(vim.treesitter.start)
+    end,
+  })
+
   -- Create directory if missing: https://github.com/jghauser/mkdir.nvim
   autocmd("BufWritePre", {
     callback = function()
@@ -80,8 +87,6 @@ function M.aki()
     end,
   })
 end
-
-
 
 function M.add_toggle_autoformat()
   autocmd("BufReadPost", {

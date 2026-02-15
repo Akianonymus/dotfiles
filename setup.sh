@@ -8,42 +8,13 @@ main() {
     declare os=""
 
     { grep -qE 'Arch Linux|EndeavourOS' /etc/os-release 2> /dev/null && os=arch; } ||
+        { grep -qE 'Ubuntu' /etc/os-release 2> /dev/null && os=ubuntu; } ||
         { [[ -n ${TERMUX_VERSION} ]] && os=termux; } || :
 
     case "${os}" in
         arch)
             sh ./arch-packages.sh
             chsh -s "$(chsh -l zsh | grep -m 1 zsh)"
-
-            # get rid of system beep
-            sudo rmmod pcspkr snd_pcsp &> /dev/null
-            printf "blacklist pcspkr\nblacklist snd_pcsp" | sudo tee /etc/modprobe.d/nobeep.conf 1> /dev/null
-
-            # https://man.archlinux.org/man/libinput.4
-            printf 'Section "InputClass"
-    Identifier "libinput touchpad catchall"
-    MatchIsTouchpad "on"
-    MatchDevicePath "/dev/input/event*"
-    Driver "libinput"
-    # Enable adaptice touchpad
-    Option "AccelProfile" "adaptive"
-    # Enable tap to click
-    Option "Tapping" "on"
-    # Enable double tab and drag
-    Option "TappingDrag" "on"
-    # Disable when typing
-    Option "DisableWhileTyping" "true"
-    # Enable horizontal scrolling
-    Option "HorizontalScrolling" "true"
-    Option "NaturalScrolling" "true"
-    # Enable edge scrolling
-    Option "ScrollMethod" "twofinger"
-    Option "ScrollPixelDistance" "30"
-EndSection\n' | sudo tee /etc/X11/xorg.conf.d/40-libinput.conf 1> /dev/null
-
-            # enable experimental bluetooth features - to enable battery info
-            sed -E -e "s/^#+?[[:space:]]+?Experimental[[:space:]]+?=[[:space:]]+?false/Experimental = true/" \
-                /etc/bluetooth/main.conf | sudo tee /etc/bluetooth/main.conf
             ;;
         termux)
             packages=(
@@ -64,8 +35,14 @@ EndSection\n' | sudo tee /etc/X11/xorg.conf.d/40-libinput.conf 1> /dev/null
 
             chsh -s zsh
             ;;
+        ubuntu)
+            bash ./ubuntu-packages.sh
+            sudo chsh -s "$(which zsh)" || echo "Warning: Could not change default shell to zsh"
+            ;;
         *)
-            echo "Not supported linux." && exit 1
+            echo "Error: Unsupported operating system"
+            echo "Supported: Arch Linux, EndeavourOS, Ubuntu, Termux"
+            exit 1
             ;;
     esac
 

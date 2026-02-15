@@ -14,7 +14,7 @@ local config = {
     "python",
     "vim",
   },
-  highlight = { enable = true, use_languagetree = true, additional_vim_regex_highlighting = false },
+  highlight = { enable = true, use_languagetree = true, additional_vim_regex_highlighting = true },
   indent = { enable = true },
   matchup = { enable = true },
 }
@@ -24,10 +24,8 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = { "windwp/nvim-ts-autotag" },
     build = ":TSUpdate",
-    event = "VeryLazy",
-    config = function()
-      require("nvim-treesitter.configs").setup(config)
-    end,
+    lazy = false,
+    opts = config,
   },
   {
     "windwp/nvim-ts-autotag",

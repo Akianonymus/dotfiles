@@ -1,70 +1,36 @@
 # dotfiles
 
-Managed with GNU Stow.
+Cross-platform dotfiles managed with GNU Stow.
 
-## Structure
+## Supported Platforms
 
-```
-home/              # single stow package containing all dotfiles
-├── .zshrc
-├── .zshenv
-├── .p10k.zsh
-├── .gitconfig
-├── .npmrc
-├── .config/       # application configs
-│   ├── nvim/
-│   ├── mpv/
-│   ├── kitty/
-│   ├── wezterm/
-│   ├── gh/
-│   ├── lsd/
-│   ├── gotop/
-│   ├── mise/
-│   ├── auto-cpufreq/
-│   ├── opencode/
-│   ├── .ideavimrc
-│   ├── nvim-vscode/
-│   └── .vscode-settings/
-└── .local/
-    └── share/fonts/
+- **Arch Linux** - yay + AUR
+- **Ubuntu** - Homebrew
+- **Termux** - pkg
+- **WSL** - Homebrew
 
-misc/              # helper scripts + wallpaper (not stowed)
-termux/            # termux-specific configs (separate package)
-scripts/           # setup scripts
-```
-
-## Usage
-
-Full setup (Arch Linux or Termux):
+## Setup
 
 ```bash
+git clone https://github.com/Akianonymus/dotfiles ~/.dotfiles
+cd ~/.dotfiles
 ./setup.sh
 ```
 
-Stow everything (all dotfiles):
+## Scripts
+
+- `setup.sh` - Auto-detects OS and installs packages
+- `arch-packages.sh` - Arch package installation + system configs (yay)
+- `ubuntu-packages.sh` - Ubuntu package installation (brew)
+- `scripts/lang-setup.sh` - Language servers (all platforms)
+- `scripts/stow_setup.sh` - Stow dotfiles
+
+## Stow
 
 ```bash
-bash scripts/stow_setup.sh
-# or
+# Stow all
 stow -R src
-```
 
-Unstow everything:
-
-```bash
+# Unstow
 stow -D src
-```
-
-Stow termux only (on Termux):
-
-```bash
-stow -R termux
-```
-
-Install language servers:
-
-```bash
-bash scripts/lang-setup.sh all
-# or individual:
-bash scripts/lang-setup.sh python rust lua
 ```
