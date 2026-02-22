@@ -65,10 +65,6 @@
         "--usage-statistics=false",
         "--headless=true"
       ]
-    },
-    "type-inject": {
-      "type": "local",
-      "command": ["bunx", "-y", "@nick-vi/type-inject-mcp"]
     }
   },
   "provider": {
