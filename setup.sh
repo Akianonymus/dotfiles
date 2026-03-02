@@ -22,7 +22,7 @@ main() {
                 bat
                 fd fzf
                 git git-delta gh gotop
-                htop-legacy
+                htop
                 jq
                 lsd
                 neovim

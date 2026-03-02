@@ -48,13 +48,13 @@ main() {
     # Stow home package
     [[ -d src ]] && {
         echo "Stowing src..."
-        stow -R src || { echo "Failed to stow home" && return 1; }
+        stow -R --no-folding src || { echo "Failed to stow home" && return 1; }
     }
 
     # Handle termux separately
     [[ -n ${TERMUX_VERSION} ]] && [[ -d termux ]] && {
         echo "Stowing termux..."
-        stow -R termux || { echo "Failed to stow termux" && return 1; }
+        stow -R --no-folding .termux || { echo "Failed to stow termux" && return 1; }
     }
 }
 

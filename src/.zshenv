@@ -22,3 +22,8 @@
 export PATH="$HOME/.bun/bin:$PATH"
 
 command -v mise > /dev/null && eval "$(mise activate zsh)"
+
+export OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT=600000
+export OPENCODE_EXPERIMENTAL_ICON_DISCOVERY=true
+export OPENCODE_EXPERIMENTAL_LSP_TOOL=true
+export OPENCODE_EXPERIMENTAL_LSP_TY=true
