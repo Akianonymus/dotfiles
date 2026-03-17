@@ -1,7 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "experimental": { "batch_tool": true },
-  "plugin": ["@paflopes/opencode-qwen-auth", "opencode-pty"],
+  "plugin": [
+    "@paflopes/opencode-qwen-auth",
+    "opencode-pty",
+    "@mohak34/opencode-notifier@latest",
+    "@franlol/opencode-md-table-formatter@0.0.6"
+  ],
   "username": "aki",
   "keybinds": {
     "app_exit": "ctrl+q",
@@ -54,7 +59,8 @@
         "-y",
         "chrome-devtools-mcp@latest",
         "--usage-statistics=false"
-      ]
+      ],
+      "enabled": false
     },
     "chrome-devtools-headless": {
       "type": "local",
@@ -69,7 +75,14 @@
   },
   "provider": {
     "zai-coding-plan": {
-      "options": { "apiKey": "{env:ZLM_API_KEY}" }
+      "options": {
+        "apiKey": "{env:ZLM_API_KEY}"
+      }
+    },
+    "minimax": {
+      "options": {
+        "apiKey": "{env:MINIMAX_API_KEY}"
+      }
     }
   },
   "server": { "hostname": "0.0.0.0", "mdns": true }

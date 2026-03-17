@@ -20,17 +20,23 @@ setopt autocd
 
 # enable history and set related options
 HISTFILE="$HOME/.cache/zsh/history"
-HISTSIZE=1000000
+HISTSIZE=10000000
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
+HISTORY_IGNORE="(l|l *|ls|ls *|cd|cd ..*|cd -|z *|pwd|exit)"
 setopt hist_expire_dups_first    # delete duplicates first when HISTFILE size exceeds HISTSIZE
 setopt hist_ignore_dups          # ignore duplicated commands history list
+setopt hist_ignore_all_dups          # ignore duplicated commands history list
+setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
+setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks from each command line being added to the history list.
 setopt hist_ignore_space         # ignore commands that start with space
 setopt hist_verify               # show command with history expansion to user before running it
 setopt inc_append_history        # add commands to HISTFILE in order of execution
 # setopt sharehistory
 # setopt appendhistory
 setopt hist_find_no_dups
+setopt HIST_NO_STORE             # Don't store history commands
+setopt HIST_NO_FUNCTIONS         # Don't store function definitions
 
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
