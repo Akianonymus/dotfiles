@@ -34,15 +34,12 @@ packages=(
     yt-dlp
     apidog-bin
     libreoffice-fresh
-    visual-studio-code-bin
     kimageformats5
     stow
     android-tools
     mise
     claude-code
     opencode-bin
-    opencode-desktop-bin
-    codenomad-bin
     dbgate-bin
     mongodb-bin
     mongodb-tools-bin
