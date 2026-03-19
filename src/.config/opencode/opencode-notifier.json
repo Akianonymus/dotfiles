@@ -1,0 +1,23 @@
+{
+  "sound": false,
+  "notification": true,
+  "timeout": 5,
+  "showProjectName": true,
+  "showSessionTitle": true,
+  "showIcon": true,
+  "notificationSystem": "osascript",
+  "events": {
+    "permission": { "sound": false, "notification": true },
+    "complete": { "sound": false, "notification": true },
+    "subagent_complete": { "sound": false, "notification": false },
+    "error": { "sound": false, "notification": true },
+    "question": { "sound": false, "notification": true }
+  },
+  "messages": {
+    "permission": "Session needs permission: {sessionTitle}",
+    "complete": "Session has finished: {sessionTitle}",
+    "subagent_complete": "Subagent task completed: {sessionTitle}",
+    "error": "Session encountered an error: {sessionTitle}",
+    "question": "Session has a question: {sessionTitle}"
+  }
+}
