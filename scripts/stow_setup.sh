@@ -38,8 +38,9 @@ main() {
 
     cd "${zsh_stuff}" || return 1
     for repo in "${repos[@]}"; do
-        handle_repo "${repo}" || return 1
+        handle_repo "${repo}" &
     done
+    wait || return 1
 
     cd "${current_dir}" || return 1
 
