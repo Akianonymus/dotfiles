@@ -1,21 +1,24 @@
 local config = {
   filetypes = { "*", "!blink_menu", blink_docs = { always_update = true } },
-  user_default_options = {
-    names = true,
-    names_custom = nil,
-    RGB = true,
-    RRGGBB = true,
-    RRGGBBAA = true, -- #RRGGBBAA hex codes
-    AARRGGBB = true, -- #0xAARRGGBA hex codes
-    rgb_fn = true,
-    hsl_fn = true,
-    -- Available modes: foreground, background
-    mode = "background", -- Set the display mode.
-    -- virtualtext = "",
-    tailwind = "normal",
-    sass = { enable = false },
-  },
   buftypes = { "*", "!terminal", "!prompt", "!popup" },
+  options = {
+    parsers = {
+      names = { enable = true },
+      hex = {
+        rgb = true,
+        rrggbb = true,
+        rrggbbaa = true,
+        aarrggbb = true,
+      },
+      rgb = { enable = true },
+      hsl = { enable = true },
+      tailwind = { enable = true },
+      sass = { enable = false, parsers = { css = true } },
+    },
+    display = {
+      mode = "background",
+    },
+  },
 }
 return function()
   require("colorizer").setup(config)
