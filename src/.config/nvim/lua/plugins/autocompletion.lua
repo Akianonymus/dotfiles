@@ -58,6 +58,13 @@ return {
 
       fuzzy = {
         implementation = "prefer_rust",
+        max_typos = function(keyword) return math.floor(#keyword / 5) end,
+        sorts = {
+          "exact",
+          "score",
+          "sort_text",
+        },
+        use_proximity = true,
       },
 
       completion = {
