@@ -2,7 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   "experimental": { "batch_tool": true },
   "plugin": [
-    "@paflopes/opencode-qwen-auth",
     "opencode-pty",
     "@mohak34/opencode-notifier@latest",
     "@franlol/opencode-md-table-formatter@0.0.6"
@@ -51,6 +50,16 @@
       "options": {
         "apiKey": "{env:MINIMAX_API_KEY}"
       }
+    }
+  },
+  "lsp": {
+    "typescript": {
+      "command": [
+        "sh",
+        "-c",
+        "npx --no-install typescript-language-server --stdio || typescript-language-server --stdio"
+      ],
+      "extensions": [".ts", ".tsx", ".js", ".jsx"]
     }
   }
 }
