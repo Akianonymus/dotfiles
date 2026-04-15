@@ -1,3 +1,7 @@
+---
+agent: build
+---
+
 # Amend
 
 ## Overview
@@ -39,10 +43,10 @@ Review all changes to understand:
 
 ### Step 3: Stage Changes
 
-Stage all changes in the working directory:
+Stage only the relevant files for the amendment. Never use `git add .` or `git add -A`:
 
 ```bash
-git add .
+git add <specific-file> <another-file>
 ```
 
 ### Step 4: Determine Commit Message

@@ -542,11 +542,4 @@ A successful review:
 - ✅ Helps developer learn and grow
 - ✅ Maintains constructive, supportive tone
 
-## Useful Commands
-
-To show full diff of the last commit:
-```
-git diff HEAD~1..HEAD
-```
-
 $ARGUMENTS

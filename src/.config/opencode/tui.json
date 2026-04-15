@@ -31,5 +31,8 @@
     "input_submit": "return",
     "input_newline": "shift+return,ctrl+return,alt+return,ctrl+j",
     "terminal_suspend": "ctrl+z"
-  }
+  },
+  "plugin": [
+    "oc-tps@latest"
+  ]
 }
