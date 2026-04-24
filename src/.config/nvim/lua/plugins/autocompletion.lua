@@ -35,7 +35,6 @@ return {
     dependencies = {
       "rafamadriz/friendly-snippets",
       "saghen/blink.compat",
-      "jcha0713/cmp-tw2css",
     },
     event = { "InsertEnter", "CmdlineEnter" },
 
@@ -58,7 +57,9 @@ return {
 
       fuzzy = {
         implementation = "prefer_rust",
-        max_typos = function(keyword) return math.floor(#keyword / 5) end,
+        max_typos = function(keyword)
+          return math.floor(#keyword / 5)
+        end,
         sorts = {
           "exact",
           "score",
@@ -102,8 +103,7 @@ return {
       sources = {
         -- adding any nvim-cmp sources here will enable them
         -- with blink.compat
-        compat = { "cmp-tw2css" },
-        default = { "lsp", "path", "snippets", "buffer", "cmp-tw2css" },
+        default = { "lsp", "path", "snippets", "buffer" },
       },
 
       cmdline = {
