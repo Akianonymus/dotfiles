@@ -63,3 +63,5 @@
 
 [include]
   path = ~/.gitconfig-work
+[safe]
+	directory = *
