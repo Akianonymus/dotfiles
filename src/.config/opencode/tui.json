@@ -32,7 +32,5 @@
     "input_newline": "shift+return,ctrl+return,alt+return,ctrl+j",
     "terminal_suspend": "ctrl+z"
   },
-  "plugin": [
-    "oc-tps@latest"
-  ]
+  "plugin": ["oc-tps@latest"]
 }
