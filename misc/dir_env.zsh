@@ -12,17 +12,34 @@
 #   { "pattern": "/home/aki/**", "priority": 5, "env_vars": {...} }  # overrides
 #   { "pattern": "/home/aki/project/**", "priority": 10, ... }      # specific overrides
 
-typeset -gA _dir_env_prev_vars
-typeset -g _dir_env_prev_dir=""
-typeset -gA _dir_env_var_source
-typeset -ga _dir_env_active_patterns=()
-typeset -ga _dir_env_patterns=()
-typeset -ga _dir_env_vars_list=()
-typeset -ga _dir_env_priorities=()
+# Ensure globals have the right types. Cursor agent shells sometimes inherit
+# the functions without the top-level typeset declarations; without -gA,
+# `_dir_env_prev_vars[$key]=$value` is treated as arithmetic and fails on
+# API keys that start with digits (e.g. 1a5319495d4...).
+_dir_env_ensure_state() {
+	[[ ${(t)_dir_env_prev_vars} == assoc* ]] || {
+		unset _dir_env_prev_vars
+		typeset -gA _dir_env_prev_vars=()
+	}
+	[[ ${(t)_dir_env_var_source} == assoc* ]] || {
+		unset _dir_env_var_source
+		typeset -gA _dir_env_var_source=()
+	}
+	[[ ${(t)_dir_env_patterns} == array* ]] || typeset -ga _dir_env_patterns=()
+	[[ ${(t)_dir_env_vars_list} == array* ]] || typeset -ga _dir_env_vars_list=()
+	[[ ${(t)_dir_env_priorities} == array* ]] || typeset -ga _dir_env_priorities=()
+	[[ ${(t)_dir_env_active_patterns} == array* ]] || typeset -ga _dir_env_active_patterns=()
+	[[ ${(t)_dir_env_prev_dir} == scalar* ]] || typeset -g _dir_env_prev_dir=""
+}
+
+_dir_env_ensure_state
 
 _unset_dir_env_vars() {
+	_dir_env_ensure_state
+
 	[[ -n $_dir_env_prev_dir ]] || {
 		_load_dir_env_vars
+		_dir_env_prev_dir="$PWD"
 		return 0
 	}
 	
@@ -38,7 +55,7 @@ _unset_dir_env_vars() {
 		local still_active=false
 		local j
 		for j in "${new_active_patterns[@]}"; do
-			[[ $i -eq $j ]] && still_active=true && break
+			[[ "$i" == "$j" ]] && still_active=true && break
 		done
 		
 		if ! $still_active; then
@@ -47,7 +64,7 @@ _unset_dir_env_vars() {
 				[[ -z $line ]] && continue
 				local key="${line%%=*}"
 				local source_idx=$_dir_env_var_source[$key]
-				[[ $source_idx -eq $i ]] && {
+				[[ "$source_idx" == "$i" ]] && {
 					unset $key
 					unset "_dir_env_prev_vars[$key]"
 					unset "_dir_env_var_source[$key]"
@@ -60,6 +77,8 @@ _unset_dir_env_vars() {
 }
 
 _load_dir_env_config() {
+	_dir_env_ensure_state
+
 	local secrets_file="$HOME/.secrets.json"
 	[[ -f $secrets_file ]] || return 1
 
@@ -179,6 +198,8 @@ except Exception as e:
 }
 
 _load_dir_env_vars() {
+	_dir_env_ensure_state
+
 	(( $#_dir_env_patterns )) || _load_dir_env_config || return 1
 
 	_dir_env_active_patterns=()
