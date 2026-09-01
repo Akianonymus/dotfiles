@@ -9,8 +9,8 @@
 # 
 # Example:
 #   { "pattern": "/**", "priority": 0, "env_vars": {...} }           # defaults
-#   { "pattern": "/home/aki/**", "priority": 5, "env_vars": {...} }  # overrides
-#   { "pattern": "/home/aki/project/**", "priority": 10, ... }      # specific overrides
+#   { "pattern": "~/**", "priority": 5, "env_vars": {...} }  # overrides
+#   { "pattern": "~/project/**", "priority": 10, ... }      # specific overrides
 
 # Ensure globals have the right types. Cursor agent shells sometimes inherit
 # the functions without the top-level typeset declarations; without -gA,

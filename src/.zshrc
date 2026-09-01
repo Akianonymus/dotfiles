@@ -121,8 +121,8 @@ if [[ -r /usr/share/bash-completion/completions/aria2c ]]; then
 fi
 
 # shuvcode
-export PATH=/home/aki/.shuvcode/bin:$PATH
+export PATH=~/.shuvcode/bin:$PATH
 
 export PATH="$HOME/.bin:$PATH"
-export GSD_TOOLS="/home/aki/.config/opencode/gsd-core/bin/gsd-tools.cjs"
+export GSD_TOOLS=~/.config/opencode/gsd-core/bin/gsd-tools.cjs
 gsd_run() { node "$GSD_TOOLS" "$@"; }
