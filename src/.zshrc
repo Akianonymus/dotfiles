@@ -122,3 +122,5 @@ fi
 
 # shuvcode
 export PATH=/home/aki/.shuvcode/bin:$PATH
+
+export PATH="$HOME/.bin:$PATH"

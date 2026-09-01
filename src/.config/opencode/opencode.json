@@ -1,8 +1,9 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "experimental": { "batch_tool": true },
+  "experimental": {
+    "batch_tool": true
+  },
   "plugin": [
-    "opencode-pty",
     "@mohak34/opencode-notifier@latest",
     "@franlol/opencode-md-table-formatter@0.0.6"
   ],
@@ -19,25 +20,16 @@
       ],
       "enabled": true
     },
-    "chrome-devtools": {
+    "gsd": {
       "type": "local",
       "command": [
-        "bunx",
+        "npx",
         "-y",
-        "chrome-devtools-mcp@latest",
-        "--usage-statistics=false"
+        "-p",
+        "@opengsd/gsd-core",
+        "gsd-mcp-server"
       ],
-      "enabled": false
-    },
-    "chrome-devtools-headless": {
-      "type": "local",
-      "command": [
-        "bunx",
-        "-y",
-        "chrome-devtools-mcp@latest",
-        "--usage-statistics=false",
-        "--headless=true"
-      ]
+      "enabled": true
     }
   },
   "provider": {
@@ -59,7 +51,12 @@
         "-c",
         "npx --no-install typescript-language-server --stdio || typescript-language-server --stdio"
       ],
-      "extensions": [".ts", ".tsx", ".js", ".jsx"]
+      "extensions": [
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx"
+      ]
     }
   },
   "permission": {
