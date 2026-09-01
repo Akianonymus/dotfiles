@@ -124,3 +124,5 @@ fi
 export PATH=/home/aki/.shuvcode/bin:$PATH
 
 export PATH="$HOME/.bin:$PATH"
+export GSD_TOOLS="/home/aki/.config/opencode/gsd-core/bin/gsd-tools.cjs"
+gsd_run() { node "$GSD_TOOLS" "$@"; }
