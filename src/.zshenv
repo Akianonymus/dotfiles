@@ -25,4 +25,4 @@ command -v mise > /dev/null && eval "$(mise activate zsh)"
 
 export OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT=600000
 export OPENCODE_EXPERIMENTAL_PLAN_MODE=false
-. "$HOME/.cargo/env"
+[ -d "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
