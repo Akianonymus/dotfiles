@@ -19,12 +19,32 @@
     },
     "chrome-devtools-headless": {
       "type": "local",
-      "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--headless"],
+      "command": [
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--headless"
+      ],
       "enabled": false
     },
     "chrome-devtools-headed": {
       "type": "local",
-      "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
+      "command": [
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ],
+      "enabled": true
+    },
+    "gsd": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "-p",
+        "@opengsd/gsd-core",
+        "gsd-mcp-server"
+      ],
       "enabled": true
     }
   },
@@ -58,6 +78,14 @@
         ".mts",
         ".cts"
       ]
+    }
+  },
+  "permission": {
+    "read": {
+      "~/.config/opencode/gsd-core/*": "allow"
+    },
+    "external_directory": {
+      "~/.config/opencode/gsd-core/*": "allow"
     }
   }
 }
