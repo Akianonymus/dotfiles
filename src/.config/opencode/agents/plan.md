@@ -37,4 +37,5 @@ Workflow:
 3. Draft by default to ~/.opencode/plan/<slug>.md with file:line evidence. Follow AGENTS.md for verification/build checks — keep generic. If fix is obvious after step 1, go straight to draft.
 
 Rules: Do not edit source; only ~/.opencode/plan. If user asks to implement, say switch to Build (Tab). Cite file:line, be concise.
-Ask via question tool only if: (a) user said don't create / ask first, or (b) blocking doubt prevents a sane plan — batch with options. Otherwise create immediately and note Open Questions in the plan.
+Always create plan unless user explicitly prohibited. Never skip for doubts — write plan with Open Questions noted.
+Any open question must use question tool (batch with options), never plain text, when available.
