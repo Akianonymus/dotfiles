@@ -1,0 +1,49 @@
+{
+  "$schema": "https://opencode.ai/v2/cli.json",
+  "theme": {
+    "name": "mercury"
+  },
+  "keybinds": {
+    "app.exit": "ctrl+q",
+    "command.palette.show": "ctrl+p",
+    "prompt.editor": "ctrl+e",
+    "session.export": "<leader>x",
+    "session.new": "<leader>n",
+    "session.list": "ctrl+l,<leader>l",
+    "session.timeline": "ctrl+/",
+    "session.compact": "none",
+    "model.list": "<leader>m",
+    "model.cycle_favorite": "ctrl+f",
+    "model.cycle_favorite_reverse": "ctrl+b",
+    "agent.cycle": "tab",
+    "agent.cycle.reverse": "shift+tab",
+    "variant.cycle": "ctrl+t",
+    "session.page.up": "pageup",
+    "session.page.down": "pagedown",
+    "session.half.page.up": "ctrl+u",
+    "session.half.page.down": "ctrl+d",
+    "session.message.next": "none",
+    "session.message.previous": "none",
+    "session.messages_last_user": "none",
+    "messages.copy": "<leader>y",
+    "session.undo": "<leader>u",
+    "session.redo": "<leader>r",
+    "prompt.clear": "ctrl+q,<leader>c",
+    "prompt.paste": "<leader>v",
+    "input.submit": "return",
+    "input.newline": "shift+return,ctrl+return,alt+return,ctrl+j",
+    "terminal.suspend": "ctrl+z"
+  },
+  "diffs": {
+    "wrap": "word"
+  },
+  "prompt": {
+    "editor": true
+  },
+  "session": {
+    "sidebar": "auto",
+    "scrollbar": true,
+    "thinking": "show"
+  },
+  "animations": true
+}

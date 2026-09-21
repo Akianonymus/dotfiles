@@ -1,62 +1,51 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "experimental": {
-    "batch_tool": true
-  },
-  "plugin": [],
   "username": "aki",
-  "mcp": {
-    "context7": {
-      "type": "local",
-      "command": [
-        "bunx",
-        "-y",
-        "@upstash/context7-mcp",
-        "--api-key",
-        "{env:CONTEXT7_API_KEY}"
-      ],
-      "enabled": true
+  "plugins": [],
+  "permissions": [
+    {
+      "action": "read",
+      "resource": "~/.config/opencode/gsd-core/*",
+      "effect": "allow"
     },
-    "chrome-devtools-headless": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "chrome-devtools-mcp@latest",
-        "--headless"
-      ],
-      "enabled": false
-    },
-    "chrome-devtools-headed": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "chrome-devtools-mcp@latest"
-      ],
-      "enabled": true
-    },
-    "gsd": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "-p",
-        "@opengsd/gsd-core",
-        "gsd-mcp-server"
-      ],
-      "enabled": true
+    {
+      "action": "external_directory",
+      "resource": "~/.config/opencode/gsd-core/*",
+      "effect": "allow"
     }
-  },
-  "provider": {
-    "zai-coding-plan": {
-      "options": {
-        "apiKey": "{env:ZLM_API_KEY}"
-      }
-    },
-    "minimax": {
-      "options": {
-        "apiKey": "{env:MINIMAX_API_KEY}"
+  ],
+  "mcp": {
+    "servers": {
+      "context7": {
+        "type": "local",
+        "command": [
+          "bunx",
+          "-y",
+          "@upstash/context7-mcp",
+          "--api-key",
+          "{env:CONTEXT7_API_KEY}"
+        ],
+        "disabled": false
+      },
+      "chrome-devtools-headless": {
+        "type": "local",
+        "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--headless"],
+        "disabled": true
+      },
+      "chrome-devtools-headed": {
+        "type": "local",
+        "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
+        "disabled": false
+      },
+      "playwright": {
+        "type": "local",
+        "command": ["npx", "-y", "@playwright/mcp@latest"],
+        "disabled": false
+      },
+      "gsd": {
+        "type": "local",
+        "command": ["npx", "-y", "-p", "@opengsd/gsd-core", "gsd-mcp-server"],
+        "disabled": false
       }
     }
   },
@@ -78,14 +67,6 @@
         ".mts",
         ".cts"
       ]
-    }
-  },
-  "permission": {
-    "read": {
-      "~/.config/opencode/gsd-core/*": "allow"
-    },
-    "external_directory": {
-      "~/.config/opencode/gsd-core/*": "allow"
     }
   }
 }

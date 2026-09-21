@@ -9,19 +9,7 @@ permissions:
   - action: edit
     resource: "*"
     effect: deny
-  - action: write
-    resource: "*"
-    effect: deny
-  - action: patch
-    resource: "*"
-    effect: deny
   - action: edit
-    resource: "~/.opencode/plan/*"
-    effect: allow
-  - action: write
-    resource: "~/.opencode/plan/*"
-    effect: allow
-  - action: patch
     resource: "~/.opencode/plan/*"
     effect: allow
   - action: external_directory
