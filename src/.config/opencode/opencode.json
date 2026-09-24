@@ -12,6 +12,16 @@
       "action": "external_directory",
       "resource": "~/.config/opencode/gsd-core/*",
       "effect": "allow"
+    },
+    {
+      "action": "read",
+      "resource": "~/.opencode/plan/*",
+      "effect": "allow"
+    },
+    {
+      "action": "external_directory",
+      "resource": "~/.opencode/plan/*",
+      "effect": "allow"
     }
   ],
   "mcp": {
